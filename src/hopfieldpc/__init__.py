@@ -5,6 +5,7 @@ before FabricPC integration.
 """
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, HopfieldShapeError
+from .functional import hopfield_retrieve
 from .memory import HopfieldMemory
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "HopfieldMemoryOutput",
     "HopfieldShapeContract",
     "HopfieldShapeError",
+    "hopfield_retrieve",
 ]
