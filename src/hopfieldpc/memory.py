@@ -7,14 +7,16 @@ import torch
 from torch import nn
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, validate_query_memory
-from .functional import hopfield_retrieve  
+from .functional import hopfield_retrieve
 
 
 class HopfieldMemory(nn.Module):
-    """Standalone modern Hopfield memory module.
-    Task 1 defined the module interface, memory modes, and shape validation.
-    Task 2 implements one-step Hopfield retrieval using the functional core.
-    
+    """PyTorch module wrapper for modern Hopfield retrieval.
+
+    The module owns retrieval configuration and delegates tensor operations to
+    the functional core. External memory passed to :meth:`forward` takes
+    precedence over any internal memory.
+
     Shape contract:
         query:     [batch_size, dim]
         memory:    [num_memories, dim]
@@ -143,12 +145,11 @@ class HopfieldMemory(nn.Module):
     ) -> HopfieldMemoryOutput:
         """Run one-step Hopfield retrieval.
 
-        Task 2 change:
-            The Task 1 version only validated inputs and raised NotImplementedError.
-            This version performs actual one-step retrieval:
+        Returns:
+            A tuple-compatible output containing ``retrieved``, ``weights``,
+            and ``diagnostics``::
 
-                weights = softmax(beta * query @ memory.T)
-                retrieved = weights @ memory
+                retrieved, weights, diagnostics = module(query, memory)
         """
 
         resolved_memory = self.get_memory(memory)
@@ -156,7 +157,7 @@ class HopfieldMemory(nn.Module):
 
         if self.num_updates != 1:
             raise NotImplementedError(
-                "Task 2 only implements one-step retrieval. "
+                "HopfieldMemory currently supports one-step retrieval only. "
                 "Multi-step retrieval will be implemented in a later task."
             )
 

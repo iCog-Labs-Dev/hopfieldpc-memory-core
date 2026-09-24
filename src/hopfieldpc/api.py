@@ -1,14 +1,13 @@
 """Public API types and shape validation for HopfieldPC memory core.
 
 This file defines the tensor contract used by the standalone HopfieldMemory
-module. It does not implement retrieval. Retrieval will be implemented in
-functional.py during Task 2.
+module. Retrieval operations are implemented separately in functional.py.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, NamedTuple
 
 import torch
 
@@ -26,9 +25,14 @@ class HopfieldShapeContract:
     memory_size: int
 
 
-@dataclass
-class HopfieldMemoryOutput:
+class HopfieldMemoryOutput(NamedTuple):
     """Standard output container for HopfieldMemory.
+
+    This tuple-compatible container supports both unpacking and named access::
+
+        retrieved, weights, diagnostics = module(query, memory)
+        output = module(query, memory)
+        retrieved = output.retrieved
 
     Attributes:
         retrieved:
