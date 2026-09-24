@@ -1,18 +1,25 @@
 from __future__ import annotations
 
 import math
+from typing import Any
 
 import torch
 from torch import nn
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, validate_query_memory
+from .functional import hopfield_retrieve  
 
 
 class HopfieldMemory(nn.Module):
-    """Standalone modern Hopfield memory module API skeleton.
-
-    Task 1 defines the API and shape contract.
-    Task 2 will implement actual retrieval.
+    """Standalone modern Hopfield memory module.
+    Task 1 defined the module interface, memory modes, and shape validation.
+    Task 2 implements one-step Hopfield retrieval using the functional core.
+    
+    Shape contract:
+        query:     [batch_size, dim]
+        memory:    [num_memories, dim]
+        retrieved: [batch_size, dim]
+        weights:   [batch_size, num_memories]
     """
 
     def __init__(
@@ -69,12 +76,16 @@ class HopfieldMemory(nn.Module):
 
     @staticmethod
     def _init_memory(memory_size: int, dim: int) -> torch.Tensor:
+        """Initialize internal memory vectors."""
+
         std = 1.0 / math.sqrt(dim)
         memory = torch.empty(memory_size, dim)
         nn.init.normal_(memory, mean=0.0, std=std)
         return memory
 
     def get_memory(self, memory: torch.Tensor | None = None) -> torch.Tensor:
+        """Resolve external memory or internal memory."""
+
         if memory is not None:
             return memory
 
@@ -91,6 +102,8 @@ class HopfieldMemory(nn.Module):
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldShapeContract:
+        """Validate query and memory against the module shape contract."""
+
         resolved_memory = self.get_memory(memory)
         return validate_query_memory(
             query=query,
@@ -98,15 +111,70 @@ class HopfieldMemory(nn.Module):
             expected_dim=self.dim,
         )
 
+    def _build_basic_diagnostics(
+        self,
+        *,
+        query: torch.Tensor,
+        memory: torch.Tensor,
+        weights: torch.Tensor,
+    ) -> dict[str, Any]:
+        """Build a minimal diagnostics dictionary.
+
+        Full entropy/top-k/distance diagnostics will be added in a later task.
+        This minimal dictionary confirms retrieval settings and tensor shapes.
+        """
+
+        if not self.return_diagnostics:
+            return {}
+
+        return {
+            "beta": self.beta,
+            "num_updates": self.num_updates,
+            "normalize": self.normalize,
+            "query_shape": tuple(query.shape),
+            "memory_shape": tuple(memory.shape),
+            "weights_shape": tuple(weights.shape),
+        }
+
     def forward(
         self,
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldMemoryOutput:
-        self.validate_inputs(query=query, memory=memory)
+        """Run one-step Hopfield retrieval.
 
-        raise NotImplementedError(
-            "Hopfield retrieval is not implemented yet. "
-            "Task 2 will implement p = softmax(beta * query @ memory.T) "
-            "and retrieved = p @ memory."
+        Task 2 change:
+            The Task 1 version only validated inputs and raised NotImplementedError.
+            This version performs actual one-step retrieval:
+
+                weights = softmax(beta * query @ memory.T)
+                retrieved = weights @ memory
+        """
+
+        resolved_memory = self.get_memory(memory)
+        self.validate_inputs(query=query, memory=resolved_memory)
+
+        if self.num_updates != 1:
+            raise NotImplementedError(
+                "Task 2 only implements one-step retrieval. "
+                "Multi-step retrieval will be implemented in a later task."
+            )
+
+        retrieved, weights = hopfield_retrieve(
+            query=query,
+            memory=resolved_memory,
+            beta=self.beta,
+            normalize=self.normalize,
+        )
+
+        diagnostics = self._build_basic_diagnostics(
+            query=query,
+            memory=resolved_memory,
+            weights=weights,
+        )
+
+        return HopfieldMemoryOutput(
+            retrieved=retrieved,
+            weights=weights,
+            diagnostics=diagnostics,
         )

@@ -2,6 +2,7 @@
 
 Standalone modern Hopfield memory core for the HopfieldPC project.
 
+<p align="justify">
 This repository implements and validates the core Hopfield memory mechanism before integration into FabricPC. It focuses on beta-controlled associative retrieval, tensor-shape validation, diagnostics, synthetic benchmarks, and unit tests.
 
 ## Setup
@@ -44,19 +45,22 @@ python -c "import hopfieldpc; print('hopfieldpc import OK')"
 Current task:
 
 ```text
-Task 1: Define HopfieldMemory API and tensor shape contract
+Task 2: Implement one-step Hopfield retrieval
 ```
 
 Implemented so far:
 
 ```text
 src/hopfieldpc/api.py
+src/hopfieldpc/functional.py
 src/hopfieldpc/memory.py
 src/hopfieldpc/__init__.py
 tests/test_api_contract.py
+tests/test_one_step_retrieval.py
+tests/test_beta_behavior.py
 ```
 
-This task defines the API and validates tensor shapes. The actual retrieval equation will be implemented in the next task.
+The module now validates tensor shapes and performs one-step modern Hopfield retrieval.
 
 ## Expected Tensor Contract
 
@@ -67,13 +71,19 @@ retrieved: [batch_size, dim]
 weights:   [batch_size, num_memories]
 ```
 
-## Basic Import Check
+## Core Retrieval Formula
 
 ```python
-from hopfieldpc import HopfieldMemory
+scores = beta * query @ memory.T
+weights = softmax(scores)
+retrieved = weights @ memory
+```
 
-module = HopfieldMemory(dim=4, memory_size=8, beta=1.0)
-print(module)
+Equivalent mathematical form:
+
+```text
+p = softmax(β qMᵀ)
+h_memory = pM
 ```
 
 ## Run Tests
@@ -90,19 +100,17 @@ Run only the API contract tests:
 pytest tests/test_api_contract.py -q
 ```
 
-## Planned Core Retrieval Formula
+Run only one-step retrieval tests:
 
-The next implementation step will add the Hopfield retrieval computation:
-
-```python
-scores = beta * query @ memory.T
-weights = softmax(scores)
-retrieved = weights @ memory
+```bash
+pytest tests/test_one_step_retrieval.py tests/test_beta_behavior.py -q
 ```
 
-Equivalent mathematical form:
+## Next Planned Tasks
 
 ```text
-p = softmax(β qMᵀ)
-h_memory = pM
+Task 3: Add memory modes and prepare module extension points.
+Task 4: Add optional multi-step retrieval.
+Task 5: Add diagnostics such as entropy, top-k mass, and retrieval distance.
+Task 6: Add synthetic retrieval benchmarks.
 ```
