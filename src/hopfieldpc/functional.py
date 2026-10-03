@@ -1,14 +1,3 @@
-"""Functional Hopfield retrieval operations.
-
-Implements the pure one-step modern Hopfield retrieval equation:
-
-    weights = softmax(beta * query @ memory.T)
-    retrieved = weights @ memory
-
-The function in this file is intentionally independent from nn.Module so it can
-be tested directly and reused by HopfieldMemory.
-"""
-
 from __future__ import annotations
 
 import torch
@@ -23,12 +12,6 @@ def _normalize_for_scores(
     *,
     eps: float = 1e-8,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Normalize query and memory only for similarity scoring.
-
-    The retrieved vector is still computed from the original memory vectors.
-    This keeps normalization from changing the memory values themselves.
-    """
-
     query_norm = F.normalize(query, p=2, dim=-1, eps=eps)
     memory_norm = F.normalize(memory, p=2, dim=-1, eps=eps)
     return query_norm, memory_norm
@@ -41,31 +24,6 @@ def hopfield_retrieve(
     beta: float = 1.0,
     normalize: bool = False,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Run one-step modern Hopfield retrieval.
-
-    Args:
-        query:
-            Query tensor with shape [batch_size, dim].
-        memory:
-            Memory bank tensor with shape [num_memories, dim].
-            Each row is one stored pattern.
-        beta:
-            Retrieval sharpness. Larger beta produces sharper memory selection.
-        normalize:
-            If True, query and memory are L2-normalized for similarity scoring.
-            The retrieved vector is still computed from the original memory.
-
-    Returns:
-        retrieved:
-            Retrieved memory vectors with shape [batch_size, dim].
-        weights:
-            Softmax memory weights with shape [batch_size, num_memories].
-
-    Formula:
-        scores = beta * query @ memory.T
-        weights = softmax(scores)
-        retrieved = weights @ memory
-    """
 
     if beta <= 0:
         raise ValueError(f"beta must be positive, got {beta!r}.")
@@ -82,3 +40,37 @@ def hopfield_retrieve(
     retrieved = torch.matmul(weights, memory)
 
     return retrieved, weights
+
+
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = 1.0,
+    num_updates: int = 1,
+    normalize: bool = False,
+    return_states: bool = False,
+) -> (
+    tuple[torch.Tensor, torch.Tensor]
+    | tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]
+):
+    if isinstance(num_updates, bool) or not isinstance(num_updates, int) or num_updates <= 0:
+        raise ValueError(f"num_updates must be a positive integer, got {num_updates!r}.")
+
+    state = query
+    states = [query]
+    weights = None
+
+    for _ in range(num_updates):
+        state, weights = hopfield_retrieve(
+            query=state,
+            memory=memory,
+            beta=beta,
+            normalize=normalize,
+        )
+        if return_states:
+            states.append(state)
+
+    if return_states:
+        return state, weights, states
+    return state, weights
