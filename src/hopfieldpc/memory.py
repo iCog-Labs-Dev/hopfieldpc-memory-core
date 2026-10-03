@@ -7,22 +7,10 @@ import torch
 from torch import nn
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, validate_query_memory
-from .functional import hopfield_retrieve
+from .functional import multi_step_retrieve
 
 
 class HopfieldMemory(nn.Module):
-    """PyTorch module wrapper for modern Hopfield retrieval.
-
-    The module owns retrieval configuration and delegates tensor operations to
-    the functional core. External memory passed to :meth:`forward` takes
-    precedence over any internal memory.
-
-    Shape contract:
-        query:     [batch_size, dim]
-        memory:    [num_memories, dim]
-        retrieved: [batch_size, dim]
-        weights:   [batch_size, num_memories]
-    """
 
     def __init__(
         self,
@@ -34,6 +22,7 @@ class HopfieldMemory(nn.Module):
         learnable_memory: bool = False,
         normalize: bool = False,
         return_diagnostics: bool = True,
+        return_states: bool = False,
     ) -> None:
         super().__init__()
 
@@ -65,6 +54,7 @@ class HopfieldMemory(nn.Module):
         self.learnable_memory = bool(learnable_memory)
         self.normalize = bool(normalize)
         self.return_diagnostics = bool(return_diagnostics)
+        self.return_states = bool(return_states)
 
         if memory_size is None:
             self.memory = None
@@ -120,12 +110,7 @@ class HopfieldMemory(nn.Module):
         memory: torch.Tensor,
         weights: torch.Tensor,
     ) -> dict[str, Any]:
-        """Build a minimal diagnostics dictionary.
-
-        Full entropy/top-k/distance diagnostics will be added in a later task.
-        This minimal dictionary confirms retrieval settings and tensor shapes.
-        """
-
+ 
         if not self.return_diagnostics:
             return {}
 
@@ -143,36 +128,33 @@ class HopfieldMemory(nn.Module):
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldMemoryOutput:
-        """Run one-step Hopfield retrieval.
-
-        Returns:
-            A tuple-compatible output containing ``retrieved``, ``weights``,
-            and ``diagnostics``::
-
-                retrieved, weights, diagnostics = module(query, memory)
-        """
 
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
 
-        if self.num_updates != 1:
-            raise NotImplementedError(
-                "HopfieldMemory currently supports one-step retrieval only. "
-                "Multi-step retrieval will be implemented in a later task."
-            )
-
-        retrieved, weights = hopfield_retrieve(
+        result = multi_step_retrieve(
             query=query,
             memory=resolved_memory,
             beta=self.beta,
+            num_updates=self.num_updates,
             normalize=self.normalize,
+            return_states=self.return_states,
         )
+
+        if self.return_states:
+            retrieved, weights, states = result
+        else:
+            retrieved, weights = result
+            states = None
 
         diagnostics = self._build_basic_diagnostics(
             query=query,
             memory=resolved_memory,
             weights=weights,
         )
+
+        if states is not None:
+            diagnostics["states"] = states
 
         return HopfieldMemoryOutput(
             retrieved=retrieved,
