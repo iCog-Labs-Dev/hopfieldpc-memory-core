@@ -182,7 +182,7 @@ class HopfieldMemory(nn.Module):
             weights=weights,
         )
 
-        if states is not None:
+        if self.return_diagnostics and states is not None:
             diagnostics["states"] = states
 
         return HopfieldMemoryOutput(

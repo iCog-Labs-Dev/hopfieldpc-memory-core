@@ -71,6 +71,17 @@ def test_states_not_returned_by_default() -> None:
     assert "states" not in out.diagnostics
 
 
+def test_return_states_respects_disabled_diagnostics() -> None:
+    module = HopfieldMemory(
+        dim=4,
+        num_updates=3,
+        return_states=True,
+        return_diagnostics=False,
+    )
+    out = module(torch.randn(2, 4), torch.randn(5, 4))
+    assert out.diagnostics == {}
+
+
 def test_invalid_num_updates_raises() -> None:
     with pytest.raises(ValueError, match="num_updates must be"):
         multi_step_retrieve(torch.randn(2, 4), torch.randn(5, 4), num_updates=0)
