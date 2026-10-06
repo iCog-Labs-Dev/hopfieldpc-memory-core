@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, validate_query_memory
-from .functional import hopfield_retrieve
+from .functional import multi_step_retrieve
 
 
 class HopfieldMemory(nn.Module):
@@ -34,6 +34,7 @@ class HopfieldMemory(nn.Module):
         learnable_memory: bool = False,
         normalize: bool = False,
         return_diagnostics: bool = True,
+        return_states: bool = False,
     ) -> None:
         super().__init__()
 
@@ -50,7 +51,11 @@ class HopfieldMemory(nn.Module):
         if beta <= 0:
             raise ValueError(f"beta must be positive, got {beta!r}.")
 
-        if not isinstance(num_updates, int) or num_updates <= 0:
+        if (
+            isinstance(num_updates, bool)
+            or not isinstance(num_updates, int)
+            or num_updates <= 0
+        ):
             raise ValueError(
                 f"num_updates must be a positive integer, got {num_updates!r}."
             )
@@ -65,6 +70,7 @@ class HopfieldMemory(nn.Module):
         self.learnable_memory = bool(learnable_memory)
         self.normalize = bool(normalize)
         self.return_diagnostics = bool(return_diagnostics)
+        self.return_states = bool(return_states)
 
         if memory_size is None:
             self.memory = None
@@ -143,7 +149,7 @@ class HopfieldMemory(nn.Module):
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldMemoryOutput:
-        """Run one-step Hopfield retrieval.
+        """Run Hopfield retrieval (one step by default, multi-step if num_updates > 1).
 
         Returns:
             A tuple-compatible output containing ``retrieved``, ``weights``,
@@ -155,24 +161,35 @@ class HopfieldMemory(nn.Module):
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
 
-        if self.num_updates != 1:
-            raise NotImplementedError(
-                "HopfieldMemory currently supports one-step retrieval only. "
-                "Multi-step retrieval will be implemented in a later task."
+        states: list[torch.Tensor] | None
+        if self.return_states:
+            retrieved, weights, states = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=True,
             )
-
-        retrieved, weights = hopfield_retrieve(
-            query=query,
-            memory=resolved_memory,
-            beta=self.beta,
-            normalize=self.normalize,
-        )
+        else:
+            retrieved, weights = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=False,
+            )
+            states = None
 
         diagnostics = self._build_basic_diagnostics(
             query=query,
             memory=resolved_memory,
             weights=weights,
         )
+
+        if self.return_diagnostics and states is not None:
+            diagnostics["states"] = states
 
         return HopfieldMemoryOutput(
             retrieved=retrieved,

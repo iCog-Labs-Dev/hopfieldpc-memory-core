@@ -5,11 +5,17 @@ Implements the pure one-step modern Hopfield retrieval equation:
     weights = softmax(beta * query @ memory.T)
     retrieved = weights @ memory
 
+and optional multi-step retrieval, which repeats the one-step update:
+
+    q_{t+1} = HopfieldRetrieval(q_t, M)
+
 The function in this file is intentionally independent from nn.Module so it can
 be tested directly and reused by HopfieldMemory.
 """
 
 from __future__ import annotations
+
+from typing import Literal, overload
 
 import torch
 import torch.nn.functional as F
@@ -82,3 +88,90 @@ def hopfield_retrieve(
     retrieved = torch.matmul(weights, memory)
 
     return retrieved, weights
+
+
+@overload
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = ...,
+    num_updates: int = ...,
+    normalize: bool = ...,
+    return_states: Literal[False] = ...,
+) -> tuple[torch.Tensor, torch.Tensor]: ...
+
+
+@overload
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = ...,
+    num_updates: int = ...,
+    normalize: bool = ...,
+    return_states: Literal[True],
+) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]: ...
+
+
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = 1.0,
+    num_updates: int = 1,
+    normalize: bool = False,
+    return_states: bool = False,
+) -> (
+    tuple[torch.Tensor, torch.Tensor]
+    | tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]
+):
+    """Run repeated Hopfield retrieval: q0 -> q1 -> ... -> qT.
+
+    Args:
+        query:
+            Initial query q0 with shape [batch_size, dim].
+        memory:
+            Memory bank with shape [num_memories, dim].
+        beta:
+            Retrieval sharpness (positive).
+        num_updates:
+            Number of retrieval steps T (positive integer). Default 1
+            reproduces plain one-step retrieval.
+        normalize:
+            Passed to every one-step retrieval (scoring-only normalization).
+        return_states:
+            If True, also return the list [q0, q1, ..., qT] for debugging.
+
+    Returns:
+        retrieved:
+            Final state qT with shape [batch_size, dim].
+        weights:
+            Softmax weights from the last step, shape [batch_size, num_memories].
+        states:
+            Only if return_states=True: list of T + 1 tensors, q0 first.
+    """
+
+    if isinstance(num_updates, bool) or not isinstance(num_updates, int) or num_updates <= 0:
+        raise ValueError(f"num_updates must be a positive integer, got {num_updates!r}.")
+
+    state = query
+    states: list[torch.Tensor] | None = [query] if return_states else None
+    weights: torch.Tensor | None = None
+
+    for _ in range(num_updates):
+        state, weights = hopfield_retrieve(
+            query=state,
+            memory=memory,
+            beta=beta,
+            normalize=normalize,
+        )
+        if states is not None:
+            states.append(state)
+
+    # num_updates > 0 is validated above, so the loop ran at least once.
+    assert weights is not None
+
+    if states is not None:
+        return state, weights, states
+    return state, weights
