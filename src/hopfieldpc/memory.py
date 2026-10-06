@@ -11,6 +11,18 @@ from .functional import multi_step_retrieve
 
 
 class HopfieldMemory(nn.Module):
+    """PyTorch module wrapper for modern Hopfield retrieval.
+
+    The module owns retrieval configuration and delegates tensor operations to
+    the functional core. External memory passed to :meth:`forward` takes
+    precedence over any internal memory.
+
+    Shape contract:
+        query:     [batch_size, dim]
+        memory:    [num_memories, dim]
+        retrieved: [batch_size, dim]
+        weights:   [batch_size, num_memories]
+    """
 
     def __init__(
         self,
@@ -110,7 +122,12 @@ class HopfieldMemory(nn.Module):
         memory: torch.Tensor,
         weights: torch.Tensor,
     ) -> dict[str, Any]:
- 
+        """Build a minimal diagnostics dictionary.
+
+        Full entropy/top-k/distance diagnostics will be added in a later task.
+        This minimal dictionary confirms retrieval settings and tensor shapes.
+        """
+
         if not self.return_diagnostics:
             return {}
 
@@ -128,6 +145,14 @@ class HopfieldMemory(nn.Module):
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldMemoryOutput:
+        """Run Hopfield retrieval (one step by default, multi-step if num_updates > 1).
+
+        Returns:
+            A tuple-compatible output containing ``retrieved``, ``weights``,
+            and ``diagnostics``::
+
+                retrieved, weights, diagnostics = module(query, memory)
+        """
 
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
