@@ -161,19 +161,25 @@ class HopfieldMemory(nn.Module):
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
 
-        result = multi_step_retrieve(
-            query=query,
-            memory=resolved_memory,
-            beta=self.beta,
-            num_updates=self.num_updates,
-            normalize=self.normalize,
-            return_states=self.return_states,
-        )
-
+        states: list[torch.Tensor] | None
         if self.return_states:
-            retrieved, weights, states = result
+            retrieved, weights, states = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=True,
+            )
         else:
-            retrieved, weights = result
+            retrieved, weights = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=False,
+            )
             states = None
 
         diagnostics = self._build_basic_diagnostics(

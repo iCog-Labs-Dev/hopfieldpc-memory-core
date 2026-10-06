@@ -15,6 +15,8 @@ be tested directly and reused by HopfieldMemory.
 
 from __future__ import annotations
 
+from typing import Literal, overload
+
 import torch
 import torch.nn.functional as F
 
@@ -88,6 +90,30 @@ def hopfield_retrieve(
     return retrieved, weights
 
 
+@overload
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = ...,
+    num_updates: int = ...,
+    normalize: bool = ...,
+    return_states: Literal[False] = ...,
+) -> tuple[torch.Tensor, torch.Tensor]: ...
+
+
+@overload
+def multi_step_retrieve(
+    query: torch.Tensor,
+    memory: torch.Tensor,
+    *,
+    beta: float = ...,
+    num_updates: int = ...,
+    normalize: bool = ...,
+    return_states: Literal[True],
+) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]: ...
+
+
 def multi_step_retrieve(
     query: torch.Tensor,
     memory: torch.Tensor,
@@ -130,8 +156,8 @@ def multi_step_retrieve(
         raise ValueError(f"num_updates must be a positive integer, got {num_updates!r}.")
 
     state = query
-    states = [query]
-    weights = None
+    states: list[torch.Tensor] | None = [query] if return_states else None
+    weights: torch.Tensor | None = None
 
     for _ in range(num_updates):
         state, weights = hopfield_retrieve(
@@ -140,9 +166,12 @@ def multi_step_retrieve(
             beta=beta,
             normalize=normalize,
         )
-        if return_states:
+        if states is not None:
             states.append(state)
 
-    if return_states:
+    # num_updates > 0 is validated above, so the loop ran at least once.
+    assert weights is not None
+
+    if states is not None:
         return state, weights, states
     return state, weights
