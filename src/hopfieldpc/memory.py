@@ -51,7 +51,11 @@ class HopfieldMemory(nn.Module):
         if beta <= 0:
             raise ValueError(f"beta must be positive, got {beta!r}.")
 
-        if not isinstance(num_updates, int) or num_updates <= 0:
+        if (
+            isinstance(num_updates, bool)
+            or not isinstance(num_updates, int)
+            or num_updates <= 0
+        ):
             raise ValueError(
                 f"num_updates must be a positive integer, got {num_updates!r}."
             )

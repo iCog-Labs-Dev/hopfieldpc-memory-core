@@ -76,6 +76,16 @@ def test_invalid_num_updates_raises() -> None:
         multi_step_retrieve(torch.randn(2, 4), torch.randn(5, 4), num_updates=0)
 
 
+def test_module_rejects_bool_num_updates() -> None:
+    with pytest.raises(ValueError, match="num_updates must be"):
+        HopfieldMemory(dim=4, num_updates=True)
+
+
+def test_function_rejects_bool_num_updates() -> None:
+    with pytest.raises(ValueError, match="num_updates must be"):
+        multi_step_retrieve(torch.randn(2, 4), torch.randn(5, 4), num_updates=True)
+
+
 def test_gradient_flows_through_multi_step() -> None:
     module = HopfieldMemory(dim=3, memory_size=4, learnable_memory=True, num_updates=3)
     module(torch.randn(2, 3)).retrieved.sum().backward()
