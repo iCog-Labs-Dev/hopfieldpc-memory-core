@@ -97,7 +97,11 @@ def test_energy_constants_add_correct_offset() -> None:
         query, memory, beta=beta, include_constants=True
     )
 
-    expected_offset = 0.5 * (query ** 2).sum(dim=-1) + (1.0 / beta) * math.log(5)
+    expected_offset = (
+        0.5 * (query ** 2).sum(dim=-1)
+        + (1.0 / beta) * math.log(memory.shape[0])
+        + 0.5 * (memory ** 2).sum(dim=-1).max()
+    )
     actual_diff = energy_with_const - energy_no_const
 
     assert torch.allclose(actual_diff, expected_offset, atol=1e-5)
