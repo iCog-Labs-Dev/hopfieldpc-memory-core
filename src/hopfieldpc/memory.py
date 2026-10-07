@@ -7,7 +7,7 @@ import torch
 from torch import nn
 
 from .api import HopfieldMemoryOutput, HopfieldShapeContract, validate_query_memory
-from .functional import hopfield_retrieve
+from .functional import multi_step_retrieve
 
 
 class HopfieldMemory(nn.Module):
@@ -22,6 +22,11 @@ class HopfieldMemory(nn.Module):
         memory:    [num_memories, dim]
         retrieved: [batch_size, dim]
         weights:   [batch_size, num_memories]
+
+    Notes:
+        If return_states=True, the state trajectory [q0, ..., qT] is returned
+        inside diagnostics["states"] only when return_diagnostics=True.
+        If return_diagnostics=False, no state trajectory is computed or returned.
     """
 
     def __init__(
@@ -34,6 +39,7 @@ class HopfieldMemory(nn.Module):
         learnable_memory: bool = False,
         normalize: bool = False,
         return_diagnostics: bool = True,
+        return_states: bool = False,
     ) -> None:
         super().__init__()
 
@@ -50,7 +56,11 @@ class HopfieldMemory(nn.Module):
         if beta <= 0:
             raise ValueError(f"beta must be positive, got {beta!r}.")
 
-        if not isinstance(num_updates, int) or num_updates <= 0:
+        if (
+            isinstance(num_updates, bool)
+            or not isinstance(num_updates, int)
+            or num_updates <= 0
+        ):
             raise ValueError(
                 f"num_updates must be a positive integer, got {num_updates!r}."
             )
@@ -65,6 +75,7 @@ class HopfieldMemory(nn.Module):
         self.learnable_memory = bool(learnable_memory)
         self.normalize = bool(normalize)
         self.return_diagnostics = bool(return_diagnostics)
+        self.return_states = bool(return_states)
 
         if memory_size is None:
             self.memory = None
@@ -143,36 +154,53 @@ class HopfieldMemory(nn.Module):
         query: torch.Tensor,
         memory: torch.Tensor | None = None,
     ) -> HopfieldMemoryOutput:
-        """Run one-step Hopfield retrieval.
+        """Run Hopfield retrieval (one step by default, multi-step if num_updates > 1).
 
         Returns:
             A tuple-compatible output containing ``retrieved``, ``weights``,
             and ``diagnostics``::
 
                 retrieved, weights, diagnostics = module(query, memory)
+
+        Notes:
+            If ``return_states=True`` and ``return_diagnostics=True``, diagnostics
+            includes ``states = [q0, q1, ..., qT]``. If diagnostics are disabled,
+            states are not computed.
         """
 
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
 
-        if self.num_updates != 1:
-            raise NotImplementedError(
-                "HopfieldMemory currently supports one-step retrieval only. "
-                "Multi-step retrieval will be implemented in a later task."
-            )
+        should_return_states = self.return_states and self.return_diagnostics
 
-        retrieved, weights = hopfield_retrieve(
-            query=query,
-            memory=resolved_memory,
-            beta=self.beta,
-            normalize=self.normalize,
-        )
+        if should_return_states:
+            retrieved, weights, states = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=True,
+            )
+        else:
+            retrieved, weights = multi_step_retrieve(
+                query=query,
+                memory=resolved_memory,
+                beta=self.beta,
+                num_updates=self.num_updates,
+                normalize=self.normalize,
+                return_states=False,
+            )
+            states = None
 
         diagnostics = self._build_basic_diagnostics(
             query=query,
             memory=resolved_memory,
             weights=weights,
         )
+
+        if should_return_states and states is not None:
+            diagnostics["states"] = states
 
         return HopfieldMemoryOutput(
             retrieved=retrieved,
