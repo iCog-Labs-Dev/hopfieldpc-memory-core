@@ -8,6 +8,14 @@ from .api import HopfieldMemoryOutput, HopfieldShapeContract, HopfieldShapeError
 from .energy import hopfield_energy
 from .functional import hopfield_retrieve, multi_step_retrieve
 from .memory import HopfieldMemory
+from .diagnostics import (
+    argmax_memory_index,
+    attention_entropy,
+    max_attention_weight,
+    retrieval_distance,
+    selected_memory_distance,
+    topk_mass,
+)
 
 __all__ = [
     "HopfieldMemory",
@@ -17,4 +25,10 @@ __all__ = [
     "hopfield_energy",
     "hopfield_retrieve",
     "multi_step_retrieve",
+    "argmax_memory_index",
+    "attention_entropy",
+    "max_attention_weight",
+    "retrieval_distance",
+    "selected_memory_distance",
+    "topk_mass",
 ]
