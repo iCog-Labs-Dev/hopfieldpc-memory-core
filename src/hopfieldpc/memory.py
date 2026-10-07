@@ -22,6 +22,11 @@ class HopfieldMemory(nn.Module):
         memory:    [num_memories, dim]
         retrieved: [batch_size, dim]
         weights:   [batch_size, num_memories]
+
+    Notes:
+        If return_states=True, the state trajectory [q0, ..., qT] is returned
+        inside diagnostics["states"] only when return_diagnostics=True.
+        If return_diagnostics=False, no state trajectory is computed or returned.
     """
 
     def __init__(
@@ -156,13 +161,19 @@ class HopfieldMemory(nn.Module):
             and ``diagnostics``::
 
                 retrieved, weights, diagnostics = module(query, memory)
+
+        Notes:
+            If ``return_states=True`` and ``return_diagnostics=True``, diagnostics
+            includes ``states = [q0, q1, ..., qT]``. If diagnostics are disabled,
+            states are not computed.
         """
 
         resolved_memory = self.get_memory(memory)
         self.validate_inputs(query=query, memory=resolved_memory)
 
-        states: list[torch.Tensor] | None
-        if self.return_states:
+        should_return_states = self.return_states and self.return_diagnostics
+
+        if should_return_states:
             retrieved, weights, states = multi_step_retrieve(
                 query=query,
                 memory=resolved_memory,
@@ -188,7 +199,7 @@ class HopfieldMemory(nn.Module):
             weights=weights,
         )
 
-        if self.return_diagnostics and states is not None:
+        if should_return_states and states is not None:
             diagnostics["states"] = states
 
         return HopfieldMemoryOutput(
