@@ -2,7 +2,9 @@
 
 Implements the modern continuous Hopfield energy (Ramsauer et al., 2020):
 
-    E(q, M, β) = -(1/β) · logsumexp(β · q Mᵀ) + ½ ‖q‖² + (1/β) · log(N)
+    E(q, M, β) = -(1/β) · logsumexp(β · q Mᵀ) + ½ ‖q‖² + ½ M² + (1/β) · log(N)
+
+where M = max_i ‖mᵢ‖ is the largest memory norm.
 """
 
 from __future__ import annotations
@@ -28,7 +30,9 @@ def hopfield_energy(
         query: Query tensor with shape [batch_size, dim].
         memory: Memory bank tensor with shape [num_memories, dim].
         beta: Retrieval sharpness (inverse temperature). Must be positive.
-        include_constants: If True, include the ½‖q‖² and (1/β)·log(N) terms.
+        include_constants: If True, include the quadratic query term (½‖q‖²),
+            the memory bounding term (½M²), and the log-capacity offset
+            ((1/β)·log(N)) from the full Hopfield energy.
         reduce: ``"none"`` returns per-query energy [batch_size],
                 ``"mean"`` returns the scalar batch mean.
 
@@ -51,7 +55,9 @@ def hopfield_energy(
         num_memories = memory.shape[0]
         query_norm_sq = 0.5 * (query ** 2).sum(dim=-1)
         log_n_term = (1.0 / beta) * math.log(num_memories)
-        energy = energy + query_norm_sq + log_n_term
+        max_memory_norm_sq = (memory ** 2).sum(dim=-1).max()
+        memory_bound_term = 0.5 * max_memory_norm_sq
+        energy = energy + query_norm_sq + log_n_term + memory_bound_term
 
     if reduce == "mean":
         return energy.mean()
