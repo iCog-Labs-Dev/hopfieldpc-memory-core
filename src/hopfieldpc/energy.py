@@ -13,7 +13,7 @@ import math
 
 import torch
 
-from .api import validate_query_memory
+from .api import validate_beta, validate_query_memory
 
 
 def hopfield_energy(
@@ -29,7 +29,8 @@ def hopfield_energy(
     Args:
         query: Query tensor with shape [batch_size, dim].
         memory: Memory bank tensor with shape [num_memories, dim].
-        beta: Retrieval sharpness (inverse temperature). Must be positive.
+        beta: Retrieval sharpness (inverse temperature). Must be positive
+            and finite.
         include_constants: If True, include the quadratic query term (½‖q‖²),
             the memory bounding term (½M²), and the log-capacity offset
             ((1/β)·log(N)) from the full Hopfield energy.
@@ -40,8 +41,7 @@ def hopfield_energy(
         Hopfield energy tensor.
     """
 
-    if beta <= 0:
-        raise ValueError(f"beta must be positive, got {beta!r}.")
+    beta = validate_beta(beta)
 
     if reduce not in ("none", "mean"):
         raise ValueError(f"reduce must be 'none' or 'mean', got {reduce!r}.")
