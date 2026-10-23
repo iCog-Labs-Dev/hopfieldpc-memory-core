@@ -31,9 +31,15 @@ def hopfield_energy(
         memory: Memory bank tensor with shape [num_memories, dim].
         beta: Retrieval sharpness (inverse temperature). Must be positive
             and finite.
-        include_constants: If True, include the quadratic query term (½‖q‖²),
-            the memory bounding term (½M²), and the log-capacity offset
-            ((1/β)·log(N)) from the full Hopfield energy.
+        include_constants: If True, add the terms that complete the full energy of
+            Ramsauer et al. (2020): ½‖q‖², ½M² and (1/β)·log(N). Only the last two
+            are constants. ½‖q‖² depends on q, so with the default False the value
+            is NOT the energy that retrieval descends and it can rise during
+            retrieval. Use include_constants=True whenever energy descent or
+            gradients matter. For unnormalized retrieval (normalize=False) with a
+            fixed memory and finite positive beta, dE/dq = q - retrieved(q), so one
+            retrieval update is a unit gradient step on this energy and cannot
+            increase it. With normalize=True this guarantee does not apply.
         reduce: ``"none"`` returns per-query energy [batch_size],
                 ``"mean"`` returns the scalar batch mean.
 
