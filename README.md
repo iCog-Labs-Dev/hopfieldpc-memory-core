@@ -114,3 +114,20 @@ Task 4: Add optional multi-step retrieval.
 Task 5: Add diagnostics such as entropy, top-k mass, and retrieval distance.
 Task 6: Add synthetic retrieval benchmarks.
 ```
+
+## Task 13: MNIST prototype robustness experiment
+
+The JAX implementation provides a controlled Baseline-vs-Hopfield MNIST CNN
+experiment using the frozen prototype bridge at layer L8:
+
+```bash
+python -m benchmarks.mnist_prototype_retrieval --config configs/mnist_prototype_retrieval.yaml
+python -m benchmarks.mnist_prototype_retrieval --quick
+python -m benchmarks.mnist_baseline --config configs/mnist_prototype_retrieval.yaml --quick
+```
+
+The experiment uses official MNIST IDX downloads, seeded corruption grids,
+k-means prototypes per class, beta and update-step sweeps, placement
+ablations, paired seed comparisons, cost measurements, CSV/JSON reports, and
+Markdown/Python plot outputs. It is implemented entirely with JAX arrays and
+JAX autodiff; PyTorch and TensorFlow dependencies are not used.

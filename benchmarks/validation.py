@@ -28,4 +28,9 @@ def validate_beta_values(beta_values: Any) -> list[float]:
             raise ValueError(
                 f"All beta_values must be positive finite numbers, got {b!r}."
             ) from exc
+    for prev, cur in zip(resolved_betas, resolved_betas[1:]):
+        if cur <= prev:
+            raise ValueError(
+                f"beta_values must be strictly increasing, got {resolved_betas!r}."
+            )
     return resolved_betas
