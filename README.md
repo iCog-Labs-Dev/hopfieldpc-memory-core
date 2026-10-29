@@ -36,7 +36,7 @@ pip install -r requirements.txt
 Verify installation:
 
 ```bash
-python -c "import torch; print(torch.__version__)"
+python -c "import jax; print(jax.__version__)"
 python -c "import hopfieldpc; print('hopfieldpc import OK')"
 ```
 

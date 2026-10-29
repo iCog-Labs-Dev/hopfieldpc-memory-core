@@ -9,12 +9,13 @@ from __future__ import annotations
 
 from typing import Any
 
-import torch
+import jax
+import jax.numpy as jnp
 
 
-def _validate_weights(weights: torch.Tensor) -> None:
-    if not isinstance(weights, torch.Tensor):
-        raise TypeError(f"weights must be a torch.Tensor, got {type(weights).__name__}.")
+def _validate_weights(weights: jax.Array) -> None:
+    if not isinstance(weights, jax.Array):
+        raise TypeError(f"weights must be a jax.Array, got {type(weights).__name__}.")
     if weights.ndim != 2:
         raise ValueError(
             f"weights must have shape [batch_size, num_memories], got {tuple(weights.shape)}."
@@ -24,11 +25,11 @@ def _validate_weights(weights: torch.Tensor) -> None:
 
 
 def attention_entropy(
-    weights: torch.Tensor,
+    weights: jax.Array,
     *,
     eps: float = 1e-12,
     normalize: bool = False,
-) -> torch.Tensor:
+) -> jax.Array:
     """Compute entropy of Hopfield memory weights.
 
     Args:
@@ -44,27 +45,23 @@ def attention_entropy(
     _validate_weights(weights)
 
     entropy_weights = (
-        weights.float()
-        if weights.dtype in (torch.float16, torch.bfloat16)
+        weights.astype(jnp.float32)
+        if weights.dtype in (jnp.float16, jnp.bfloat16)
         else weights
     )
-    safe_weights = entropy_weights.clamp_min(eps)
-    entropy = -(entropy_weights * safe_weights.log()).sum(dim=-1)
+    safe_weights = jnp.maximum(entropy_weights, eps)
+    entropy = -(entropy_weights * jnp.log(safe_weights)).sum(axis=-1)
 
     if normalize:
         num_memories = weights.shape[-1]
         if num_memories == 1:
-            return torch.zeros_like(entropy)
-        entropy = entropy / torch.log(
-            torch.tensor(
-                float(num_memories), device=weights.device, dtype=entropy.dtype
-            )
-        )
+            return jnp.zeros_like(entropy)
+        entropy = entropy / jnp.log(jnp.array(float(num_memories), dtype=entropy.dtype))
 
     return entropy
 
 
-def topk_mass(weights: torch.Tensor, *, k: int = 1) -> torch.Tensor:
+def topk_mass(weights: jax.Array, *, k: int = 1) -> jax.Array:
     """Compute total probability mass in the top-k memories.
 
     Args:
@@ -81,29 +78,30 @@ def topk_mass(weights: torch.Tensor, *, k: int = 1) -> torch.Tensor:
         raise ValueError(f"k must be a positive integer, got {k!r}.")
 
     k = min(k, weights.shape[-1])
-    return torch.topk(weights, k=k, dim=-1).values.sum(dim=-1)
+    values, _ = jax.lax.top_k(weights, k=k)
+    return values.sum(axis=-1)
 
 
-def max_attention_weight(weights: torch.Tensor) -> torch.Tensor:
+def max_attention_weight(weights: jax.Array) -> jax.Array:
     """Return the maximum memory weight per query."""
 
     _validate_weights(weights)
-    return weights.max(dim=-1).values
+    return weights.max(axis=-1)
 
 
-def argmax_memory_index(weights: torch.Tensor) -> torch.Tensor:
+def argmax_memory_index(weights: jax.Array) -> jax.Array:
     """Return the index of the strongest memory per query."""
 
     _validate_weights(weights)
-    return weights.argmax(dim=-1)
+    return weights.argmax(axis=-1)
 
 
 def retrieval_distance(
-    retrieved: torch.Tensor,
-    target: torch.Tensor,
+    retrieved: jax.Array,
+    target: jax.Array,
     *,
     p: float = 2.0,
-) -> torch.Tensor:
+) -> jax.Array:
     """Compute vector distance between retrieved vectors and target vectors.
 
     Args:
@@ -121,16 +119,16 @@ def retrieval_distance(
             f"{tuple(retrieved.shape)} and {tuple(target.shape)}."
         )
 
-    return torch.linalg.vector_norm(retrieved - target, ord=p, dim=-1)
+    return jnp.linalg.vector_norm(retrieved - target, ord=p, axis=-1)
 
 
 def selected_memory_distance(
-    retrieved: torch.Tensor,
-    memory: torch.Tensor,
-    weights: torch.Tensor,
+    retrieved: jax.Array,
+    memory: jax.Array,
+    weights: jax.Array,
     *,
     p: float = 2.0,
-) -> torch.Tensor:
+) -> jax.Array:
     """Distance from retrieved vector to the highest-weight memory vector."""
 
     _validate_weights(weights)
@@ -157,11 +155,11 @@ def selected_memory_distance(
 
 
 def topk_recall(
-    weights: torch.Tensor,
-    target_indices: torch.Tensor,
+    weights: jax.Array,
+    target_indices: jax.Array,
     *,
     k: int,
-) -> torch.Tensor:
+) -> jax.Array:
     """Check whether the target memory index is inside the top-k retrieved memories.
 
     Args:
@@ -192,17 +190,17 @@ def topk_recall(
         )
 
     k = min(k, weights.shape[-1])
-    _, topk_indices = torch.topk(weights, k, dim=-1)
-    expanded_targets = target_indices.unsqueeze(-1).expand_as(topk_indices)
-    return (topk_indices == expanded_targets).any(dim=-1).float()
+    _, topk_indices = jax.lax.top_k(weights, k=k)
+    expanded_targets = jnp.broadcast_to(target_indices[:, None], topk_indices.shape)
+    return (topk_indices == expanded_targets).any(axis=-1).astype(jnp.float32)
 
 
 def build_retrieval_diagnostics(
     *,
-    query: torch.Tensor,
-    memory: torch.Tensor,
-    retrieved: torch.Tensor,
-    weights: torch.Tensor,
+    query: jax.Array,
+    memory: jax.Array,
+    retrieved: jax.Array,
+    weights: jax.Array,
     beta: float,
     num_updates: int,
     normalize: bool,
@@ -245,7 +243,7 @@ def build_retrieval_diagnostics(
 
     if detach:
         diagnostics = {
-            key: value.detach() if isinstance(value, torch.Tensor) else value
+            key: value if isinstance(value, jax.Array) else value
             for key, value in diagnostics.items()
         }
 

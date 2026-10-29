@@ -6,9 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-import torch
+import jax
+import jax.numpy as jnp
 
 from benchmarks.beta_sweep import (
+
+
     evaluate_beta_retrieval,
     plot_beta_sweep,
     run_beta_sweep,
@@ -20,6 +23,51 @@ from hopfieldpc.diagnostics import (
     retrieval_distance,
 )
 
+
+
+_TEST_KEY = jax.random.PRNGKey(42)
+
+def _set_seed(seed: int) -> None:
+    global _TEST_KEY
+    _TEST_KEY = jax.random.PRNGKey(seed)
+
+def _generator(seed: int = 42) -> object:
+    return None
+
+def _randn(*shape, **kwargs):
+    global _TEST_KEY
+    dtype = kwargs.get("dtype", jnp.float32)
+    if len(shape) == 1 and isinstance(shape[0], tuple):
+        shape = shape[0]
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.normal(key, shape, dtype=dtype)
+
+def _randn_like(x):
+    return _randn(*x.shape, dtype=x.dtype)
+
+def _randint(*args, **kwargs):
+    global _TEST_KEY
+    if len(args) >= 3:
+        low, high, shape = args[0], args[1], args[2]
+    else:
+        low, high, shape = 0, args[0], args[1]
+    dtype = kwargs.get("dtype", jnp.int32)
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.randint(key, shape, low, high, dtype=dtype)
+
+def _randperm(n):
+    global _TEST_KEY
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.permutation(key, n)
+
+def _cdist(a, b, p=2.0):
+    return jnp.linalg.vector_norm(a[:, None, :] - b[None, :, :], ord=p, axis=-1)
+
+def _topk(x, k, dim=-1):
+    return jax.lax.top_k(x, k=k)
+
+def _assert_close(actual, desired, atol=1e-6, rtol=1e-6):
+    assert jnp.allclose(actual, desired, atol=atol, rtol=rtol), (actual, desired)
 
 def test_evaluate_all_configured_betas() -> None:
     betas = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
@@ -73,9 +121,9 @@ def test_identical_data_used_for_every_beta(monkeypatch: pytest.MonkeyPatch) -> 
 
     def mock_evaluate(
         *,
-        queries: torch.Tensor,
-        target_indices: torch.Tensor,
-        memory: torch.Tensor,
+        queries: jax.Array,
+        target_indices: jax.Array,
+        memory: jax.Array,
         beta: float,
         num_updates: int = 1,
         normalize: bool = False,
@@ -108,25 +156,25 @@ def test_identical_data_used_for_every_beta(monkeypatch: pytest.MonkeyPatch) -> 
     assert len(results) == 3
     # Check that the tensor objects passed to every beta are identical in values
     for q in captured_queries[1:]:
-        assert torch.equal(q, captured_queries[0])
+        assert jnp.array_equal(q, captured_queries[0])
     for m in captured_memories[1:]:
-        assert torch.equal(m, captured_memories[0])
+        assert jnp.array_equal(m, captured_memories[0])
 
 
 def test_accuracy_calculation_correctness() -> None:
     # Memory of 3 items
-    memory = torch.tensor([
+    memory = jnp.array([
         [1.0, 0.0],
         [0.0, 1.0],
         [-1.0, 0.0],
     ])
     # 3 queries that are closest to items 0, 1, 2 respectively
-    queries = torch.tensor([
+    queries = jnp.array([
         [0.9, 0.1],   # -> target 0
         [0.1, 0.9],   # -> target 1
         [-0.8, 0.1],  # -> target 2
     ])
-    target_indices = torch.tensor([0, 1, 0])  # Note query 2 has wrong target 0 for testing
+    target_indices = jnp.array([0, 1, 0])  # Note query 2 has wrong target 0 for testing
 
     metrics = evaluate_beta_retrieval(
         queries=queries,
@@ -141,13 +189,13 @@ def test_accuracy_calculation_correctness() -> None:
 
 def test_entropy_and_max_weight_known_distributions() -> None:
     # 1. One-hot distribution
-    one_hot = torch.tensor([[1.0, 0.0, 0.0, 0.0]])
+    one_hot = jnp.array([[1.0, 0.0, 0.0, 0.0]])
     assert attention_entropy(one_hot).item() == pytest.approx(0.0, abs=1e-6)
     assert attention_entropy(one_hot, normalize=True).item() == pytest.approx(0.0, abs=1e-6)
     assert max_attention_weight(one_hot).item() == pytest.approx(1.0, abs=1e-6)
 
     # 2. Uniform distribution over 4 memories
-    uniform = torch.tensor([[0.25, 0.25, 0.25, 0.25]])
+    uniform = jnp.array([[0.25, 0.25, 0.25, 0.25]])
     expected_entropy = math.log(4.0)
     assert attention_entropy(uniform).item() == pytest.approx(expected_entropy, abs=1e-6)
     assert attention_entropy(uniform, normalize=True).item() == pytest.approx(1.0, abs=1e-6)
@@ -155,15 +203,15 @@ def test_entropy_and_max_weight_known_distributions() -> None:
 
 
 def test_retrieval_distance_against_correct_target_vectors() -> None:
-    memory = torch.tensor([
+    memory = jnp.array([
         [2.0, 0.0],
         [0.0, 2.0],
     ])
-    queries = torch.tensor([
+    queries = jnp.array([
         [1.8, 0.1],
         [0.1, 1.9],
     ])
-    target_indices = torch.tensor([0, 1])
+    target_indices = jnp.array([0, 1])
 
     metrics = evaluate_beta_retrieval(
         queries=queries,
@@ -176,16 +224,16 @@ def test_retrieval_distance_against_correct_target_vectors() -> None:
     assert metrics["mean_retrieval_distance"] < 0.01
 
     # Check distance calculation directly
-    retrieved = torch.tensor([[2.0, 0.0], [0.0, 2.0]])
+    retrieved = jnp.array([[2.0, 0.0], [0.0, 2.0]])
     targets = memory[target_indices]
     dist = retrieval_distance(retrieved, targets, p=2.0)
-    assert torch.allclose(dist, torch.zeros(2), atol=1e-6)
+    assert jnp.allclose(dist, jnp.zeros(2), atol=1e-6)
 
 
 def test_weights_finite_and_sum_to_one() -> None:
-    memory = torch.randn(20, 32)
-    queries = torch.randn(10, 32)
-    targets = torch.randint(0, 20, (10,))
+    memory = _randn(20, 32)
+    queries = _randn(10, 32)
+    targets = _randint(0, 20, (10,))
 
     for beta in [0.01, 0.1, 1.0, 5.0, 20.0, 50.0]:
         metrics = evaluate_beta_retrieval(
@@ -208,13 +256,13 @@ def test_increasing_beta_sharpens_attention_controlled() -> None:
     2. Strictly decrease mean_entropy
     3. Decrease retrieval distance to the target
     """
-    memory = torch.tensor([
+    memory = jnp.array([
         [1.0, 0.0],
         [0.0, 1.0],
     ])
     # Query clearly closer to memory 0
-    queries = torch.tensor([[0.9, 0.1]])
-    target_indices = torch.tensor([0])
+    queries = jnp.array([[0.9, 0.1]])
+    target_indices = jnp.array([0])
 
     betas = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
     max_weights = []

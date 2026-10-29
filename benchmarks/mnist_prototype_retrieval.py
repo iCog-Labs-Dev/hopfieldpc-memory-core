@@ -5,7 +5,7 @@ retrieves class prototypes when queried with clean or noisy MNIST digit images.
 
 Pipeline
 --------
-1. Load MNIST train + test sets via torchvision.
+1. Load MNIST train + test sets from the official IDX files.
 2. Flatten each 28×28 image to a 784-dimensional vector.
 3. Build 10 class prototypes: prototype_i = mean vector of all digit-i samples.
 4. Query the Hopfield module with clean and noisy test samples.
@@ -24,11 +24,14 @@ Run
 from __future__ import annotations
 
 import argparse
+import gzip
 from pathlib import Path
+import struct
+import urllib.request
 
-import torch
-import torchvision
-import torchvision.transforms as transforms
+import jax
+import jax.numpy as jnp
+import numpy as np
 
 from hopfieldpc.functional import hopfield_retrieve
 
@@ -41,37 +44,60 @@ def load_mnist(
     data_dir: str | Path = "./data",
     *,
     train: bool = True,
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Download (if needed) and load MNIST as flat float tensors.
+) -> tuple[jax.Array, jax.Array]:
+    """Download (if needed) and load MNIST IDX files as flat JAX tensors.
 
     Returns
     -------
     images : Tensor of shape [N, 784], values in [0, 1].
     labels : Tensor of shape [N], dtype=long.
     """
-    dataset = torchvision.datasets.MNIST(
-        root=str(data_dir),
-        train=train,
-        download=True,
-        transform=transforms.ToTensor(),
-    )
-    images_list: list[torch.Tensor] = []
-    labels_list: list[int] = []
+    cache_dir = Path(data_dir)
+    cache_dir.mkdir(parents=True, exist_ok=True)
 
-    for img, label in dataset:
-        images_list.append(img.view(-1))  # [784]
-        labels_list.append(label)
+    prefix = "train" if train else "t10k"
+    image_name = f"{prefix}-images-idx3-ubyte.gz"
+    label_name = f"{prefix}-labels-idx1-ubyte.gz"
+    base_url = "https://storage.googleapis.com/cvdf-datasets/mnist"
 
-    images = torch.stack(images_list)           # [N, 784]
-    labels = torch.tensor(labels_list)          # [N]
+    image_path = cache_dir / image_name
+    label_path = cache_dir / label_name
+    if not image_path.exists():
+        urllib.request.urlretrieve(f"{base_url}/{image_name}", image_path)
+    if not label_path.exists():
+        urllib.request.urlretrieve(f"{base_url}/{label_name}", label_path)
+
+    with gzip.open(image_path, "rb") as image_file:
+        image_header = image_file.read(16)
+        magic, num_images, rows, cols = struct.unpack(">IIII", image_header)
+        if magic != 2051:
+            raise RuntimeError(f"Invalid MNIST image file magic: {magic}")
+        image_data = np.frombuffer(image_file.read(), dtype=np.uint8)
+    expected_image_size = num_images * rows * cols
+    if image_data.size != expected_image_size:
+        raise RuntimeError(
+            f"Invalid MNIST image data size: got {image_data.size}, expected {expected_image_size}"
+        )
+
+    with gzip.open(label_path, "rb") as label_file:
+        label_header = label_file.read(8)
+        magic, num_labels = struct.unpack(">II", label_header)
+        if magic != 2049:
+            raise RuntimeError(f"Invalid MNIST label file magic: {magic}")
+        label_data = np.frombuffer(label_file.read(), dtype=np.uint8)
+    if label_data.size != num_labels or num_labels != num_images:
+        raise RuntimeError("MNIST image and label counts do not match")
+
+    images = jnp.asarray(image_data.reshape(num_images, rows * cols), dtype=jnp.float32) / 255.0
+    labels = jnp.asarray(label_data.astype(np.int32), dtype=jnp.int32)
     return images, labels
 
 
 def build_prototypes(
-    images: torch.Tensor,
-    labels: torch.Tensor,
+    images: jax.Array,
+    labels: jax.Array,
     num_classes: int = 10,
-) -> torch.Tensor:
+) -> jax.Array:
     """Compute one prototype per class as the mean of all class samples.
 
     Returns
@@ -79,42 +105,43 @@ def build_prototypes(
     prototypes : Tensor of shape [num_classes, 784].
     """
     dim = images.shape[1]
-    prototypes = torch.zeros(num_classes, dim)
+    prototypes = jnp.zeros((num_classes, dim), dtype=images.dtype)
     for cls in range(num_classes):
         mask = labels == cls
-        prototypes[cls] = images[mask].mean(dim=0)
+        prototypes = prototypes.at[cls].set(images[mask].mean(axis=0))
     return prototypes
 
 
 def add_gaussian_noise(
-    images: torch.Tensor,
+    images: jax.Array,
     noise_level: float,
-) -> torch.Tensor:
+) -> jax.Array:
     """Add zero-mean Gaussian noise and clamp to [0, 1]."""
-    noisy = images + torch.randn_like(images) * noise_level
-    return noisy.clamp(0.0, 1.0)
+    key = jax.random.PRNGKey(42)
+    noisy = images + jax.random.normal(key, images.shape, dtype=images.dtype) * noise_level
+    return jnp.clip(noisy, 0.0, 1.0)
 
 
 # ---------------------------------------------------------------------------
 # Diagnostics (inline — diagnostics.py not yet created per task sequence)
 # ---------------------------------------------------------------------------
 
-def compute_entropy(weights: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
+def compute_entropy(weights: jax.Array, eps: float = 1e-8) -> jax.Array:
     """Shannon entropy per query: -sum(p * log(p)). Shape [batch]."""
-    return -(weights * torch.log(weights + eps)).sum(dim=-1)
+    return -(weights * jnp.log(weights + eps)).sum(axis=-1)
 
 
-def compute_top1_weight(weights: torch.Tensor) -> torch.Tensor:
+def compute_top1_weight(weights: jax.Array) -> jax.Array:
     """Maximum attention weight per query (retrieval confidence). Shape [batch]."""
-    return weights.max(dim=-1).values
+    return weights.max(axis=-1)
 
 
 def compute_retrieval_distance(
-    retrieved: torch.Tensor,
-    targets: torch.Tensor,
-) -> torch.Tensor:
+    retrieved: jax.Array,
+    targets: jax.Array,
+) -> jax.Array:
     """L2 distance between retrieved vectors and target prototypes. Shape [batch]."""
-    return torch.norm(retrieved - targets, p=2, dim=-1)
+    return jnp.linalg.vector_norm(retrieved - targets, ord=2, axis=-1)
 
 
 # ---------------------------------------------------------------------------
@@ -122,9 +149,9 @@ def compute_retrieval_distance(
 # ---------------------------------------------------------------------------
 
 def evaluate(
-    queries: torch.Tensor,
-    true_labels: torch.Tensor,
-    prototypes: torch.Tensor,
+    queries: jax.Array,
+    true_labels: jax.Array,
+    prototypes: jax.Array,
     beta: float,
     normalize: bool = False,
 ) -> dict[str, float]:
@@ -150,8 +177,8 @@ def evaluate(
     )
 
     # Predicted class = index of prototype with highest attention weight
-    predicted = weights.argmax(dim=-1)
-    top1_acc = (predicted == true_labels).float().mean().item()
+    predicted = weights.argmax(axis=-1)
+    top1_acc = (predicted == true_labels).astype(jnp.float32).mean().item()
 
     target_prototypes = prototypes[true_labels]  # [N, 784]
     distance = compute_retrieval_distance(retrieved, target_prototypes).mean().item()
@@ -287,7 +314,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    torch.manual_seed(args.seed)
+    mnist_key = jax.random.PRNGKey(args.seed)
 
     # ------------------------------------------------------------------
     # 1. Load data and build prototypes
@@ -307,7 +334,7 @@ def main() -> None:
 
     # Sub-sample test set for speed
     num_samples = min(args.num_samples, len(test_images))
-    idx = torch.randperm(len(test_images))[:num_samples]
+    idx = jax.random.permutation(mnist_key, len(test_images))[:num_samples]
     test_images = test_images[idx]
     test_labels = test_labels[idx]
     print(f"  Using {num_samples} test samples  (seed={args.seed})")

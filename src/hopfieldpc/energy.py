@@ -16,19 +16,20 @@ from __future__ import annotations
 
 import math
 
-import torch
+import jax
+import jax.numpy as jnp
 
 from .api import validate_beta, validate_query_memory
 
 
 def hopfield_energy(
-    query: torch.Tensor,
-    memory: torch.Tensor,
+    query: jax.Array,
+    memory: jax.Array,
     beta: float = 1.0,
     *,
     include_constants: bool = False,
     reduce: str = "none",
-) -> torch.Tensor:
+) -> jax.Array:
     """Compute modern Hopfield energy for each query.
 
     The energy is -(1/β)·logsumexp(β q Mᵀ) + ½‖q‖². Its gradient with respect
@@ -63,20 +64,20 @@ def hopfield_energy(
 
     validate_query_memory(query=query, memory=memory)
 
-    similarities = torch.matmul(query, memory.transpose(0, 1))
+    similarities = jnp.matmul(query, memory.T)
     # Same as -logsumexp(beta * similarities) / beta, but beta never scales the
     # uncentered similarities, so large scores cannot overflow.
-    max_similarity = similarities.amax(dim=-1, keepdim=True)
-    log_sum = torch.logsumexp(beta * (similarities - max_similarity), dim=-1)
+    max_similarity = similarities.max(axis=-1, keepdims=True)
+    log_sum = jax.scipy.special.logsumexp(beta * (similarities - max_similarity), axis=-1)
     energy = (
         -max_similarity.squeeze(-1)
         - log_sum / beta
-        + 0.5 * (query ** 2).sum(dim=-1)
+        + 0.5 * (query ** 2).sum(axis=-1)
     )
 
     if include_constants:
         log_n_term = (1.0 / beta) * math.log(memory.shape[0])
-        memory_bound_term = 0.5 * (memory ** 2).sum(dim=-1).max()
+        memory_bound_term = 0.5 * (memory ** 2).sum(axis=-1).max()
         energy = energy + log_n_term + memory_bound_term
 
     if reduce == "mean":

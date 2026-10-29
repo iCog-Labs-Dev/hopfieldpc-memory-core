@@ -12,9 +12,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-import torch
+import jax
+import jax.numpy as jnp
 
 from benchmarks.cluster_retrieval import (
+
+
     classify_retrieval_regime,
     compute_cluster_masses,
     compute_cluster_metrics,
@@ -24,6 +27,7 @@ from benchmarks.cluster_retrieval import (
     generate_cluster_centers,
     generate_clustered_memory,
     generate_queries,
+    JaxGenerator,
     main,
     metric_uncertainty,
     plot_cluster_benchmark,
@@ -34,6 +38,51 @@ from benchmarks.cluster_retrieval import (
 )
 from hopfieldpc.functional import multi_step_retrieve
 
+
+
+_TEST_KEY = jax.random.PRNGKey(42)
+
+def _set_seed(seed: int) -> None:
+    global _TEST_KEY
+    _TEST_KEY = jax.random.PRNGKey(seed)
+
+def _generator(seed: int = 42) -> object:
+    return JaxGenerator(seed)
+
+def _randn(*shape, **kwargs):
+    global _TEST_KEY
+    dtype = kwargs.get("dtype", jnp.float32)
+    if len(shape) == 1 and isinstance(shape[0], tuple):
+        shape = shape[0]
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.normal(key, shape, dtype=dtype)
+
+def _randn_like(x):
+    return _randn(*x.shape, dtype=x.dtype)
+
+def _randint(*args, **kwargs):
+    global _TEST_KEY
+    if len(args) >= 3:
+        low, high, shape = args[0], args[1], args[2]
+    else:
+        low, high, shape = 0, args[0], args[1]
+    dtype = kwargs.get("dtype", jnp.int32)
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.randint(key, shape, low, high, dtype=dtype)
+
+def _randperm(n):
+    global _TEST_KEY
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.permutation(key, n)
+
+def _cdist(a, b, p=2.0):
+    return jnp.linalg.vector_norm(a[:, None, :] - b[None, :, :], ord=p, axis=-1)
+
+def _topk(x, k, dim=-1):
+    return jax.lax.top_k(x, k=k)
+
+def _assert_close(actual, desired, atol=1e-6, rtol=1e-6):
+    assert jnp.allclose(actual, desired, atol=atol, rtol=rtol), (actual, desired)
 
 def test_memory_bank_and_cluster_labels_shape() -> None:
     """Requirement 1 & 2: memory bank has expected shape and cluster labels length."""
@@ -72,10 +121,10 @@ def test_generate_cluster_centers_separation() -> None:
 
     # Each center vector has Euclidean norm equal to sep
     for i in range(num_clusters):
-        assert torch.linalg.vector_norm(centers[i]).item() == pytest.approx(sep, rel=1e-4)
+        assert jnp.linalg.vector_norm(centers[i]).item() == pytest.approx(sep, rel=1e-4)
 
     # In orthogonal frame, mutual distance between different centers is sqrt(2)*sep
-    dists = torch.cdist(centers, centers)
+    dists = _cdist(centers, centers)
     for i in range(num_clusters):
         for j in range(num_clusters):
             if i != j:
@@ -84,7 +133,7 @@ def test_generate_cluster_centers_separation() -> None:
 
 def test_target_cluster_is_valid() -> None:
     """Requirement 3: target cluster is valid."""
-    centers = torch.randn(4, 16)
+    centers = _randn(4, 16)
     queries, targets = generate_queries(
         cluster_centers=centers,
         target_cluster=2,
@@ -110,21 +159,21 @@ def test_target_cluster_is_valid() -> None:
 
 def test_evaluate_cluster_retrieval_direct() -> None:
     """Direct unit test for evaluate_cluster_retrieval and compute_cluster_metrics."""
-    memory = torch.tensor([
+    memory = jnp.array([
         [1.0, 0.0],
         [1.1, 0.0],
         [0.0, 1.0],
         [0.0, 1.1],
     ])
-    cluster_labels = torch.tensor([0, 0, 1, 1])
-    centers = torch.tensor([
+    cluster_labels = jnp.array([0, 0, 1, 1])
+    centers = jnp.array([
         [1.05, 0.0],
         [0.0, 1.05],
     ])
-    queries = torch.tensor([
+    queries = jnp.array([
         [1.0, 0.0],
     ])
-    target_clusters = torch.tensor([0])
+    target_clusters = jnp.array([0])
 
     metrics = evaluate_cluster_retrieval(
         queries=queries,
@@ -150,12 +199,12 @@ def test_evaluate_cluster_retrieval_direct() -> None:
 
 def test_compute_cluster_metrics_direct() -> None:
     """Test compute_cluster_metrics directly with mock tensors."""
-    retrieved = torch.tensor([[1.0, 0.0]])
-    weights = torch.tensor([[0.7, 0.3]])
-    memory = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
-    centers = torch.tensor([[1.0, 0.0]])
-    cluster_labels = torch.tensor([0, 0])
-    target_clusters = torch.tensor([0])
+    retrieved = jnp.array([[1.0, 0.0]])
+    weights = jnp.array([[0.7, 0.3]])
+    memory = jnp.array([[1.0, 0.0], [0.0, 1.0]])
+    centers = jnp.array([[1.0, 0.0]])
+    cluster_labels = jnp.array([0, 0])
+    target_clusters = jnp.array([0])
 
     metrics = compute_cluster_metrics(
         retrieved=retrieved,
@@ -210,23 +259,23 @@ def test_classify_retrieval_regime_wrong_cluster_concentration() -> None:
     Even if target_cluster_mass is 0.0, if retrieval is concentrated on a single memory
     in the wrong cluster, the regime is 'Single Memory', with wrong_cluster flagged.
     """
-    memory = torch.tensor([
+    memory = jnp.array([
         [10.0, 0.0],
         [10.0, 0.1],
         [0.0, 10.0],
         [0.0, 10.1],
     ])
-    cluster_labels = torch.tensor([0, 0, 1, 1])
-    centers = torch.tensor([
+    cluster_labels = jnp.array([0, 0, 1, 1])
+    centers = jnp.array([
         [10.0, 0.0],
         [0.0, 10.0],
     ])
     # Query is close to cluster 1 (so retrieval concentrates on cluster 1)
-    queries = torch.tensor([
+    queries = jnp.array([
         [0.0, 10.0],
     ])
     # But target cluster is erroneously specified as 0!
-    target_clusters = torch.tensor([0])
+    target_clusters = jnp.array([0])
 
     row = evaluate_cluster_retrieval(
         queries=queries,
@@ -253,24 +302,24 @@ def test_classify_retrieval_regime_wrong_cluster_concentration() -> None:
 
 def test_classify_retrieval_regime_mixed_outcomes() -> None:
     """Verify per-query classification aggregates mixed regime fractions properly."""
-    memory = torch.tensor([
+    memory = jnp.array([
         [6.0, 0.0],
         [4.0, 0.0],
         [0.0, 6.0],
         [0.0, 4.0],
     ])
-    cluster_labels = torch.tensor([0, 0, 1, 1])
-    centers = torch.tensor([
+    cluster_labels = jnp.array([0, 0, 1, 1])
+    centers = jnp.array([
         [5.0, 0.0],
         [0.0, 5.0],
     ])
     # Query 1: sharp single memory concentration (closest to memory 0 [6.0, 0.0])
     # Query 2: equidistant between clusters (diffuse global averaging)
-    queries = torch.tensor([
+    queries = jnp.array([
         [5.0, 0.0],
         [0.0, 0.0],
     ])
-    target_clusters = torch.tensor([0, 0])
+    target_clusters = jnp.array([0, 0])
 
     row = evaluate_cluster_retrieval(
         queries=queries,
@@ -312,11 +361,11 @@ def test_attention_weights_and_cluster_masses_sum_to_one() -> None:
 
 def test_cluster_masses_computation() -> None:
     """Verify compute_cluster_masses aggregates correctly."""
-    weights = torch.tensor([
+    weights = jnp.array([
         [0.1, 0.2, 0.3, 0.4],
         [0.25, 0.25, 0.25, 0.25],
     ])
-    cluster_labels = torch.tensor([0, 0, 1, 1])
+    cluster_labels = jnp.array([0, 0, 1, 1])
     num_clusters = 2
 
     masses = compute_cluster_masses(weights, cluster_labels, num_clusters)
@@ -362,8 +411,8 @@ def test_metrics_are_finite_and_bounded() -> None:
         ]:
             val = r[key]
             assert isinstance(val, (int, float))
-            assert not torch.isnan(torch.tensor(val))
-            assert not torch.isinf(torch.tensor(val))
+            assert not jnp.isnan(jnp.array(val))
+            assert not jnp.isinf(jnp.array(val))
 
         # Invariants
         assert 0.0 <= r["target_cluster_mass"] <= 1.0001
@@ -498,14 +547,14 @@ def test_one_step_vs_repeated_dynamics() -> None:
         dim=32,
         cluster_separation=3.0,
         cluster_noise=0.15,
-        generator=torch.Generator().manual_seed(42),
+        generator=_generator(42),
     )
     queries, targets = generate_queries(
         cluster_centers=centers,
         target_cluster=0,
         num_queries=15,
         query_noise=0.10,
-        generator=torch.Generator().manual_seed(42),
+        generator=_generator(42),
     )
 
     # 1-step retrieval vs 5-step repeated retrieval at high beta
@@ -545,7 +594,7 @@ def test_one_step_vs_repeated_dynamics() -> None:
         num_updates=10,
     )
     perturbation = sample_perturbations(
-        relaxed_states.shape, 0.05, generator=torch.Generator().manual_seed(0)
+        relaxed_states.shape, 0.05, generator=_generator(0)
     )
     diag = compute_dynamics_diagnostics(
         retrieved=relaxed_states,
@@ -559,17 +608,17 @@ def test_one_step_vs_repeated_dynamics() -> None:
     assert diag["trajectory_separation_ratio"].max().item() < 1.0
 
 
-def _symmetric_two_cluster_memory() -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+def _symmetric_two_cluster_memory() -> tuple[jax.Array, jax.Array, jax.Array]:
     """Two clusters, each with four memories placed symmetrically around its prototype."""
-    e = torch.eye(6)
+    e = jnp.eye(6)
     c0, c1 = 3.0 * e[0], 3.0 * e[3]
     a = 0.3
-    memory = torch.stack([
+    memory = jnp.stack([
         c0 + a * e[1], c0 - a * e[1], c0 + a * e[2], c0 - a * e[2],
         c1 + a * e[4], c1 - a * e[4], c1 + a * e[5], c1 - a * e[5],
     ])
-    cluster_labels = torch.tensor([0, 0, 0, 0, 1, 1, 1, 1])
-    centers = torch.stack([c0, c1])
+    cluster_labels = jnp.array([0, 0, 0, 0, 1, 1, 1, 1])
+    centers = jnp.stack([c0, c1])
     return memory, cluster_labels, centers
 
 
@@ -582,12 +631,12 @@ def test_persistent_cluster_state_controlled_case() -> None:
     under the sampled perturbations, not a proof of basin stability.
     """
     memory, cluster_labels, centers = _symmetric_two_cluster_memory()
-    queries = centers[0].repeat(8, 1) + 0.05 * torch.randn(
-        8, 6, generator=torch.Generator().manual_seed(0)
+    queries = jnp.repeat(centers[0][None, :], 8, axis=0) + 0.05 * _randn(
+        8, 6, generator=_generator(0)
     )
-    targets = torch.zeros(8, dtype=torch.long)
+    targets = jnp.zeros(8, dtype=jnp.int32)
     perturbation = sample_perturbations(
-        queries.shape, 0.02, generator=torch.Generator().manual_seed(1)
+        queries.shape, 0.02, generator=_generator(1)
     )
 
     for beta in (1.0, 5.0):
@@ -620,9 +669,9 @@ def test_stationary_but_unstable_state_separates() -> None:
     trajectory separation ratio can.
     """
     memory, _, centers = _symmetric_two_cluster_memory()
-    states = centers[0].repeat(8, 1)
+    states = jnp.repeat(centers[0][None, :], 8, axis=0)
     perturbation = sample_perturbations(
-        states.shape, 0.02, generator=torch.Generator().manual_seed(1)
+        states.shape, 0.02, generator=_generator(1)
     )
 
     diag = compute_dynamics_diagnostics(
@@ -636,8 +685,8 @@ def test_trajectory_separation_excludes_drift_of_nonstationary_state() -> None:
     """Separation compares against the unperturbed trajectory, not the starting state."""
     memory, _, centers = _symmetric_two_cluster_memory()
     # Midway between prototypes: far from stationary at this beta.
-    states = (0.5 * (centers[0] + centers[1]) + 0.3 * centers[0] / 3.0).unsqueeze(0)
-    perturbation = 1e-4 * torch.ones_like(states) / math.sqrt(states.shape[-1])
+    states = (0.5 * (centers[0] + centers[1]) + 0.3 * centers[0] / 3.0)[None, :]
+    perturbation = 1e-4 * jnp.ones_like(states) / math.sqrt(states.shape[-1])
 
     diag = compute_dynamics_diagnostics(
         retrieved=states,
@@ -647,11 +696,11 @@ def test_trajectory_separation_excludes_drift_of_nonstationary_state() -> None:
         perturbation_steps=3,
     )
     relaxed, _ = multi_step_retrieve(states, memory, beta=1.0, num_updates=3)
-    drift = torch.linalg.vector_norm(relaxed - states).item()
+    drift = jnp.linalg.vector_norm(relaxed - states).item()
 
     assert diag["dynamics_residual"].item() > 0.1
     # Measuring ||R^k(q_T + delta) - q_T|| / ||delta|| would be dominated by drift.
-    assert drift / perturbation.norm().item() > 1e3
+    assert drift / jnp.linalg.vector_norm(perturbation).item() > 1e3
     assert diag["trajectory_separation_ratio"].item() < 10.0
 
 
@@ -659,8 +708,8 @@ def test_dynamics_disabled_reports_null_not_zero() -> None:
     """Skipped dynamics are reported as None with dynamics_evaluated=False."""
     memory, cluster_labels, centers = _symmetric_two_cluster_memory()
     row = evaluate_cluster_retrieval(
-        queries=centers[0:1].repeat(3, 1),
-        target_clusters=torch.zeros(3, dtype=torch.long),
+        queries=jnp.repeat(centers[0:1], 3, axis=0),
+        target_clusters=jnp.zeros(3, dtype=jnp.int32),
         memory=memory,
         cluster_centers=centers,
         cluster_labels=cluster_labels,
@@ -836,7 +885,7 @@ def test_missing_config_file_raises_filenotfound(monkeypatch: pytest.MonkeyPatch
 
 def _expected_target_cluster_mass(cfg: dict[str, Any], seed: int, beta: float) -> float:
     """Recompute mean target-cluster mass for one seed directly from the generators."""
-    generator = torch.Generator().manual_seed(seed)
+    generator = _generator(seed)
     memory, labels, centers = generate_clustered_memory(
         num_clusters=cfg["num_clusters"],
         memories_per_cluster=cfg["memories_per_cluster"],
@@ -853,7 +902,7 @@ def _expected_target_cluster_mass(cfg: dict[str, Any], seed: int, beta: float) -
         generator=generator,
     )
     _, weights = multi_step_retrieve(queries, memory, beta=beta, num_updates=1)
-    target_mass = weights[:, labels == cfg["target_cluster"]].sum(dim=-1)
+    target_mass = weights[:, labels == cfg["target_cluster"]].sum(axis=-1)
     return target_mass.mean().item()
 
 

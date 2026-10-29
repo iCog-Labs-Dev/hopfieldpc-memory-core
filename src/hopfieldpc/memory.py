@@ -3,8 +3,8 @@ from __future__ import annotations
 import math
 from typing import Any
 
-import torch
-from torch import nn
+import jax
+import jax.numpy as jnp
 
 from .api import (
     HopfieldMemoryOutput,
@@ -16,8 +16,8 @@ from .diagnostics import build_retrieval_diagnostics
 from .functional import multi_step_retrieve
 
 
-class HopfieldMemory(nn.Module):
-    """PyTorch module wrapper for modern Hopfield retrieval.
+class HopfieldMemory:
+    """JAX module wrapper for modern Hopfield retrieval.
 
     The module owns retrieval configuration and delegates tensor operations to
     the functional core. External memory passed to :meth:`forward` takes
@@ -50,8 +50,6 @@ class HopfieldMemory(nn.Module):
         return_states: bool = False,
         diagnostics_top_k: int = 3,
     ) -> None:
-        super().__init__()
-
         if not isinstance(dim, int) or dim <= 0:
             raise ValueError(f"dim must be a positive integer, got {dim!r}.")
 
@@ -99,23 +97,23 @@ class HopfieldMemory(nn.Module):
         if memory_size is None:
             self.memory = None
         else:
-            init_memory = self._init_memory(memory_size, dim)
-
-            if learnable_memory:
-                self.memory = nn.Parameter(init_memory)
-            else:
-                self.register_buffer("memory", init_memory)
+            self.memory = self._init_memory(memory_size, dim)
 
     @staticmethod
-    def _init_memory(memory_size: int, dim: int) -> torch.Tensor:
+    def _init_memory(memory_size: int, dim: int) -> jax.Array:
         """Initialize internal memory vectors."""
 
         std = 1.0 / math.sqrt(dim)
-        memory = torch.empty(memory_size, dim)
-        nn.init.normal_(memory, mean=0.0, std=std)
-        return memory
+        key = jax.random.PRNGKey(0)
+        return jax.random.normal(key, (memory_size, dim), dtype=jnp.float32) * std
 
-    def get_memory(self, memory: torch.Tensor | None = None) -> torch.Tensor:
+    def parameters(self) -> list[jax.Array]:
+        """Return internal trainable parameters in a JAX-friendly list."""
+        if self.learnable_memory and self.memory is not None:
+            return [self.memory]
+        return []
+
+    def get_memory(self, memory: jax.Array | None = None) -> jax.Array:
         """Resolve external memory or internal memory.
 
         External memory passed to forward() takes precedence over internal memory.
@@ -134,8 +132,8 @@ class HopfieldMemory(nn.Module):
 
     def validate_inputs(
         self,
-        query: torch.Tensor,
-        memory: torch.Tensor | None = None,
+        query: jax.Array,
+        memory: jax.Array | None = None,
     ) -> HopfieldShapeContract:
         """Validate query and memory against the module shape contract."""
 
@@ -149,10 +147,10 @@ class HopfieldMemory(nn.Module):
     def _build_basic_diagnostics(
         self,
         *,
-        query: torch.Tensor,
-        memory: torch.Tensor,
-        retrieved: torch.Tensor,
-        weights: torch.Tensor,
+        query: jax.Array,
+        memory: jax.Array,
+        retrieved: jax.Array,
+        weights: jax.Array,
     ) -> dict[str, Any]:
         """Build retrieval diagnostics for logging and analysis.
 
@@ -178,8 +176,8 @@ class HopfieldMemory(nn.Module):
 
     def forward(
         self,
-        query: torch.Tensor,
-        memory: torch.Tensor | None = None,
+        query: jax.Array,
+        memory: jax.Array | None = None,
     ) -> HopfieldMemoryOutput:
         """Run Hopfield retrieval (one step by default, multi-step if num_updates > 1).
 
@@ -228,10 +226,17 @@ class HopfieldMemory(nn.Module):
         )
 
         if should_return_states and states is not None:
-            diagnostics["states"] = [state.detach() for state in states]
+            diagnostics["states"] = list(states)
 
         return HopfieldMemoryOutput(
             retrieved=retrieved,
             weights=weights,
             diagnostics=diagnostics,
         )
+
+    def __call__(
+        self,
+        query: jax.Array,
+        memory: jax.Array | None = None,
+    ) -> HopfieldMemoryOutput:
+        return self.forward(query, memory)

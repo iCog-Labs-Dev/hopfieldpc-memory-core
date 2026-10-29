@@ -15,7 +15,8 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-import torch
+import jax
+import jax.numpy as jnp
 import yaml
 
 from benchmarks.validation import validate_beta_values
@@ -36,6 +37,28 @@ CLUSTER_THRESHOLD = 0.85
 GLOBAL_UNIFORMITY_THRESHOLD = 0.90
 
 REGIME_LABELS = ("Global Averaging", "Broad/Mixed", "Cluster Averaging", "Single Memory")
+
+
+class JaxGenerator:
+    """Small stateful JAX PRNG wrapper for benchmark APIs."""
+
+    def __init__(self, seed: int = 0) -> None:
+        self.key = jax.random.PRNGKey(seed)
+
+    def manual_seed(self, seed: int) -> "JaxGenerator":
+        self.key = jax.random.PRNGKey(seed)
+        return self
+
+    def split(self) -> tuple["JaxGenerator", "JaxGenerator"]:
+        left, right = jax.random.split(self.key)
+        self.key = left
+        return self, JaxGenerator.from_key(right)
+
+    @classmethod
+    def from_key(cls, key: jax.Array) -> "JaxGenerator":
+        generator = cls()
+        generator.key = key
+        return generator
 REGIME_FRACTION_KEYS = {
     "Global Averaging": "fraction_global_averaging",
     "Broad/Mixed": "fraction_broad_mixed",
@@ -267,8 +290,8 @@ def generate_cluster_centers(
     num_clusters: int,
     dim: int,
     separation: float,
-    generator: torch.Generator | None = None,
-) -> torch.Tensor:
+    generator: JaxGenerator | None = None,
+) -> jax.Array:
     """Generate clearly separated cluster center prototypes in feature space.
 
     Geometry note:
@@ -280,13 +303,17 @@ def generate_cluster_centers(
         When num_clusters > dim, centers are normalized random Gaussian vectors
         scaled by separation.
     """
+    generator = generator or JaxGenerator()
     if num_clusters <= dim:
-        random_matrix = torch.randn(dim, num_clusters, generator=generator)
-        q, _ = torch.linalg.qr(random_matrix)
+        _, qkey = jax.random.split(generator.key)
+        generator.key, qkey = jax.random.split(generator.key)
+        random_matrix = jax.random.normal(qkey, (dim, num_clusters), dtype=jnp.float32)
+        q, _ = jnp.linalg.qr(random_matrix)
         centers = q.T * separation  # [num_clusters, dim]
     else:
-        raw_centers = torch.randn(num_clusters, dim, generator=generator)
-        norm = torch.linalg.vector_norm(raw_centers, dim=-1, keepdim=True).clamp_min(1e-8)
+        generator.key, rawkey = jax.random.split(generator.key)
+        raw_centers = jax.random.normal(rawkey, (num_clusters, dim), dtype=jnp.float32)
+        norm = jnp.maximum(jnp.linalg.vector_norm(raw_centers, axis=-1, keepdims=True), 1e-8)
         centers = (raw_centers / norm) * separation
     return centers
 
@@ -297,8 +324,8 @@ def generate_clustered_memory(
     dim: int,
     cluster_separation: float,
     cluster_noise: float,
-    generator: torch.Generator | None = None,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    generator: JaxGenerator | None = None,
+) -> tuple[jax.Array, jax.Array, jax.Array]:
     """Construct a synthetic memory bank containing multiple separated clusters.
 
     Formula:
@@ -322,72 +349,55 @@ def generate_clustered_memory(
         generator=generator,
     )
 
-    memories_list: list[torch.Tensor] = []
+    generator = generator or JaxGenerator()
+    memories_list: list[jax.Array] = []
     labels_list: list[int] = []
 
     for c in range(num_clusters):
         center = centers[c : c + 1]
-        noise = torch.randn(
-            memories_per_cluster,
-            dim,
-            generator=generator,
-            dtype=center.dtype,
-            device=center.device,
-        ) * cluster_noise
+        generator.key, noise_key = jax.random.split(generator.key)
+        noise = jax.random.normal(noise_key, (memories_per_cluster, dim), dtype=center.dtype) * cluster_noise
         cluster_memories = center + noise
         memories_list.append(cluster_memories)
         labels_list.extend([c] * memories_per_cluster)
 
-    memory = torch.cat(memories_list, dim=0)
-    cluster_labels = torch.tensor(labels_list, dtype=torch.long, device=memory.device)
+    memory = jnp.concatenate(memories_list, axis=0)
+    cluster_labels = jnp.array(labels_list, dtype=jnp.int32)
 
     return memory, cluster_labels, centers
 
 
 def generate_queries(
-    cluster_centers: torch.Tensor,
+    cluster_centers: jax.Array,
     target_cluster: int | None,
     num_queries: int,
     query_noise: float,
-    generator: torch.Generator | None = None,
-) -> tuple[torch.Tensor, torch.Tensor]:
+    generator: JaxGenerator | None = None,
+) -> tuple[jax.Array, jax.Array]:
     """Generate evaluation queries near designated target cluster prototypes."""
     num_clusters, dim = cluster_centers.shape
 
     if target_cluster is not None:
-        target_indices = torch.full(
-            (num_queries,),
-            target_cluster,
-            dtype=torch.long,
-            device=cluster_centers.device,
-        )
+        target_indices = jnp.full((num_queries,), target_cluster, dtype=jnp.int32)
     else:
-        target_indices = torch.randint(
-            0,
-            num_clusters,
-            (num_queries,),
-            generator=generator,
-            device=cluster_centers.device,
-        )
+        generator = generator or JaxGenerator()
+        generator.key, index_key = jax.random.split(generator.key)
+        target_indices = jax.random.randint(index_key, (num_queries,), 0, num_clusters)
 
     targets = cluster_centers[target_indices]
-    noise = torch.randn(
-        num_queries,
-        dim,
-        generator=generator,
-        dtype=cluster_centers.dtype,
-        device=cluster_centers.device,
-    ) * query_noise
+    generator = generator or JaxGenerator()
+    generator.key, noise_key = jax.random.split(generator.key)
+    noise = jax.random.normal(noise_key, (num_queries, dim), dtype=cluster_centers.dtype) * query_noise
     queries = targets + noise
 
     return queries, target_indices
 
 
 def compute_cluster_masses(
-    weights: torch.Tensor,
-    cluster_labels: torch.Tensor,
+    weights: jax.Array,
+    cluster_labels: jax.Array,
     num_clusters: int,
-) -> torch.Tensor:
+) -> jax.Array:
     """Compute attention mass assigned to each cluster."""
     batch_size, num_memories = weights.shape
     if cluster_labels.shape[0] != num_memories:
@@ -396,42 +406,42 @@ def compute_cluster_masses(
             f"number of memories in weights ({num_memories})."
         )
 
-    cluster_masses = torch.zeros(
-        batch_size,
-        num_clusters,
+    cluster_masses = jnp.zeros(
+        (batch_size, num_clusters),
         dtype=weights.dtype,
-        device=weights.device,
     )
 
     for c in range(num_clusters):
         mask = cluster_labels == c
-        cluster_masses[:, c] = weights[:, mask].sum(dim=-1)
+        cluster_masses = cluster_masses.at[:, c].set(weights[:, mask].sum(axis=-1))
 
     return cluster_masses
 
 
 def sample_perturbations(
-    shape: torch.Size | tuple[int, ...],
+    shape: tuple[int, ...],
     perturbation_noise: float,
-    generator: torch.Generator | None = None,
-    dtype: torch.dtype | None = None,
-) -> torch.Tensor:
+    generator: JaxGenerator | None = None,
+    dtype: jnp.dtype | None = None,
+) -> jax.Array:
     """Draw isotropic Gaussian state perturbations delta ~ N(0, perturbation_noise^2 * I).
 
     Sample once per seed and reuse across beta values so that dynamics
     diagnostics at different beta are paired on identical perturbations.
     """
-    return torch.randn(shape, generator=generator, dtype=dtype) * perturbation_noise
+    generator = generator or JaxGenerator()
+    generator.key, noise_key = jax.random.split(generator.key)
+    return jax.random.normal(noise_key, shape, dtype=dtype or jnp.float32) * perturbation_noise
 
 
 def compute_dynamics_diagnostics(
-    retrieved: torch.Tensor,
-    memory: torch.Tensor,
+    retrieved: jax.Array,
+    memory: jax.Array,
     beta: float,
-    perturbation: torch.Tensor,
+    perturbation: jax.Array,
     normalize: bool = False,
     perturbation_steps: int = 3,
-) -> dict[str, torch.Tensor]:
+) -> dict[str, jax.Array]:
     """Compute iterative dynamics diagnostics for retrieved states q_T.
 
     Quantities (per query, with R the one-step Hopfield update and k = perturbation_steps):
@@ -452,7 +462,7 @@ def compute_dynamics_diagnostics(
             f"perturbation shape {tuple(perturbation.shape)} must match "
             f"retrieved shape {tuple(retrieved.shape)}."
         )
-    perturbation = perturbation.to(dtype=retrieved.dtype, device=retrieved.device)
+    perturbation = perturbation.astype(retrieved.dtype)
 
     next_step, _ = hopfield_retrieve(
         query=retrieved,
@@ -476,9 +486,9 @@ def compute_dynamics_diagnostics(
         num_updates=perturbation_steps,
         normalize=normalize,
     )
-    initial_sep = torch.linalg.vector_norm(perturbation, dim=-1)
+    initial_sep = jnp.linalg.vector_norm(perturbation, axis=-1)
     final_sep = retrieval_distance(perturbed_state, unperturbed_state, p=2.0)
-    separation_ratio = final_sep / initial_sep.clamp_min(1e-12)
+    separation_ratio = final_sep / jnp.maximum(initial_sep, 1e-12)
 
     return {
         "dynamics_residual": residual,
@@ -520,22 +530,23 @@ def classify_retrieval_regime(
 
 
 def compute_cluster_metrics(
-    retrieved: torch.Tensor,
-    weights: torch.Tensor,
-    memory: torch.Tensor,
-    cluster_centers: torch.Tensor,
-    cluster_labels: torch.Tensor,
-    target_clusters: torch.Tensor,
+    retrieved: jax.Array,
+    weights: jax.Array,
+    memory: jax.Array,
+    cluster_centers: jax.Array,
+    cluster_labels: jax.Array,
+    target_clusters: jax.Array,
 ) -> dict[str, Any]:
     """Compute per-query cluster retrieval diagnostics across all metric dimensions."""
     num_clusters = cluster_centers.shape[0]
     cluster_masses = compute_cluster_masses(weights, cluster_labels, num_clusters)
 
-    batch_indices = torch.arange(retrieved.shape[0], device=retrieved.device)
+    batch_indices = jnp.arange(retrieved.shape[0])
     target_cluster_mass = cluster_masses[batch_indices, target_clusters]
     wrong_cluster_mass = 1.0 - target_cluster_mass
 
-    max_cluster_mass, argmax_cluster = cluster_masses.max(dim=-1)
+    max_cluster_mass = cluster_masses.max(axis=-1)
+    argmax_cluster = cluster_masses.argmax(axis=-1)
 
     top1 = max_attention_weight(weights)
     mem_entropy = attention_entropy(weights)
@@ -544,38 +555,40 @@ def compute_cluster_metrics(
     target_centers = cluster_centers[target_clusters]
     dist_cluster = retrieval_distance(retrieved, target_centers, p=2.0)
 
-    pairwise_distances = torch.cdist(retrieved, memory, p=2.0)
-    dist_nearest_memory = pairwise_distances.min(dim=-1).values
+    pairwise_distances = jnp.linalg.vector_norm(
+        retrieved[:, None, :] - memory[None, :, :], axis=-1
+    )
+    dist_nearest_memory = pairwise_distances.min(axis=-1)
 
     top1_indices = argmax_memory_index(weights)
     top1_clusters = cluster_labels[top1_indices]
-    top1_in_target = (top1_clusters == target_clusters).float()
+    top1_in_target = (top1_clusters == target_clusters).astype(jnp.float32)
 
-    correct_cluster = (argmax_cluster == target_clusters).float()
-    wrong_cluster = (argmax_cluster != target_clusters).float()
+    correct_cluster = (argmax_cluster == target_clusters).astype(jnp.float32)
+    wrong_cluster = (argmax_cluster != target_clusters).astype(jnp.float32)
 
     cluster_concentrated = max_cluster_mass >= CLUSTER_THRESHOLD
     single_concentrated = top1 >= SINGLE_MEMORY_THRESHOLD
     wrong_cluster_concentration = (
         cluster_concentrated & (argmax_cluster != target_clusters)
-    ).float()
+    ).astype(jnp.float32)
     correct_cluster_concentration = (
         cluster_concentrated & (argmax_cluster == target_clusters)
-    ).float()
-    wrong_single_memory = (single_concentrated & (top1_clusters != target_clusters)).float()
-    correct_single_memory = (single_concentrated & (top1_clusters == target_clusters)).float()
+    ).astype(jnp.float32)
+    wrong_single_memory = (single_concentrated & (top1_clusters != target_clusters)).astype(jnp.float32)
+    correct_single_memory = (single_concentrated & (top1_clusters == target_clusters)).astype(jnp.float32)
 
-    weights_sq_sum = (weights ** 2).sum(dim=-1).clamp_min(1e-12)
+    weights_sq_sum = jnp.maximum((weights ** 2).sum(axis=-1), 1e-12)
     effective_memories = 1.0 / weights_sq_sum
 
-    cluster_masses_sq_sum = (cluster_masses ** 2).sum(dim=-1).clamp_min(1e-12)
+    cluster_masses_sq_sum = jnp.maximum((cluster_masses ** 2).sum(axis=-1), 1e-12)
     effective_clusters = 1.0 / cluster_masses_sq_sum
 
     num_memories = weights.shape[-1]
     normalized_entropy = (
         mem_entropy / math.log(num_memories)
         if num_memories > 1
-        else torch.ones_like(mem_entropy)
+        else jnp.ones_like(mem_entropy)
     )
 
     query_regimes: list[str] = []
@@ -587,11 +600,7 @@ def compute_cluster_metrics(
         )
         query_regimes.append(r)
     regime_indicators = {
-        label: torch.tensor(
-            [float(r == label) for r in query_regimes],
-            dtype=weights.dtype,
-            device=weights.device,
-        )
+        label: jnp.array([float(r == label) for r in query_regimes], dtype=weights.dtype)
         for label in REGIME_LABELS
     }
 
@@ -620,26 +629,26 @@ def compute_cluster_metrics(
     }
 
 
-def _query_std(values: torch.Tensor) -> float | None:
+def _query_std(values: jax.Array) -> float | None:
     """Sample standard deviation over queries; undefined (None) for a single query."""
-    return values.std().item() if values.numel() > 1 else None
+    return values.std().item() if values.size > 1 else None
 
 
 def evaluate_cluster_retrieval(
     *,
-    queries: torch.Tensor,
-    target_clusters: torch.Tensor,
-    memory: torch.Tensor,
-    cluster_centers: torch.Tensor,
-    cluster_labels: torch.Tensor,
+    queries: jax.Array,
+    target_clusters: jax.Array,
+    memory: jax.Array,
+    cluster_centers: jax.Array,
+    cluster_labels: jax.Array,
     beta: float,
     num_updates: int = 1,
     normalize: bool = False,
     compute_dynamics: bool = True,
-    perturbation: torch.Tensor | None = None,
+    perturbation: jax.Array | None = None,
     perturbation_noise: float = 0.05,
     perturbation_steps: int = 3,
-    generator: torch.Generator | None = None,
+    generator: JaxGenerator | None = None,
 ) -> dict[str, Any]:
     """Execute Hopfield retrieval at one beta and summarize per-query cluster metrics.
 
@@ -665,13 +674,13 @@ def evaluate_cluster_retrieval(
         normalize=normalize,
     )
 
-    if not torch.isfinite(weights).all():
+    if not jnp.isfinite(weights).all():
         raise FloatingPointError(f"Encountered non-finite weights for beta={beta}.")
-    if not torch.isfinite(retrieved).all():
+    if not jnp.isfinite(retrieved).all():
         raise FloatingPointError(f"Encountered non-finite retrieved state for beta={beta}.")
 
-    weights_sum = weights.sum(dim=-1)
-    if not torch.allclose(weights_sum, torch.ones_like(weights_sum), atol=1e-4):
+    weights_sum = weights.sum(axis=-1)
+    if not jnp.allclose(weights_sum, jnp.ones_like(weights_sum), atol=1e-4):
         raise ValueError(f"Attention weights do not sum to 1 for beta={beta}.")
 
     metrics = compute_cluster_metrics(
@@ -683,17 +692,17 @@ def evaluate_cluster_retrieval(
         target_clusters=target_clusters,
     )
 
-    cluster_masses_sum = metrics["all_cluster_masses"].sum(dim=-1)
-    if not torch.allclose(cluster_masses_sum, torch.ones_like(cluster_masses_sum), atol=1e-4):
+    cluster_masses_sum = metrics["all_cluster_masses"].sum(axis=-1)
+    if not jnp.allclose(cluster_masses_sum, jnp.ones_like(cluster_masses_sum), atol=1e-4):
         raise ValueError(f"Cluster masses do not sum to 1 for beta={beta}.")
 
-    regime_indicators: dict[str, torch.Tensor] = metrics["regime_indicators"]
+    regime_indicators: dict[str, jax.Array] = metrics["regime_indicators"]
     regime_fractions = {
         label: regime_indicators[label].mean().item() for label in REGIME_LABELS
     }
     dominant_regime = max(regime_fractions, key=lambda k: regime_fractions[k])
 
-    per_query: dict[str, torch.Tensor] = {
+    per_query: dict[str, jax.Array] = {
         "target_cluster_mass": metrics["target_cluster_mass"],
         "wrong_cluster_mass": metrics["wrong_cluster_mass"],
         "max_cluster_mass": metrics["max_cluster_mass"],
@@ -760,7 +769,7 @@ def run_single_seed_experiment(
     seed: int,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Run full beta sweep on a single reproducible random seed."""
-    generator = torch.Generator().manual_seed(seed)
+    generator = JaxGenerator().manual_seed(seed)
 
     memory, cluster_labels, centers = generate_clustered_memory(
         num_clusters=cfg["num_clusters"],

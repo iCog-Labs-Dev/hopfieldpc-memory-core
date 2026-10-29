@@ -13,7 +13,8 @@ import math
 from pathlib import Path
 from typing import Any
 
-import torch
+import jax
+import jax.numpy as jnp
 import yaml
 
 from hopfieldpc.diagnostics import (
@@ -26,30 +27,40 @@ from hopfieldpc.energy import hopfield_energy
 from hopfieldpc.functional import multi_step_retrieve
 
 
-def generate_memory(num_memories: int, dim: int) -> torch.Tensor:
+_key = jax.random.PRNGKey(42)
+
+def reset_synthetic_seed(seed: int) -> None:
+    """Reset the benchmark PRNG stream used by synthetic generation."""
+    global _key
+    _key = jax.random.PRNGKey(seed)
+
+def generate_memory(num_memories: int, dim: int) -> jax.Array:
     """Generate a random memory bank of shape [num_memories, dim]."""
     std = 1.0 / math.sqrt(dim)
-    memory = torch.empty(num_memories, dim)
-    torch.nn.init.normal_(memory, mean=0.0, std=std)
+    global _key
+    _key, subkey = jax.random.split(_key)
+    memory = jax.random.normal(subkey, (num_memories, dim), dtype=jnp.float32) * std
     return memory
 
 
 def generate_noisy_queries(
-    memory: torch.Tensor, noise_level: float, num_trials: int
-) -> tuple[torch.Tensor, torch.Tensor]:
+    memory: jax.Array, noise_level: float, num_trials: int
+) -> tuple[jax.Array, jax.Array]:
     """Generate queries by adding Gaussian noise to randomly sampled target memories."""
     num_memories, _ = memory.shape
-    target_indices = torch.randint(0, num_memories, (num_trials,))
+    global _key
+    _key, index_key, noise_key = jax.random.split(_key, 3)
+    target_indices = jax.random.randint(index_key, (num_trials,), 0, num_memories)
     targets = memory[target_indices]
-    noise = torch.randn_like(targets) * noise_level
+    noise = jax.random.normal(noise_key, targets.shape, dtype=targets.dtype) * noise_level
     queries = targets + noise
     return queries, target_indices
 
 
 def evaluate_retrieval(
-    queries: torch.Tensor,
-    target_indices: torch.Tensor,
-    memory: torch.Tensor,
+    queries: jax.Array,
+    target_indices: jax.Array,
+    memory: jax.Array,
     beta: float,
     num_updates: int,
     top_k: int,
@@ -65,9 +76,9 @@ def evaluate_retrieval(
     )
 
     targets = memory[target_indices]
-    predicted_indices = weights.argmax(dim=-1)
+    predicted_indices = weights.argmax(axis=-1)
 
-    top1_acc = (predicted_indices == target_indices).float().mean().item()
+    top1_acc = (predicted_indices == target_indices).astype(jnp.float32).mean().item()
     topk_rec = topk_recall(weights, target_indices, k=top_k).mean().item()
 
     query_dist = retrieval_distance(queries, targets).mean().item()
@@ -189,7 +200,8 @@ def run_benchmark(
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Run full synthetic retrieval sweep according to configuration."""
     seed = config.get("seed", 42)
-    torch.manual_seed(seed)
+    global _key
+    _key = jax.random.PRNGKey(seed)
 
     dim = config["dim"]
     num_trials = config["num_trials"]

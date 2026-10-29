@@ -10,10 +10,15 @@ import warnings
 from pathlib import Path
 from typing import Any
 
-import torch
+import jax
+import jax.numpy as jnp
 import yaml
 
-from benchmarks.synthetic_retrieval import generate_memory, generate_noisy_queries
+from benchmarks.synthetic_retrieval import (
+    generate_memory,
+    generate_noisy_queries,
+    reset_synthetic_seed,
+)
 from benchmarks.validation import validate_beta_values
 from hopfieldpc.diagnostics import (
     attention_entropy,
@@ -174,9 +179,9 @@ def validate_beta_sweep_config(config: dict[str, Any]) -> dict[str, Any]:
 
 def evaluate_beta_retrieval(
     *,
-    queries: torch.Tensor,
-    target_indices: torch.Tensor,
-    memory: torch.Tensor,
+    queries: jax.Array,
+    target_indices: jax.Array,
+    memory: jax.Array,
     beta: float,
     num_updates: int = 1,
     normalize: bool = False,
@@ -207,21 +212,21 @@ def evaluate_beta_retrieval(
     )
 
     # Numerical validity checks
-    if not torch.isfinite(weights).all():
+    if not jnp.isfinite(weights).all():
         raise FloatingPointError(f"Encountered non-finite weights for beta={beta}.")
-    if not torch.isfinite(retrieved).all():
+    if not jnp.isfinite(retrieved).all():
         raise FloatingPointError(f"Encountered non-finite retrieved state for beta={beta}.")
 
-    weights_sum = weights.sum(dim=-1)
-    expected_sum = torch.ones_like(weights_sum)
-    if not torch.allclose(weights_sum, expected_sum, atol=1e-4):
+    weights_sum = weights.sum(axis=-1)
+    expected_sum = jnp.ones_like(weights_sum)
+    if not jnp.allclose(weights_sum, expected_sum, atol=1e-4):
         raise ValueError(f"Attention weights do not sum to 1 for beta={beta}.")
 
     # 1. Top-1 nearest-memory retrieval accuracy
     # (Argmax ordering is preserved under positive beta scaling, making this metric
     # mostly beta-invariant; useful as a recall sanity check).
-    predicted_indices = weights.argmax(dim=-1)
-    top1_accuracy = (predicted_indices == target_indices).float().mean().item()
+    predicted_indices = weights.argmax(axis=-1)
+    top1_accuracy = (predicted_indices == target_indices).astype(jnp.float32).mean().item()
 
     # 2. Attention entropy (primary beta-sensitive metric for dispersion)
     entropy = attention_entropy(weights)
@@ -256,7 +261,7 @@ def run_beta_sweep(
     """
     cfg = validate_beta_sweep_config(config)
 
-    torch.manual_seed(cfg["seed"])
+    reset_synthetic_seed(cfg["seed"])
 
     dim = cfg["dim"]
     num_memories = cfg["num_memories"]

@@ -11,7 +11,8 @@ import numbers
 from dataclasses import dataclass
 from typing import Any, NamedTuple
 
-import torch
+import jax
+import jax.numpy as jnp
 
 
 class HopfieldShapeError(ValueError):
@@ -46,16 +47,16 @@ class HopfieldMemoryOutput(NamedTuple):
             top-k mass, retrieved distance, or Hopfield energy.
     """
 
-    retrieved: torch.Tensor
-    weights: torch.Tensor
+    retrieved: jax.Array
+    weights: jax.Array
     diagnostics: dict[str, Any]
 
 
-def _require_tensor(name: str, value: object) -> torch.Tensor:
-    """Validate that a value is a torch.Tensor and return it."""
+def _require_tensor(name: str, value: object) -> jax.Array:
+    """Validate that a value is a JAX array and return it."""
 
-    if not isinstance(value, torch.Tensor):
-        raise TypeError(f"{name} must be a torch.Tensor, got {type(value).__name__}.")
+    if not isinstance(value, jax.Array):
+        raise TypeError(f"{name} must be a jax.Array, got {type(value).__name__}.")
     return value
 
 
@@ -74,8 +75,8 @@ def validate_beta(beta: object) -> float:
 
 
 def validate_query_memory(
-    query: torch.Tensor,
-    memory: torch.Tensor,
+    query: jax.Array,
+    memory: jax.Array,
     *,
     expected_dim: int | None = None,
 ) -> HopfieldShapeContract:
@@ -98,7 +99,7 @@ def validate_query_memory(
 
     Raises:
         TypeError:
-            If query or memory is not a floating-point torch.Tensor, or their
+            If query or memory is not a floating-point jax.Array, or their
             dtypes differ.
         HopfieldShapeError:
             If tensor ranks or dimensions are invalid.
@@ -107,7 +108,7 @@ def validate_query_memory(
     query = _require_tensor("query", query)
     memory = _require_tensor("memory", memory)
 
-    if not query.is_floating_point() or not memory.is_floating_point():
+    if not jnp.issubdtype(query.dtype, jnp.floating) or not jnp.issubdtype(memory.dtype, jnp.floating):
         raise TypeError(
             "query and memory must be floating-point tensors, "
             f"got {query.dtype} and {memory.dtype}."

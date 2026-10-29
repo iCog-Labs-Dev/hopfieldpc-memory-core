@@ -3,10 +3,13 @@
 import tempfile
 from pathlib import Path
 
-import torch
+import jax
+import jax.numpy as jnp
 
 from benchmarks.synthetic_retrieval import run_benchmark
 from hopfieldpc.diagnostics import (
+
+
     attention_entropy,
     retrieval_distance,
     topk_mass,
@@ -14,8 +17,53 @@ from hopfieldpc.diagnostics import (
 )
 
 
+
+_TEST_KEY = jax.random.PRNGKey(42)
+
+def _set_seed(seed: int) -> None:
+    global _TEST_KEY
+    _TEST_KEY = jax.random.PRNGKey(seed)
+
+def _generator(seed: int = 42) -> object:
+    return None
+
+def _randn(*shape, **kwargs):
+    global _TEST_KEY
+    dtype = kwargs.get("dtype", jnp.float32)
+    if len(shape) == 1 and isinstance(shape[0], tuple):
+        shape = shape[0]
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.normal(key, shape, dtype=dtype)
+
+def _randn_like(x):
+    return _randn(*x.shape, dtype=x.dtype)
+
+def _randint(*args, **kwargs):
+    global _TEST_KEY
+    if len(args) >= 3:
+        low, high, shape = args[0], args[1], args[2]
+    else:
+        low, high, shape = 0, args[0], args[1]
+    dtype = kwargs.get("dtype", jnp.int32)
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.randint(key, shape, low, high, dtype=dtype)
+
+def _randperm(n):
+    global _TEST_KEY
+    _TEST_KEY, key = jax.random.split(_TEST_KEY)
+    return jax.random.permutation(key, n)
+
+def _cdist(a, b, p=2.0):
+    return jnp.linalg.vector_norm(a[:, None, :] - b[None, :, :], ord=p, axis=-1)
+
+def _topk(x, k, dim=-1):
+    return jax.lax.top_k(x, k=k)
+
+def _assert_close(actual, desired, atol=1e-6, rtol=1e-6):
+    assert jnp.allclose(actual, desired, atol=atol, rtol=rtol), (actual, desired)
+
 def test_diagnostics_functions() -> None:
-    weights = torch.tensor([
+    weights = jnp.array([
         [0.7, 0.2, 0.1, 0.0],
         [0.4, 0.3, 0.2, 0.1],
     ])
@@ -26,10 +74,10 @@ def test_diagnostics_functions() -> None:
 
     top2_mass = topk_mass(weights, k=2)
     assert top2_mass.shape == (2,)
-    assert torch.isclose(top2_mass[0], torch.tensor(0.9))
-    assert torch.isclose(top2_mass[1], torch.tensor(0.7))
+    assert jnp.isclose(top2_mass[0], jnp.array(0.9))
+    assert jnp.isclose(top2_mass[1], jnp.array(0.7))
 
-    targets = torch.tensor([0, 3])
+    targets = jnp.array([0, 3])
     recall_top1 = topk_recall(weights, targets, k=1)
     assert recall_top1[0].item() == 1.0
 
@@ -37,11 +85,11 @@ def test_diagnostics_functions() -> None:
     assert recall_top2[0].item() == 1.0
     assert recall_top2[1].item() == 0.0
 
-    q = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
-    tgt = torch.tensor([[1.0, 0.0], [0.0, 0.0]])
+    q = jnp.array([[1.0, 0.0], [0.0, 1.0]])
+    tgt = jnp.array([[1.0, 0.0], [0.0, 0.0]])
     dist = retrieval_distance(q, tgt)
-    assert torch.isclose(dist[0], torch.tensor(0.0))
-    assert torch.isclose(dist[1], torch.tensor(1.0))
+    assert jnp.isclose(dist[0], jnp.array(0.0))
+    assert jnp.isclose(dist[1], jnp.array(1.0))
 
 
 def test_run_benchmark_tiny_config_and_output_files() -> None:
@@ -83,7 +131,7 @@ def test_run_benchmark_tiny_config_and_output_files() -> None:
         for row in results:
             for metric in expected_metrics:
                 assert metric in row
-                assert not torch.isnan(torch.tensor(row[metric]))
+                assert not jnp.isnan(jnp.array(row[metric]))
 
         assert len(capacity_summary) == 4
         assert "capacity_at_95" in capacity_summary[0]

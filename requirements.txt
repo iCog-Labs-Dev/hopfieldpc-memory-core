@@ -2,7 +2,8 @@
 -e .
 
 # Core numerical / ML dependencies
-torch>=2.2
+jax>=0.4.30
+jaxlib>=0.4.30
 numpy>=1.24
 PyYAML>=6.0
 
@@ -17,6 +18,3 @@ mypy>=1.8
 # Benchmarks / reports
 matplotlib>=3.8
 tqdm>=4.66
-
-# for MNIST prototype retrieval benchmark
-torchvision>=0.17
