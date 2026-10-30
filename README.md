@@ -106,6 +106,54 @@ Run only one-step retrieval tests:
 pytest tests/test_one_step_retrieval.py tests/test_beta_behavior.py -q
 ```
 
+## Task 13: MNIST Prototype Retrieval (Baseline vs Hopfield)
+
+A controlled experiment with one CNN and two variants that differ only in layer L8, between the
+embedding `z` (L7) and the classifier head (L9):
+
+```text
+L1 Conv 1→32 → L2 Pool → L3 Conv 32→64 → L4 Pool → L5 Flatten → L6 Linear 3136→128 → L7 Linear 128→64 = z
+L8  Baseline: h = z (Identity)    Hopfield: h = softmax(β·cos(z − μ, M − μ))·M   (frozen memory M)
+L9 Linear 64→10
+```
+
+The baseline is trained once per seed on clean MNIST (cached as
+`reports/mnist_prototype_retrieval/backbone_seed{s}.pt`). The Hopfield variant copies the same
+L1–L7/L9 weights and adds 0 trainable parameters. Its memory follows Ramsauer et al. (2020):
+
+- M = 8 k-means prototypes per class of the training embeddings (80 × 64), frozen.
+- Scores are centered by the train-mean embedding μ, which increases pattern separation.
+- β\* is selected on the validation split, averaged over clean, Gaussian σ = 0.4 and
+  salt-and-pepper p = 0.15 sets (noise levels that are not in the test grids).
+
+```bash
+python -m benchmarks.mnist_prototype_retrieval            # everything (10 seeds, E1–E9)
+python -m benchmarks.mnist_prototype_retrieval --quick    # 1 seed, 1 epoch, reduced grids
+python -m benchmarks.mnist_baseline                       # baseline only (E1/E3 baseline columns)
+# options: --config, --retrain, --seed N, --data-dir DIR, --reports-dir DIR
+```
+
+Settings are in `configs/mnist_prototype_retrieval.yaml`. Outputs go to
+`reports/mnist_prototype_retrieval/` (`--quick` writes to `reports/mnist_prototype_retrieval_quick/`):
+
+- `summary.md`: the file to read. Each table (E1–E9) varies exactly one parameter, stated in its
+  `Varied:` / `Held fixed:` header. Columns: Baseline | Hopfield | Δ (H−B) | McNemar p (max over
+  seeds) | Seeds +/− | Wilcoxon p (across seeds) | Winner. Winner is `tie` when |Δ| < 0.005 or
+  Wilcoxon p ≥ 0.05. E9 ablates the memory design (class means raw / centered, 8 per class
+  centered). The file ends with the S1–S11 sanity report and a one-line VERDICT.
+- `results.csv` / `results.json`: every (experiment, model, value, seed) row, plus the config,
+  environment, β\*, confusion matrices and cost measurements.
+- `plots.png` (accuracy vs noise, β, T and retrieval confusion) and `cost.png` (latency and
+  throughput vs batch, accuracy vs latency).
+
+Result (10 seeds, β\* = 100): clean accuracy is unchanged (98.86 % vs 98.89 %, tie), while
+robustness AUC rises by +7.2 pp under Gaussian noise and +7.8 pp under salt-and-pepper noise,
+better in all 10 seeds (Wilcoxon p = 0.002). Occlusion shows no significant effect. The layer adds
+0 trainable parameters and +0.24 % MACs. A hard nearest-centered-prototype readout matches the
+Hopfield layer, so the gain comes from the memory design rather than from soft retrieval.
+
+Timings only compare within one run; on CPU, peak memory is an activation upper bound.
+
 ## Next Planned Tasks
 
 ```text
