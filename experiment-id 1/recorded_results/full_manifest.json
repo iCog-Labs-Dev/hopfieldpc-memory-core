@@ -1,0 +1,82 @@
+{
+  "source": {
+    "commit": "1f330229169dafbb3fa32ca0044af373701ed59f",
+    "source_sha256": "ff246427171ac6fd0e32d4982714d540c602944b38434af6d4d789adbf9430f5"
+  },
+  "dataset_hash": "1da1b9d0496713831621bd5f94bdfeab5d124e0b8e9f40fc1e8c76d2673b0ab1",
+  "config": {
+    "experiment_id": "exp_001_online_accuracy_guided_memory",
+    "display_name": "Experiment 1 - Online Accuracy-Guided Hopfield Memory",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "device": "auto",
+    "data_dir": "data",
+    "reports_dir": "experiment-id 1/results",
+    "num_classes": 10,
+    "total_epochs": 5,
+    "warmup_epochs": 1,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "val_size": 5000,
+    "train_subset": null,
+    "test_subset": null,
+    "eval_batch_size": 256,
+    "num_threads": 4,
+    "max_memories_per_class": 8,
+    "ema_alpha": 0.1,
+    "hopfield_beta": 5.0,
+    "hopfield_num_updates": 1,
+    "score_mode": "centered_cosine",
+    "write_distance": "centered_cosine_distance",
+    "merge_distance_threshold": 0.2,
+    "normalization_epsilon": 1e-08,
+    "memory_refresh": "none",
+    "bank_full_policy": "skip_write",
+    "drift_probe_per_class": 16,
+    "batch_post_write_diagnostics": true,
+    "event_chunk_size": 4096,
+    "write_chunk_size": 1024,
+    "fixed_reference": {
+      "prototypes_per_class": 8,
+      "center_policy": "post_training_train_mean",
+      "beta_policy": "same_fixed_beta"
+    },
+    "gaussian_sigmas": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      0.7,
+      1.0
+    ],
+    "salt_pepper_probs": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "occlusion_sizes": [
+      0,
+      7,
+      10,
+      14
+    ],
+    "quick": false
+  },
+  "environment": {
+    "device": "cpu",
+    "gpu_model": null,
+    "cpu_model": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "num_threads": 4,
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "status": "complete"
+}

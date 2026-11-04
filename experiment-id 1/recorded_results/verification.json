@@ -1,0 +1,110 @@
+{
+  "src_unchanged": true,
+  "source_matches": true,
+  "seeds": [
+    {
+      "seed": 0,
+      "examples": 220000,
+      "writes": 1549,
+      "fallbacks": 128,
+      "occupancy": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "replay_matches": true
+    },
+    {
+      "seed": 1,
+      "examples": 220000,
+      "writes": 1566,
+      "fallbacks": 128,
+      "occupancy": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "replay_matches": true
+    },
+    {
+      "seed": 2,
+      "examples": 220000,
+      "writes": 1440,
+      "fallbacks": 128,
+      "occupancy": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7,
+        8,
+        8,
+        8
+      ],
+      "replay_matches": true
+    }
+  ],
+  "aggregate": {
+    "direct": {
+      "clean_mean_percent": 98.92333149909973,
+      "clean_sample_std_pp": 0.23072346571062002,
+      "clean_per_seed_percent": [
+        98.65999817848206,
+        99.08999800682068,
+        99.01999831199646
+      ],
+      "gaussian_auc_mean": 0.581045001745224,
+      "gaussian_auc_std": 0.029878116352657868,
+      "salt_pepper_auc_mean": 0.7229541639486948,
+      "salt_pepper_auc_std": 0.03208426679768211,
+      "occlusion_auc_mean": 0.8792571432533718,
+      "occlusion_auc_std": 0.0032640400706349954
+    },
+    "adaptive_hopfield": {
+      "clean_mean_percent": 98.50666721661887,
+      "clean_sample_std_pp": 0.2510663755583429,
+      "clean_per_seed_percent": [
+        98.22999835014343,
+        98.72000217437744,
+        98.5700011253357
+      ],
+      "gaussian_auc_mean": 0.6089333397646746,
+      "gaussian_auc_std": 0.05750034284858038,
+      "salt_pepper_auc_mean": 0.7432375053564707,
+      "salt_pepper_auc_std": 0.044082991194767135,
+      "occlusion_auc_mean": 0.8643023818731308,
+      "occlusion_auc_std": 0.0049836328896382676
+    },
+    "fixed_kmeans_reference": {
+      "clean_mean_percent": 98.67999951044717,
+      "clean_sample_std_pp": 0.051963264136095935,
+      "clean_per_seed_percent": [
+        98.71000051498413,
+        98.61999750137329,
+        98.71000051498413
+      ],
+      "gaussian_auc_mean": 0.6127550020813942,
+      "gaussian_auc_std": 0.04095815381248846,
+      "salt_pepper_auc_mean": 0.7516333324213823,
+      "salt_pepper_auc_std": 0.03582714583033355,
+      "occlusion_auc_mean": 0.8757142900001434,
+      "occlusion_auc_std": 0.006646848587598967
+    }
+  }
+}

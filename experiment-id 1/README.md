@@ -4,6 +4,30 @@ Experiment ID: `exp_001_online_accuracy_guided_memory`. This is independent of
 Task 13's E1–E9 tables and backbone caches. It implements explicit memory
 buffers, not optimizer-trained `learnable_memory` parameters or FabricPC.
 
+## Completed results and diagnostics
+
+[Results](RESULTS.md) summarizes the completed three-seed MNIST experiment.
+[Diagnosis](DIAGNOSIS.md) documents the separate validation-only controls and
+their limits. The compact reports, plots, and structured metrics in
+`recorded_results/` are versioned so they remain available in a fresh checkout.
+Their export manifest records the original artifact paths and SHA-256 hashes.
+Full checkpoints, compressed event logs, MNIST data, and historical smoke runs
+remain local and ignored by Git.
+
+The diagnostic entry points are:
+
+```powershell
+python -B "experiment-id 1/diagnose_memory.py" --run-dir <full_run_directory>
+python -B "experiment-id 1/frozen_encoder_control.py" --run-dir <full_run_directory> --seed 0
+python -B "experiment-id 1/diagnose_bank_selection.py" --frozen-control <frozen_control_directory>
+```
+
+These commands require the corresponding local checkpoints and logs. They
+create separate validation-only outputs; the bank-selection script is an
+endpoint construction control, not a during-training admission ablation.
+The original experiment and the completed controls are preserved as the
+comparison point for the next admission-rule experiment.
+
 ## Run
 
 From the repository root, after `python -m pip install -r requirements.txt`:

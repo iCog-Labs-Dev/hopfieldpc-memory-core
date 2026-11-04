@@ -1,0 +1,71 @@
+{
+  "description": "Byte-preserving exports of completed Experiment 1 and validation-only controls. Original checkpoints and raw logs remain local.",
+  "primary_run_id": "dcee52a0d8484d75a46cc9b426940a39",
+  "files": {
+    "full_results.json": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/results.json",
+      "sha256": "4b89d44cb3d48c7a8882074353e955ced358b6971a89df1a89dd07211b44ecfe",
+      "bytes": 791422
+    },
+    "full_manifest.json": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/manifest.json",
+      "sha256": "9169dfcb51708782f4a9a438da16500c140e1c2fb6368c7c2061039ec8bba95b",
+      "bytes": 2100
+    },
+    "full_config.yaml": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/resolved_config.yaml",
+      "sha256": "53cad469efe47cfeb5bee4909b6f0a1575da4fd61a7ddef9526e35c5398340ee",
+      "bytes": 1087
+    },
+    "verification.json": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/verification.json",
+      "sha256": "79dad23877c273c007a8a4c81e2efce63c58e3cd7a1a89f56e98ab3ee1d23b2c",
+      "bytes": 2638
+    },
+    "readout_diagnosis.json": {
+      "original_path": "results/diagnostics/5f0aadaac66d4937b0ee36dee07bbb18/results.json",
+      "sha256": "b23fc3ee21245fa85dd44c61c0ec734880a45de0fb20b7261f2fbc5f75615cab",
+      "bytes": 142471
+    },
+    "readout_diagnosis.md": {
+      "original_path": "results/diagnostics/5f0aadaac66d4937b0ee36dee07bbb18/report.md",
+      "sha256": "a3802274749c289c467772218ce906e94eb5b6988139f9a396063be9c29aa60c",
+      "bytes": 10794
+    },
+    "frozen_encoder.json": {
+      "original_path": "results/controls/frozen_seed0_c687f1f33f7e45a59abbc438e6062541/results.json",
+      "sha256": "c16262073e81d904455c90b02aaabece4beda8db902ac94a6209ca5176f249b1",
+      "bytes": 33010
+    },
+    "frozen_encoder.md": {
+      "original_path": "results/controls/frozen_seed0_c687f1f33f7e45a59abbc438e6062541/report.md",
+      "sha256": "b156e67740603dba8d823bf0c7c7486d5018d78f4ab98752283784d522d6fdb3",
+      "bytes": 996
+    },
+    "matched_banks.json": {
+      "original_path": "results/diagnostics/bank_selection_9b018d3bdc3c49c09b15df8b198a6042/results.json",
+      "sha256": "e6f4346e43d023ae95a304e4beea42831bf70e6a8c725dcf8d3e8929c2a38133",
+      "bytes": 24251
+    },
+    "matched_banks.md": {
+      "original_path": "results/diagnostics/bank_selection_9b018d3bdc3c49c09b15df8b198a6042/report.md",
+      "sha256": "86b2f472908a1ae1922ac8f8d5b9b77cbb8ae1e192fbd351580e6e80aca4e76f",
+      "bytes": 3764
+    },
+    "diagnosis_summary.png": {
+      "original_path": "results/diagnostics/5f0aadaac66d4937b0ee36dee07bbb18/diagnosis_summary.png",
+      "sha256": "476a72e072535b8bafb21a762244180db1485f2b224b976ea46ac381bc3007e0",
+      "bytes": 116148
+    },
+    "training.png": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/plots/training.png",
+      "sha256": "fc68d0c094e90e9a4454299bf1a70a32eec85e9f41ae664c5bd9d1988d396b01",
+      "bytes": 101263
+    },
+    "held_out.png": {
+      "original_path": "results/full/dcee52a0d8484d75a46cc9b426940a39/plots/held_out.png",
+      "sha256": "1e41129911231fef1fd0f03d24f978a2057b3e93d4f5bb47c8b0d741cb8523d9",
+      "bytes": 80684
+    }
+  }
+}
