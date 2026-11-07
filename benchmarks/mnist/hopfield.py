@@ -1,6 +1,6 @@
 """Task 13: MNIST prototype retrieval, Baseline vs Hopfield as a controlled experiment.
 
-Both variants are the same CNN (``benchmarks.mnist_baseline``). The only
+Both variants are the same CNN (``benchmarks.mnist.baseline``). The only
 difference is layer L8, between the embedding z (L7) and the classifier head
 (L9):
 
@@ -9,16 +9,23 @@ difference is layer L8, between the embedding z (L7) and the classifier head
 
 M holds 8 k-means prototypes per class of the training embeddings, centered
 by the train-mean embedding, as a frozen buffer, so the Hopfield variant adds
-zero trainable parameters and nothing is retrained. beta is selected on clean
-+ noisy validation sets. Every experiment varies one parameter, every
+zero trainable parameters and nothing is retrained. beta* is selected on clean
++ noisy validation sets by ``benchmarks.mnist.tuning`` and read from
+``benchmarks/mnist/tuned_params.json``. Every experiment varies one parameter, every
 Baseline-vs-Hopfield pair is evaluated on the same (seeded) test images and
 compared with an exact McNemar test per seed and an exact Wilcoxon
 signed-rank test across seeds.
 
+Layer changes live in their own modules: ``hopfield_l5`` (memory after L5),
+``hopfield_trainable`` (trainable memory) and ``hopfield_recentering``
+(test-batch centering at L8); ``hopfield_mnist_c`` evaluates this module's
+networks on MNIST-C.
+
 Run from the repository root:
 
-    python -m benchmarks.mnist_prototype_retrieval            # everything
-    python -m benchmarks.mnist_prototype_retrieval --quick    # smoke run
+    python -m benchmarks.mnist.tuning              # once: baseline lr/batch/epochs and every beta
+    python -m benchmarks.mnist.hopfield            # E1-E9
+    python -m benchmarks.mnist.hopfield --quick    # smoke run (tune once with --quick first)
 """
 
 from __future__ import annotations
@@ -30,20 +37,24 @@ import math
 import time
 import warnings
 from collections.abc import Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import torch
 from torch import nn
 
-from benchmarks.mnist_baseline import (
+from benchmarks.mnist.baseline import (
     NOISE_TYPES,
     BaselineRun,
     ClassifierHead,
+    EmbeddingClassifier,
     MnistEncoder,
-    MnistNet,
+    accuracy_auc_over_severity,
     analytical_macs,
+    apply_baseline_params,
     build_arg_parser,
+    clean_split_inputs,
     compute_prototypes,
     config_from_args,
     configure_threads,
@@ -51,6 +62,7 @@ from benchmarks.mnist_baseline import (
     count_buffer_values,
     count_trainable_params,
     environment_info,
+    format_split_accuracy,
     format_split_table,
     format_tuning_table,
     forward_embeddings,
@@ -64,12 +76,14 @@ from benchmarks.mnist_baseline import (
     nearest_prototype,
     noise_grids,
     prepare_baseline_run,
+    require_tuned,
     resolve_device,
-    robust_auc,
+    split_accuracy,
     split_table,
     summarize_outputs,
+    summarize_split_accuracy,
     time_full_evaluation,
-    tune_baseline,
+    train_size,
 )
 from hopfieldpc import HopfieldMemory
 from hopfieldpc.api import validate_beta
@@ -85,6 +99,7 @@ HOPFIELD_COLOR = "#eb6834"
 
 RULE = "═" * 96
 MODELS = ("baseline", "hopfield")
+QUERY_CENTERING_MODES = ("train_mean", "test_batch_mean")
 NOISE_LABELS = {"gaussian": "σ", "salt_pepper": "p", "occlusion": "side"}
 E3_IDS = {"gaussian": "E3a", "salt_pepper": "E3b", "occlusion": "E3c"}
 
@@ -94,7 +109,7 @@ E3_IDS = {"gaussian": "E3a", "salt_pepper": "E3b", "occlusion": "E3c"}
 # ---------------------------------------------------------------------------
 
 
-class HopfieldBridge(nn.Module):
+class HopfieldRetrievalLayer(nn.Module):
     """Layer L8 of the Hopfield variant: retrieval over frozen class prototypes.
 
     Wraps ``HopfieldMemory(dim, beta, num_updates, normalize=True,
@@ -111,6 +126,12 @@ class HopfieldBridge(nn.Module):
     center is added back, so h is still a convex combination of the raw
     prototypes. Centering removes the component shared by all prototypes,
     which increases their separation (Ramsauer et al. 2020, A.6.2).
+
+    ``query_centering`` picks what is subtracted from the query:
+    ``"train_mean"`` uses ``center``; ``"test_batch_mean"`` uses the mean of the
+    incoming batch, which cancels a shift shared by the whole batch (prototypes
+    stay centered by ``center``). The second mode needs batches of several
+    images, because a single image minus its own mean is the zero vector.
 
     aux holds the HopfieldMemory diagnostics plus ``weights`` [B, K],
     ``class_mass`` [B, C] (weight summed per class) and ``proto_pred`` [B] =
@@ -151,6 +172,7 @@ class HopfieldBridge(nn.Module):
             self.register_buffer("center", center.detach().clone().float())
         else:
             self.center = None
+        self.query_centering = "train_mean"
         self.memory = HopfieldMemory(
             dim=prototypes.shape[1],
             beta=beta,
@@ -167,8 +189,22 @@ class HopfieldBridge(nn.Module):
     def num_updates(self) -> int:
         return self.memory.num_updates
 
-    def set_retrieval(self, *, beta: float | None = None, num_updates: int | None = None) -> None:
-        """Change beta and/or T in place (buffers and the shared layers are untouched)."""
+    def set_retrieval(
+        self,
+        *,
+        beta: float | None = None,
+        num_updates: int | None = None,
+        query_centering: str | None = None,
+    ) -> None:
+        """Change beta, T and/or query centering in place (buffers and shared layers are untouched)."""
+        if query_centering is not None:
+            if query_centering not in QUERY_CENTERING_MODES:
+                raise ValueError(
+                    f"query_centering must be one of {QUERY_CENTERING_MODES}, got {query_centering!r}."
+                )
+            if query_centering == "test_batch_mean" and self.center is None:
+                raise ValueError("query_centering='test_batch_mean' requires center.")
+            self.query_centering = query_centering
         if beta is not None:
             self.memory.beta = validate_beta(beta)
         if num_updates is not None:
@@ -187,8 +223,11 @@ class HopfieldBridge(nn.Module):
 
     def forward(self, z: torch.Tensor) -> tuple[torch.Tensor, dict[str, Any]]:
         if self.center is not None:
+            query_center = (
+                z.mean(dim=0, keepdim=True) if self.query_centering == "test_batch_mean" else self.center
+            )
             retrieved, weights, diagnostics = self.memory(
-                z - self.center, memory=self.prototypes - self.center
+                z - query_center, memory=self.prototypes - self.center
             )
             h = retrieved + self.center
         else:
@@ -207,12 +246,12 @@ class HopfieldBridge(nn.Module):
 class PixelHopfieldNet(nn.Module):
     """Ablation E6: Hopfield on raw pixels, then the same encoder + head.
 
-    image [B, 1, 28, 28] -> flatten [B, 784] -> HopfieldBridge(pixel) ->
+    image [B, 1, 28, 28] -> flatten [B, 784] -> HopfieldRetrievalLayer(pixel) ->
     reshape [B, 1, 28, 28] -> encoder -> z [B, D] -> head -> logits.
     Returns ``(logits, z, h, aux)`` with h = z (L8 is the identity here).
     """
 
-    def __init__(self, input_bridge: HopfieldBridge, encoder: MnistEncoder, head: ClassifierHead) -> None:
+    def __init__(self, input_bridge: HopfieldRetrievalLayer, encoder: MnistEncoder, head: ClassifierHead) -> None:
         super().__init__()
         self.input_bridge = input_bridge
         self.encoder = encoder
@@ -227,7 +266,7 @@ class PixelHopfieldNet(nn.Module):
 
 
 def build_hopfield_net(
-    baseline_net: MnistNet,
+    baseline_net: EmbeddingClassifier,
     prototypes: torch.Tensor,
     memory_labels: torch.Tensor,
     *,
@@ -236,16 +275,16 @@ def build_hopfield_net(
     placement: str = "embedding",
     center: torch.Tensor | None = None,
 ) -> nn.Module:
-    """Hopfield variant: deep copies of the baseline's L1-L7 and L9 plus a HopfieldBridge.
+    """Hopfield variant: deep copies of the baseline's L1-L7 and L9 plus a HopfieldRetrievalLayer.
 
-    ``prototypes`` is [K, 64] for ``placement="embedding"`` (returns MnistNet;
+    ``prototypes`` is [K, 64] for ``placement="embedding"`` (returns EmbeddingClassifier;
     ``center`` optional) and [10, 784] with ``center`` [784] for
     ``placement="pixel"`` (returns PixelHopfieldNet). Nothing is retrained.
     """
     device = next(baseline_net.parameters()).device
     encoder = copy_net(baseline_net.encoder)
     head = copy_net(baseline_net.head)
-    bridge = HopfieldBridge(
+    bridge = HopfieldRetrievalLayer(
         prototypes,
         memory_labels,
         beta=beta,
@@ -255,7 +294,7 @@ def build_hopfield_net(
     ).to(device)
     if placement == "pixel":
         return PixelHopfieldNet(bridge, encoder, head).eval()
-    return MnistNet(encoder, bridge, head).eval()
+    return EmbeddingClassifier(encoder, bridge, head).eval()
 
 
 def kmeans(
@@ -283,7 +322,7 @@ def kmeans(
     return centroids
 
 
-def build_memory(
+def build_prototype_memory(
     z_train: torch.Tensor,
     labels: torch.Tensor,
     *,
@@ -442,7 +481,7 @@ def _record(
         point[key].append(val)
 
 
-def compare_outputs(
+def compare_paired_predictions(
     run: BaselineRun,
     base_out: dict[str, torch.Tensor],
     hop_out: dict[str, torch.Tensor],
@@ -461,12 +500,12 @@ def compare_outputs(
     }
 
 
-def compare_on_test(run: BaselineRun, hop_net: MnistNet, kind: str, level: float) -> dict[str, Any]:
+def compare_on_test(run: BaselineRun, hop_net: EmbeddingClassifier, kind: str, level: float) -> dict[str, Any]:
     """Paired Baseline-vs-Hopfield evaluation on one (kind, level) test set."""
     z = run.test_embeddings(kind, level)
     base_out = forward_embeddings(run.net, z, batch_size=run.batch_size, device=run.device)
     hop_out = forward_embeddings(hop_net, z, batch_size=run.batch_size, device=run.device)
-    return compare_outputs(run, base_out, hop_out, run.splits.test_labels)
+    return compare_paired_predictions(run, base_out, hop_out, run.splits.test_labels)
 
 
 def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]:
@@ -478,13 +517,13 @@ def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]
     return [(f"k={k}{' centered' if c else ' raw'}", k, c) for k, c in designs]
 
 
-def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float) -> MnistNet:
+def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float) -> EmbeddingClassifier:
     """Hopfield net whose L8 memory is built from ``run``'s training embeddings."""
-    memory, labels, offset = build_memory(
+    memory, labels, offset = build_prototype_memory(
         run.z_train, run.splits.train_labels, per_class=per_class, center=center, seed=run.seed
     )
     net = build_hopfield_net(run.net, memory, labels, beta=beta, center=offset)
-    assert isinstance(net, MnistNet) and isinstance(net.bridge, HopfieldBridge)
+    assert isinstance(net, EmbeddingClassifier) and isinstance(net.bridge, HopfieldRetrievalLayer)
     return net
 
 
@@ -494,7 +533,7 @@ def selection_label(sets: Sequence[tuple[str, float]]) -> str:
     return "clean val" if parts == ["clean"] else "mean of val " + " + ".join(parts)
 
 
-def beta_curve(
+def validation_accuracy_by_beta(
     net: nn.Module,
     run: BaselineRun,
     betas: list[float],
@@ -504,7 +543,7 @@ def beta_curve(
 ) -> list[float]:
     """Validation score per beta: mean head_acc over the selection sets."""
     bridge = net.input_bridge if pixel else net.bridge
-    assert isinstance(bridge, HopfieldBridge)
+    assert isinstance(bridge, HopfieldRetrievalLayer)
     labels = run.splits.val_labels
     curve = []
     for beta in betas:
@@ -515,7 +554,7 @@ def beta_curve(
                 out = forward_images(net, run.val_images(kind, level),
                                      batch_size=run.batch_size, device=run.device)
             else:
-                assert isinstance(net, MnistNet)
+                assert isinstance(net, EmbeddingClassifier)
                 out = forward_embeddings(net, run.val_embeddings(kind, level),
                                          batch_size=run.batch_size, device=run.device)
             accs.append((out["head_pred"] == labels).float().mean().item())
@@ -535,8 +574,73 @@ def select_beta(betas: list[float], curves: list[list[float]]) -> tuple[float, l
 # ---------------------------------------------------------------------------
 
 
+L8_SECTION = "hopfield_l8"
+
+
+def memory_fingerprint(cfg: dict[str, Any], num_train: int, betas: Sequence[float]) -> dict[str, Any]:
+    """Settings a beta selected on validation data depends on (frozen backbone, memory, grid)."""
+    return {
+        "backbone": {
+            **{k: cfg[k] for k in ("epochs", "batch_size", "lr", "val_size")},
+            "num_train": num_train,
+            "architecture": [32, 64, 128, 64],
+        },
+        "beta_values": list(betas),
+        "selection_sets": [list(s) for s in cfg["beta_selection_sets"]],
+        "prototypes_per_class": cfg["prototypes_per_class"],
+        "center_prototypes": cfg["center_prototypes"],
+    }
+
+
+def l8_fingerprint(cfg: dict[str, Any], num_train: int) -> dict[str, Any]:
+    return {**memory_fingerprint(cfg, num_train, cfg["beta_values"]), "placements": cfg["placements"]}
+
+
+def hopfield_l8_params(cfg: dict[str, Any], data: Sequence[torch.Tensor]) -> dict[str, Any]:
+    """Stored beta*, pixel beta, memory-variant betas and their validation curves."""
+    return require_tuned(cfg, L8_SECTION, l8_fingerprint(cfg, train_size(cfg, data)))
+
+
+@dataclass
+class SeedNets:
+    """The Hopfield networks of one seed, all sharing the seed's frozen backbone."""
+
+    hop: EmbeddingClassifier
+    variants: dict[str, EmbeddingClassifier]
+    pixel: PixelHopfieldNet | None
+
+
+def build_seed_nets(
+    cfg: dict[str, Any],
+    run: BaselineRun,
+    *,
+    beta: float,
+    variant_betas: dict[str, float] | None = None,
+    beta_pixel: float | None = None,
+) -> SeedNets:
+    """Configured L8 net, every memory-design variant, and the pixel-placement net."""
+    configured = (cfg["prototypes_per_class"], cfg["center_prototypes"])
+    hop = build_embedding_net(run, *configured, beta=beta)
+    variants: dict[str, EmbeddingClassifier] = {}
+    for name, per_class, center in memory_variants(configured):
+        variants[name] = hop if (per_class, center) == configured else build_embedding_net(
+            run, per_class, center, beta=(variant_betas or {}).get(name, beta)
+        )
+    pixel_net = None
+    if "pixel" in cfg["placements"]:
+        flat = run.splits.train_images.flatten(1)
+        pixel_protos, pixel_labels = compute_prototypes(flat, run.splits.train_labels)
+        built = build_hopfield_net(
+            run.net, pixel_protos, pixel_labels, beta=beta_pixel if beta_pixel is not None else beta,
+            placement="pixel", center=flat.mean(dim=0),
+        )
+        assert isinstance(built, PixelHopfieldNet)
+        pixel_net = built
+    return SeedNets(hop=hop, variants=variants, pixel=pixel_net)
+
+
 def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, Any]:
-    """Run E0-E8 for every configured seed and return all raw results."""
+    """Run E0-E9 for every configured seed with the stored tuned values; nothing is tuned here."""
     threads = configure_threads(cfg["cost"]["num_threads"])
     device = resolve_device(cfg["device"])
     env = environment_info(device)
@@ -544,70 +648,51 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
     data = load_mnist(cfg["data_dir"])
     betas = cfg["beta_values"]
 
-    # Stage 0: split sizes (logged first), then tune the baseline before any
-    # backbone is trained; the winning lr / batch / epochs are written into cfg.
+    # Stage 0: split sizes, then the stored baseline tuning (lr / batch / epochs -> cfg)
+    # and the stored validation-selected betas (benchmarks.mnist.tuning).
     splits_info = split_table(cfg, data)
     print("Data splits\n" + "\n".join(format_split_table(splits_info)))
-    tuning = tune_baseline(cfg, data, device, retrain=retrain)
+    tuning = apply_baseline_params(cfg, data)
     if tuning is not None:
-        print("Baseline tuning\n" + "\n".join(format_tuning_table(tuning)))
-
-    # Stage 1: frozen baselines, memories, Hopfield nets, validation curves.
+        print("Baseline tuning (stored)\n" + "\n".join(format_tuning_table(tuning)))
+    tuned = hopfield_l8_params(cfg, data)
+    beta_star: float = tuned["beta_star"]
+    beta_pixel: float | None = tuned["beta_pixel"]
+    variant_betas: dict[str, float] = tuned["variant_betas"]
+    val_curves: dict[str, list[list[float]]] = tuned["val_curves"]
+    mean_val_curve: list[float] = tuned["mean_val_curve"]
     sel_sets = cfg["beta_selection_sets"]
+    print(f"beta* = {beta_star:g} (stored; validation head_acc on {selection_label(sel_sets)},"
+          f" tuned on seeds {tuned['seeds']})")
+
+    # Stage 1: frozen baselines, memories, Hopfield nets.
     configured = (cfg["prototypes_per_class"], cfg["center_prototypes"])
     variants = memory_variants(configured)
     runs: list[BaselineRun] = []
-    hop_nets: list[MnistNet] = []
-    variant_nets: dict[str, list[MnistNet]] = {name: [] for name, _, _ in variants}
+    hop_nets: list[EmbeddingClassifier] = []
+    variant_nets: dict[str, list[EmbeddingClassifier]] = {name: [] for name, _, _ in variants}
     pixel_nets: list[PixelHopfieldNet | None] = []
     setup_times: list[float] = []
-    val_curves: dict[str, list[list[float]]] = {"embedding": [], "pixel": []}
-    variant_curves: dict[str, list[list[float]]] = {name: [] for name, _, _ in variants}
     for seed in cfg["seeds"]:
         run = prepare_baseline_run(cfg, data, seed, device, retrain=retrain)
         start = time.perf_counter()
-        hop = build_embedding_net(run, *configured, beta=betas[0])
+        nets = build_seed_nets(cfg, run, beta=beta_star, variant_betas=variant_betas, beta_pixel=beta_pixel)
         setup_times.append(run.prototype_time_s + time.perf_counter() - start)
-        val_curves["embedding"].append(beta_curve(hop, run, betas, sel_sets))
-
-        for name, per_class, center in variants:
-            net = hop if (per_class, center) == configured else build_embedding_net(
-                run, per_class, center, beta=betas[0]
-            )
-            variant_nets[name].append(net)
-            variant_curves[name].append(
-                val_curves["embedding"][-1] if net is hop
-                else beta_curve(net, run, betas, sel_sets)
-            )
-
-        pixel_net = None
-        if "pixel" in cfg["placements"]:
-            flat = run.splits.train_images.flatten(1)
-            pixel_protos, pixel_labels = compute_prototypes(flat, run.splits.train_labels)
-            pixel_net = build_hopfield_net(
-                run.net, pixel_protos, pixel_labels, beta=betas[0],
-                placement="pixel", center=flat.mean(dim=0),
-            )
-            assert isinstance(pixel_net, PixelHopfieldNet)
-            val_curves["pixel"].append(beta_curve(pixel_net, run, betas, sel_sets, pixel=True))
+        for name in variant_nets:
+            variant_nets[name].append(nets.variants[name])
         runs.append(run)
-        hop_nets.append(hop)
-        pixel_nets.append(pixel_net)
-
-    beta_star, mean_val_curve = select_beta(betas, val_curves["embedding"])
-    beta_pixel = select_beta(betas, val_curves["pixel"])[0] if val_curves["pixel"] else None
-    variant_betas = {name: select_beta(betas, c)[0] for name, c in variant_curves.items()}
-    print(f"beta* = {beta_star:g} (validation head_acc on {selection_label(sel_sets)},"
-          " ties -> smallest beta)")
+        hop_nets.append(nets.hop)
+        pixel_nets.append(nets.pixel)
 
     # Stage 2: paired test-set experiments.
     results: dict[str, list[dict[str, Any]]] = {}
     confusions: dict[str, torch.Tensor] = {}
     sanity_raw: dict[str, list[Any]] = {"s1": [], "s2": [], "s3": []}
+    split_acc: list[dict[str, dict[str, float]]] = []
     grids = noise_grids(cfg)
     sigma = cfg["noisy_sigma"]
     for run, hop, pixel_net in zip(runs, hop_nets, pixel_nets):
-        assert isinstance(hop.bridge, HopfieldBridge)
+        assert isinstance(hop.bridge, HopfieldRetrievalLayer)
         bridge = hop.bridge
         print(f"  seed {run.seed}: evaluating")
         labels = run.splits.test_labels
@@ -617,6 +702,12 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
             confusions[name] = confusions.get(name, torch.zeros_like(conf)) + conf
 
         bridge.set_retrieval(beta=beta_star, num_updates=1)
+        inputs, split_labels = clean_split_inputs(run)
+        split_acc.append({name: split_accuracy(net, inputs, split_labels, batch_size=run.batch_size,
+                                               device=run.device)
+                          for name, net in (("baseline", run.net), ("hopfield", hop))})
+        print("    train/test accuracy: " + "  ".join(
+            f"{m} {a['train']:.4f}/{a['test']:.4f}" for m, a in split_acc[-1].items()), flush=True)
         pair = compare_on_test(run, hop, "gaussian", 0.0)
         _record(results, "E1", 0, "clean", pair)
         keep_confusion("hopfield_clean", pair, "hopfield")
@@ -655,14 +746,14 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
                 pix_out = forward_images(
                     pixel_net, run.splits.test_images, batch_size=run.batch_size, device=run.device
                 )
-                pair = compare_outputs(run, base_out, pix_out, labels)
+                pair = compare_paired_predictions(run, base_out, pix_out, labels)
                 _record(results, "E6", i, placement, pair, beta=beta_pixel)
 
         # E9: memory design, each variant at its own validation-selected beta.
         seed_idx = runs.index(run)
         for i, (name, _, _) in enumerate(variants):
             vnet = variant_nets[name][seed_idx]
-            assert isinstance(vnet.bridge, HopfieldBridge)
+            assert isinstance(vnet.bridge, HopfieldRetrievalLayer)
             vnet.bridge.set_retrieval(beta=variant_betas[name], num_updates=1)
             _record(results, "E9a", i, name, compare_on_test(run, vnet, "gaussian", 0.0),
                     beta=variant_betas[name])
@@ -713,6 +804,7 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
         "results": results,
         "confusions": {k: v.tolist() for k, v in confusions.items()},
         "sanity_raw": sanity_raw,
+        "split_accuracy": {"per_seed": split_acc, "summary": summarize_split_accuracy(split_acc)},
         "cost": cost,
     }
 
@@ -720,7 +812,7 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
 def measure_all_costs(
     cfg: dict[str, Any],
     run: BaselineRun,
-    hop: MnistNet,
+    hop: EmbeddingClassifier,
     beta_star: float,
     device: torch.device,
     *,
@@ -729,7 +821,7 @@ def measure_all_costs(
 ) -> dict[str, Any]:
     """E7 (batch 256), E8 (batch sweep) and E4 latency per T, on the first seed's nets."""
     c = cfg["cost"]
-    assert isinstance(hop.bridge, HopfieldBridge)
+    assert isinstance(hop.bridge, HopfieldRetrievalLayer)
     hop.bridge.set_retrieval(beta=beta_star, num_updates=1)
     models: dict[str, nn.Module] = {"baseline": run.net, "hopfield": hop}
     timing = {"repeats": c["repeats"], "warmup": c["warmup"], "iters": c["iters"]}
@@ -759,7 +851,7 @@ def measure_all_costs(
 
     static: dict[str, dict[str, Any]] = {}
     for name, model in models.items():
-        assert isinstance(model, MnistNet)
+        assert isinstance(model, EmbeddingClassifier)
         breakdown = analytical_macs(model)
         static[name] = {
             "trainable_params": count_trainable_params(model),
@@ -828,14 +920,14 @@ def seed_stats(seed_deltas: Sequence[float]) -> dict[str, Any]:
 
 
 def auc_summary(points: list[dict[str, Any]], metric: str) -> dict[str, Any]:
-    """robust_auc of ``metric`` per seed and model; mean ± std and Δ (H−B)."""
+    """accuracy_auc_over_severity of ``metric`` per seed and model; mean ± std and Δ (H−B)."""
     levels = [float(p["value"]) for p in points]
     num_seeds = len(points[0]["baseline"])
     out: dict[str, Any] = {}
     per_seed: dict[str, list[float]] = {}
     for model in MODELS:
         per_seed[model] = [
-            robust_auc(levels, [p[model][s][metric] for p in points]) for s in range(num_seeds)
+            accuracy_auc_over_severity(levels, [p[model][s][metric] for p in points]) for s in range(num_seeds)
         ]
         out[model] = mean_std(per_seed[model])
     out["delta"] = out["hopfield"][0] - out["baseline"][0]
@@ -1088,6 +1180,14 @@ def build_report(raw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
                      " Hopfield proto_acc is the class with the most retrieval weight.")
     sections.append(("E1 Clean performance", lines))
     summary["E1"] = aggregate_point(e1[0], "head_acc")
+
+    if raw.get("split_accuracy"):
+        split_summary = raw["split_accuracy"]["summary"]
+        lines = [" E1b Train vs test accuracy   Varied: model, data split"
+                 f"   Held fixed: β=β*={bstar:g}, T=1, clean", f"     {ctx}",
+                 *format_split_accuracy(split_summary, {"baseline": "Baseline", "hopfield": "Hopfield@L8"})]
+        sections.append(("E1b Train vs test accuracy", lines))
+        summary["split_accuracy"] = split_summary
 
     e2 = res["E2"]
     lines = table_header("E2", "How does β shape retrieval?", "β", "clean, T=1",
@@ -1527,10 +1627,46 @@ def plot_costs(raw: dict[str, Any], path: Path) -> bool:
     return True
 
 
+# ---------------------------------------------------------------------------
+# Multiple-comparison helpers (shared by the corruption and placement experiments)
+# ---------------------------------------------------------------------------
+
+
+
+def holm_adjusted_p_values(p_values: Sequence[float]) -> list[float]:
+    """Holm step-down adjustment, returned in the input order."""
+    order = sorted(range(len(p_values)), key=lambda i: p_values[i])
+    adjusted = [1.0] * len(p_values)
+    running_max = 0.0
+    for rank, index in enumerate(order):
+        running_max = max(running_max, (len(p_values) - rank) * p_values[index])
+        adjusted[index] = min(1.0, running_max)
+    return adjusted
+
+
+def spearman_correlation(xs: Sequence[float], ys: Sequence[float]) -> float | None:
+    """Rank correlation with average ranks for ties; None when undefined."""
+
+    def average_ranks(values: Sequence[float]) -> list[float]:
+        return [
+            sum(v < value for v in values) + (sum(v == value for v in values) + 1) / 2
+            for value in values
+        ]
+
+    if len(xs) < 3:
+        return None
+    rx, ry = average_ranks(xs), average_ranks(ys)
+    mean_x, mean_y = sum(rx) / len(rx), sum(ry) / len(ry)
+    covariance = sum((a - mean_x) * (b - mean_y) for a, b in zip(rx, ry))
+    scale = math.sqrt(sum((a - mean_x) ** 2 for a in rx) * sum((b - mean_y) ** 2 for b in ry))
+    return covariance / scale if scale > 0 else None
+
+
 def main(argv: list[str] | None = None) -> None:
-    args = build_arg_parser(
-        "Task 13: MNIST prototype retrieval, Baseline vs Hopfield (one variable at a time)."
-    ).parse_args(argv)
+    parser = build_arg_parser(
+        "Task 13: MNIST prototype retrieval, Baseline vs Hopfield at L8 (one variable at a time)."
+    )
+    args = parser.parse_args(argv)
     cfg = config_from_args(args)
     print(f"Running Task 13 from {args.config}{' (quick)' if cfg['quick'] else ''}")
     raw = run_experiment(cfg, retrain=args.retrain)
