@@ -173,8 +173,11 @@ def train_step(model: MnistNet, bank: OnlineHopfieldBank, optimizer: torch.optim
                images: torch.Tensor, labels: torch.Tensor, example_ids: torch.Tensor, *,
                epoch: int, batch: int, step: int, seed: int, run_id: str,
                cfg: dict[str, Any], writer: EventWriter | None = None,
-               costs: dict[str, float] | None = None, memory_enabled: bool = True) -> dict[str, Any]:
+               costs: dict[str, float] | None = None, memory_enabled: bool = True,
+               admission_policy: str = "accuracy_guided") -> dict[str, Any]:
     """One direct optimizer step, after fixed batch decisions and ordered commits."""
+    if admission_policy not in ("accuracy_guided", "all_direct_correct"):
+        raise ValueError(f"Unsupported admission policy: {admission_policy!r}.")
     device = next(model.parameters()).device
     costs = costs if costs is not None else {}
     optimizer.zero_grad(set_to_none=True)
@@ -222,7 +225,9 @@ def train_step(model: MnistNet, bank: OnlineHopfieldBank, optimizer: torch.optim
                 action, reason, write_seq = "skip", categories[i], None
                 local_before_version = bank.version
                 distance = None
-                if (snapshot.ready and categories[i] == "harmed") or (not snapshot.ready and direct_correct):
+                eligible = (direct_correct if not snapshot.ready or admission_policy == "all_direct_correct"
+                            else categories[i] == "harmed")
+                if eligible:
                     with timed(costs, "assignment", device):
                         proposal = bank.plan_candidate(queries[i], int(labels[i]), bootstrap=not snapshot.ready)
                     action, reason, distance = proposal.action, proposal.reason, proposal.distance
@@ -234,6 +239,7 @@ def train_step(model: MnistNet, bank: OnlineHopfieldBank, optimizer: torch.optim
                         with timed(costs, "local_diagnostics", device):
                             after = _local_prediction(model, bank, queries[i], snapshot.ready)
                         write.update(common, decision_snapshot_version=snapshot.version,
+                                     admission_policy=admission_policy, snapshot_category=categories[i],
                                      local_before_prediction=before, local_after_prediction=after,
                                      local_direct_prediction=int(direct[i]),
                                      local_before_correct=None if before is None else before == int(labels[i]),
@@ -259,6 +265,7 @@ def train_step(model: MnistNet, bank: OnlineHopfieldBank, optimizer: torch.optim
                                           hopfield_correct=None if hop is None else bool(hop[i] == labels[i]),
                                           fallback_prediction=int(direct[i]) if hop is None else None,
                                           category=categories[i], action=action, reason=reason, distance=distance,
+                                          admission_policy=admission_policy, allows_consideration=eligible,
                                           snapshot_version=snapshot.version,
                                           working_version_before=local_before_version,
                                           working_version_after=bank.version, write_seq=write_seq))

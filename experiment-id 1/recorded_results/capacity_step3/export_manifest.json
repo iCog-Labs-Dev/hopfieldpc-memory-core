@@ -1,0 +1,77 @@
+{
+  "experiment": "exp001_step03_all_correct_capacity_comparison_aggregate",
+  "aggregate_directory": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_comparison_20261105_01",
+  "source_runs": [
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162"
+  ],
+  "files": {
+    "analysis_summary.json": {
+      "bytes": 10496,
+      "sha256": "eafbb5ec64f276c98dc98e82c1f1118d2d1b25df091cebb3d8851d92a7389282"
+    },
+    "capacity_summary.png": {
+      "bytes": 95129,
+      "sha256": "d0f3f20c702f37c0814a0a6bd9f09b5768c8f60075803b9ab5ddc97e0dae7ae3"
+    },
+    "capacity_training.png": {
+      "bytes": 186586,
+      "sha256": "04a2b1286912fb868b323436ea22c6c7d66cce05274b5099d4e93f6ab8a76c3c"
+    },
+    "manifest.json": {
+      "bytes": 16971,
+      "sha256": "d55df55b4c99dfcf4cfb8cc97f0e1a3ee5c45e17dcec009f5476c564a0236505"
+    },
+    "report.md": {
+      "bytes": 1783,
+      "sha256": "5d614a1ec6112cd7309db82d63a33970ff6e03521b85bddab68971cd39d64055"
+    },
+    "resolved_settings.json": {
+      "bytes": 3911,
+      "sha256": "fe97932bd3f98961e0c890f182856ab95c6df2bcc00d5687a1b4f4ecd54c7ff6"
+    },
+    "results.csv": {
+      "bytes": 36835,
+      "sha256": "b7361816790a492e616b901b73c7f495c1e25465d36eadfef7b322e4083fd631"
+    },
+    "results.json": {
+      "bytes": 1387461,
+      "sha256": "c5643b837423a6c802cf90f686eed4271087edf0c268afe16c86d53d05f44047"
+    },
+    "runtime_interruption.json": {
+      "bytes": 8807,
+      "sha256": "30054829bc6162ae697fd66457d04ac05363fb2e6aabb938fb439203f4fc5da1"
+    },
+    "seed1_entry157_provenance.json": {
+      "bytes": 894,
+      "sha256": "051d7111390596c2a4d3f227921440aa947b5c87b2280eda218f4e3d7e7d2b75"
+    },
+    "seed1_source36653_history.json": {
+      "bytes": 5274,
+      "sha256": "e63028e090c1de5eb382218f938a11d568ba8c5147ef8f78251eecb8d1581baa"
+    },
+    "selection.json": {
+      "bytes": 239,
+      "sha256": "83691b790498eca9472ef199184ff0d3e8137848d24179fc8de8f994c0d9813b"
+    },
+    "training_source.json": {
+      "bytes": 278,
+      "sha256": "9278981b9d2a3c880e3531b0949c297c2dc04ff10b9a1c92894f0897e537f1f7"
+    },
+    "training_source.zip": {
+      "bytes": 3377217,
+      "sha256": "10bf568f344a7c903d59aeca3c7800871966b1ddfb821ea780f455dd89870487"
+    },
+    "validation_corruptions.png": {
+      "bytes": 160516,
+      "sha256": "c3490af91cc8e069893476175efdb689227579a7f2fa38c820503b21e3e08899"
+    },
+    "verification.json": {
+      "bytes": 6344,
+      "sha256": "77610741ee03b3794ab70b11d2ecd0d638bd55afbfc667258f34aee186b2295e"
+    }
+  },
+  "large_artifacts": "Local and ignored; results.json records committed log cursors and worker directories.",
+  "training_source": "One exact source tree, verified in all three workers."
+}

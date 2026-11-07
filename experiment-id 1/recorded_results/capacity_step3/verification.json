@@ -1,0 +1,113 @@
+{
+  "status": "passed",
+  "regression_tests_passed": 467,
+  "regression_seconds": 45.18,
+  "regression_command": "python -B -c \"import torch,pytest;torch.set_num_threads(1);raise SystemExit(pytest.main(['tests','experiment-id 1/tests','-q','--tb=short','-p','no:cacheprovider']))\"",
+  "original_src_and_benchmarks_unchanged_from": "1f330229169dafbb3fa32ca0044af373701ed59f",
+  "protected_artifact_hashes_verified": 47,
+  "source_archives": [
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587",
+      "archive_sha256": "10bf568f344a7c903d59aeca3c7800871966b1ddfb821ea780f455dd89870487",
+      "source_tree_sha256": "e98688e11be15dac0e62408f737af56b8732803a69764cbc477bb3f7d4a5c48e"
+    },
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f",
+      "archive_sha256": "10bf568f344a7c903d59aeca3c7800871966b1ddfb821ea780f455dd89870487",
+      "source_tree_sha256": "e98688e11be15dac0e62408f737af56b8732803a69764cbc477bb3f7d4a5c48e"
+    },
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162",
+      "archive_sha256": "e87ba0d299903f6202077b08bd6cb57deff9780c3efeaef4d2b6d94a141cd803",
+      "source_tree_sha256": "e98688e11be15dac0e62408f737af56b8732803a69764cbc477bb3f7d4a5c48e"
+    }
+  ],
+  "archived_source_members_match_before_report_updates": true,
+  "epoch_cnn_adam_shuffle_and_control_exact": 12,
+  "final_bank_replays_exact": 6,
+  "independent_assignment_ema_audits_passed": 6,
+  "exposure_records_audited": 1320000,
+  "mutation_records_audited": 1274111,
+  "validation_rows_checked": 255,
+  "paired_capacity_rows_checked": 51,
+  "shared_reference_metric_rows_exact": 204,
+  "confusion_per_class_paired_and_auc_identities_verified": true,
+  "original_split_ids_exact": true,
+  "distinct_validation_ids": 13814,
+  "numerical_failures": 0,
+  "operational_interruptions": [
+    {
+      "seed": 1,
+      "error": "RuntimeError",
+      "message": "[enforce fail at alloc_cpu.cpp:117] data. DefaultCPUAllocator: not enough memory: you tried to allocate 3211264 bytes.",
+      "discarded_optimizer_updates": 322,
+      "resumed_from_original_warmup_epoch": 1,
+      "uncommitted_tails": "Retained but excluded by committed cursors."
+    }
+  ],
+  "no_new_test_set_evaluation_or_selection": true,
+  "new_checkpoint_hashes": [
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587\\seed_0\\checkpoints\\epoch_2.pt",
+      "bytes": 5768007,
+      "sha256": "d9ce04f89d7a61950ddafd9f46e6620a98bb738e2371441e5e413373e367e2fa"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587\\seed_0\\checkpoints\\epoch_3.pt",
+      "bytes": 5783751,
+      "sha256": "b909149d17d03926bc33452c427e5f30306fb3a3fc61cc13981077c7d503499a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587\\seed_0\\checkpoints\\epoch_4.pt",
+      "bytes": 5798919,
+      "sha256": "99b581c4915b928df273a600975d1fb0dbc6283ff6db36d251bf54ebf7b12dd8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587\\seed_0\\checkpoints\\epoch_5.pt",
+      "bytes": 5813831,
+      "sha256": "cde38be30a2b3b8301b951f3393593f37284815232996d1f809939ef924fe01a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f\\seed_1\\checkpoints\\epoch_2.pt",
+      "bytes": 5768327,
+      "sha256": "7fc09151fd30014fd73ae3cedde47f59919cc3dc48260634dca1b9d94ad80131"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f\\seed_1\\checkpoints\\epoch_3.pt",
+      "bytes": 5784199,
+      "sha256": "fe835de77732257b176229822e565efb620727b146173496e94ee27b0179308c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f\\seed_1\\checkpoints\\epoch_4.pt",
+      "bytes": 5799047,
+      "sha256": "77a502ceea7af34875266d265edbea896bcfecb8c9fc6c7ac44d6dfa76c86f88"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f\\seed_1\\checkpoints\\epoch_5.pt",
+      "bytes": 5813895,
+      "sha256": "2a116c8f93c35f15bf5a451c8fd405b0704676e3b523299864a352af84334f2a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162\\seed_2\\checkpoints\\epoch_2.pt",
+      "bytes": 5768263,
+      "sha256": "0654bf83c4fd030f128499507af9c43141bc4cb9ba7ac639492fa6a88cf14345"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162\\seed_2\\checkpoints\\epoch_3.pt",
+      "bytes": 5783815,
+      "sha256": "2c5fab919485173407180197d465f1b70c4141ac5cf00a173a2f432e5c08b0ec"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162\\seed_2\\checkpoints\\epoch_4.pt",
+      "bytes": 5798855,
+      "sha256": "8d09e33fbaeac5afc4ae09e86478bea3daa25cff937e001c93db942ba1868409"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162\\seed_2\\checkpoints\\epoch_5.pt",
+      "bytes": 5814023,
+      "sha256": "268bcdd06eb4c8e5542342ac3e5bd3d84e9e7c2fa0153dc1e70f6acc8679e809"
+    }
+  ],
+  "timing_accounting": "Per-process component timers overlap with training wall time. Committed timers exclude the failed partial attempt. Study wall time includes it.",
+  "storage_accounting": "Logical file lengths; physical NTFS allocation may differ. Excluded tail bytes are reported separately."
+}

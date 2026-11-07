@@ -1,0 +1,7 @@
+{
+  "capacity": 16,
+  "clean_correct": 14772,
+  "secondary_mean_auc": 0.7515471463993428,
+  "criterion": "clean_correct_count; ties: mean of Gaussian/salt-pepper/occlusion AUC; smaller capacity",
+  "validation_selection_only": true
+}

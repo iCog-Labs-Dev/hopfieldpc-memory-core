@@ -1,5 +1,9 @@
 # Experiment 1: diagnosis and fixability
 
+Follow-up: the genuine during-training admission comparison is now complete;
+see [Step 1](STEP01_ADMISSION.md). The diagnostic controls below preceded that
+comparison and remain separate from it.
+
 ## Verdict
 
 No accuracy-causing implementation defect was identified in the audited paths. The implementation follows the specified eligibility, assignment, EMA and snapshot rules. This does not prove the software has no bugs.

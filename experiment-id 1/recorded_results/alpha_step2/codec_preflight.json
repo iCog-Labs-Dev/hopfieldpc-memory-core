@@ -1,0 +1,23 @@
+{
+  "audit": {
+    "replay_exact": true,
+    "independent_assignment_and_ema_verified": true,
+    "native_boundary_checks": 16,
+    "seed": 10,
+    "examples": 55000,
+    "eligible": 54076,
+    "fallback": 128,
+    "merge": 52293,
+    "both_correct": 53296,
+    "add": 70,
+    "harmed": 654,
+    "both_wrong": 720,
+    "helped": 202
+  },
+  "seconds": 89.40225460000511,
+  "old_bytes": 41896904,
+  "residual_bytes": 17556369,
+  "codec": "fp32_xor_ema_v1",
+  "projected_nine_bank_bytes": 632029284,
+  "free_disk_bytes": 1125482496
+}

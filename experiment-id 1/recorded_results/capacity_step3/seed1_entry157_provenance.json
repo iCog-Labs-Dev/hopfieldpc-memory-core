@@ -1,0 +1,36 @@
+[
+  {
+    "seed": 1,
+    "bank": "capacity_16",
+    "entry_id": 157,
+    "entry_age_steps": 792,
+    "entry_lifetime_steps": 1128,
+    "last_write": {
+      "entry_id": 157,
+      "label": 6,
+      "action": "merge",
+      "epoch": 4,
+      "optimizer_step": 1358,
+      "example_id": 36653,
+      "local_direct_prediction": 6,
+      "metadata": {
+        "entry_id": 157,
+        "label": 6,
+        "created_step": 1022,
+        "created_epoch": 3,
+        "first_source_id": 36653,
+        "accepted_exposure_count": 2,
+        "updated_step": 1358,
+        "updated_epoch": 4,
+        "latest_source_id": 36653,
+        "bank_version": 114501
+      },
+      "vectors": {
+        "file": "writes/chunk_51c1a61e2f014df69625120e6973a718_000113.npz",
+        "row": 336,
+        "old_present": true,
+        "encoding": "fp32_xor_ema_v1"
+      }
+    }
+  }
+]

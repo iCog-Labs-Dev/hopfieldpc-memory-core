@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "regression_tests_passed": 450,
+  "regression_command": "python -B -c \"import torch,pytest; torch.set_num_threads(1); raise SystemExit(pytest.main(['tests','experiment-id 1/tests','-q','--tb=short','-p','no:cacheprovider']))\"",
+  "original_src_and_benchmarks_unchanged_from": "1f330229169dafbb3fa32ca0044af373701ed59f",
+  "protected_artifact_hashes_verified": 33,
+  "source_archives": [
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2",
+      "archive_sha256": "8afe79f3fe6432158ecb70c1ccc4047e32cd9e24c4166a9c1bcd05d44d4f8eaa",
+      "source_tree_sha256": "9f1e381c51f807f42e6fe1b9f82450a49a87bfed1aabad58858efaa84e8209de"
+    },
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4",
+      "archive_sha256": "8afe79f3fe6432158ecb70c1ccc4047e32cd9e24c4166a9c1bcd05d44d4f8eaa",
+      "source_tree_sha256": "9f1e381c51f807f42e6fe1b9f82450a49a87bfed1aabad58858efaa84e8209de"
+    },
+    {
+      "run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133",
+      "archive_sha256": "c1438fd840d71c0147173c0851d090edd4eef3c5ed834d4872af6f279e1dc5df",
+      "source_tree_sha256": "9f1e381c51f807f42e6fe1b9f82450a49a87bfed1aabad58858efaa84e8209de"
+    }
+  ],
+  "epoch_cnn_adam_shuffle_and_alpha_0p1_bank_exact": 12,
+  "bank_replays_exact": 9,
+  "independent_assignment_ema_audits_passed": 9,
+  "exposure_records_audited": 1980000,
+  "mutation_records_audited": 1902235,
+  "validation_rows_checked": 306,
+  "confusion_per_class_paired_delta_and_auc_identities_verified": true,
+  "all_720_prototypes_individually_correct": true,
+  "numerical_failures": 0,
+  "operational_interruptions": [
+    {
+      "seed": 0,
+      "reason": "Free disk space is below the 64 MiB checkpoint/log reserve; resume after freeing space.",
+      "discarded_optimizer_updates": 350,
+      "resumed_from_epoch": 4
+    },
+    {
+      "seed": 1,
+      "reason": "Free disk space is below the 64 MiB checkpoint/log reserve; resume after freeing space.",
+      "discarded_optimizer_updates": 350,
+      "resumed_from_epoch": 4
+    },
+    {
+      "seed": 2,
+      "reason": "Free disk space is below the 64 MiB checkpoint/log reserve; resume after freeing space.",
+      "discarded_optimizer_updates": 200,
+      "resumed_from_epoch": 4
+    }
+  ],
+  "discarded_updates_excluded": 900,
+  "no_test_set_evaluation_or_selection": true,
+  "source_unchanged_during_training": true,
+  "storage_accounting": "Logical file lengths; NTFS compression may reduce physical allocation.",
+  "timing_accounting": "Process timers describe committed work and overlap across workers/components. Wall time includes the low-space interruption and discarded partial work.",
+  "archived_source_members_verified_before_report_updates": true,
+  "regression_seconds": 192.47
+}

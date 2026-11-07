@@ -1,0 +1,277 @@
+{
+  "variant_id": "exp001_step03_all_correct_capacity_comparison_aggregate",
+  "step2_run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_comparison_20261104_01",
+  "parent_run": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39",
+  "config": {
+    "experiment_id": "exp_001_online_accuracy_guided_memory",
+    "display_name": "Experiment 1 - Online Accuracy-Guided Hopfield Memory",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "device": "auto",
+    "data_dir": "data",
+    "reports_dir": "experiment-id 1/results",
+    "num_classes": 10,
+    "total_epochs": 5,
+    "warmup_epochs": 1,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "val_size": 5000,
+    "train_subset": null,
+    "test_subset": null,
+    "eval_batch_size": 256,
+    "num_threads": 4,
+    "max_memories_per_class": 8,
+    "ema_alpha": 0.03,
+    "hopfield_beta": 5.0,
+    "hopfield_num_updates": 1,
+    "score_mode": "centered_cosine",
+    "write_distance": "centered_cosine_distance",
+    "merge_distance_threshold": 0.2,
+    "normalization_epsilon": 1e-08,
+    "memory_refresh": "none",
+    "bank_full_policy": "skip_write",
+    "drift_probe_per_class": 16,
+    "batch_post_write_diagnostics": true,
+    "event_chunk_size": 4096,
+    "write_chunk_size": 1024,
+    "fixed_reference": {
+      "prototypes_per_class": 8,
+      "center_policy": "post_training_train_mean",
+      "beta_policy": "same_fixed_beta"
+    },
+    "gaussian_sigmas": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      0.7,
+      1.0
+    ],
+    "salt_pepper_probs": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "occlusion_sizes": [
+      0,
+      7,
+      10,
+      14
+    ],
+    "quick": false
+  },
+  "parent_cnn_config": {
+    "experiment_id": "exp_001_online_accuracy_guided_memory",
+    "display_name": "Experiment 1 - Online Accuracy-Guided Hopfield Memory",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "device": "auto",
+    "data_dir": "data",
+    "reports_dir": "experiment-id 1/results",
+    "num_classes": 10,
+    "total_epochs": 5,
+    "warmup_epochs": 1,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "val_size": 5000,
+    "train_subset": null,
+    "test_subset": null,
+    "eval_batch_size": 256,
+    "num_threads": 4,
+    "max_memories_per_class": 8,
+    "ema_alpha": 0.1,
+    "hopfield_beta": 5.0,
+    "hopfield_num_updates": 1,
+    "score_mode": "centered_cosine",
+    "write_distance": "centered_cosine_distance",
+    "merge_distance_threshold": 0.2,
+    "normalization_epsilon": 1e-08,
+    "memory_refresh": "none",
+    "bank_full_policy": "skip_write",
+    "drift_probe_per_class": 16,
+    "batch_post_write_diagnostics": true,
+    "event_chunk_size": 4096,
+    "write_chunk_size": 1024,
+    "fixed_reference": {
+      "prototypes_per_class": 8,
+      "center_policy": "post_training_train_mean",
+      "beta_policy": "same_fixed_beta"
+    },
+    "gaussian_sigmas": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      0.7,
+      1.0
+    ],
+    "salt_pepper_probs": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "occlusion_sizes": [
+      0,
+      7,
+      10,
+      14
+    ],
+    "quick": false
+  },
+  "capacities": [
+    8,
+    16
+  ],
+  "control_capacity": 8,
+  "selected_alpha": 0.03,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "source": {
+    "commit": "5b35b4826ec80d92ccdbbcd31fa11d6c8da8640a",
+    "source_sha256": "e98688e11be15dac0e62408f737af56b8732803a69764cbc477bb3f7d4a5c48e"
+  },
+  "protected_files": {
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\manifest.json": "9169dfcb51708782f4a9a438da16500c140e1c2fb6368c7c2061039ec8bba95b",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\checkpoints\\epoch_1.pt": "85c4fd96942eb86cd1d38af192920739db627cc7b489012d324e4cab9bdbb0d3",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\checkpoints\\epoch_2.pt": "ecce0c9d830a785627305a9c64d9880339e458f06991794fc15d314f4c044a00",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\checkpoints\\epoch_3.pt": "569b7143aa92bf99bb707ba1545653a4cb778a963aec708e2beeaf57f86bfbe7",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\checkpoints\\epoch_4.pt": "8617828b8da49932c82dfb6b342c1b8d441ef0d53759f557d4139f08118213ff",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\checkpoints\\epoch_5.pt": "15fb48d63380d1f2b1d2d639a19776ba689483a772ea4ba9da9f5b94b11302d7",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_0\\fixed_reference.pt": "4e9098090be48192d20fbeed33b5c352f57386ac0a1c7a19ccc99b3a8c80b701",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_comparison_20261104_01\\manifest.json": "abf4999a52f7a47435de25cdc536661120b081fadd76b2e6854d38b7b7aeacfd",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_comparison_20261104_01\\results.json": "899f321a734387a88c741a7a462c1812b532f24d09ffef2c0c8c8610165b2eb3",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_0\\checkpoints\\epoch_2.pt": "3b7172d2dc11d51457c67ef2b8ca57e4de3df15290a58e2bcb0399e80fc1fafc",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_0\\checkpoints\\epoch_3.pt": "eb3271433300f75890205d681623e34d5ec08097af2b999788a60503b0b7f2dc",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_0\\checkpoints\\epoch_4.pt": "3e94ff92819bf599fda51e47c17b7114d9920c631727cdb046605013db7816c6",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_0\\checkpoints\\epoch_5.pt": "6ae15acf255e3d8641c07f59d007261df5b7033290bbeacbe79df0c1ad06d7e5",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\checkpoints\\epoch_1.pt": "1b6b4372bffe35c73567783160ce2462ab046ec6d1c704bccb321a9e494c6e48",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\checkpoints\\epoch_2.pt": "804f1dda95da6b0d7096f0aa0c5945068eb081f3413d37922343b410a9dfe35f",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\checkpoints\\epoch_3.pt": "24ad982a6048e61cf29cc6fef7e7f83313e23ee9289927fc0b564e16c064bdd2",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\checkpoints\\epoch_4.pt": "aed4b7677b4a2ade36b3a1aa1378d849cc5f4058b013510154b5060b7603e4a4",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\checkpoints\\epoch_5.pt": "1854e8671d6a2931a0e21aadd8313045358f7a0685db8e0720dd1b7779053948",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_1\\fixed_reference.pt": "7f1c2dedeae76be62afdaac7148117049afe191802bd8ae74efe0ff27a08b5d5",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_1\\checkpoints\\epoch_2.pt": "6474d140162264ae9da5471ae81e12c914e6d89a654493f6997c92dc7dfd67cb",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_1\\checkpoints\\epoch_3.pt": "8dafcdf1e433c5447165a5e460880dd33c2d1fb02d091a6407100b9ef2d25b7c",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_1\\checkpoints\\epoch_4.pt": "2042c8b8324da49a55b8bf0d651e45bdc532b53aae6f2ce3e9af6a99c39cfaee",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_3c910d3b4c6a42dfa20a1c9715a4a5d3\\seed_1\\checkpoints\\epoch_5.pt": "d50a1559b115065a3c96f95ca1ab029766ef4a51095fa3b74240a79dca7757a5",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\checkpoints\\epoch_1.pt": "345e383dfe923c23ae1602cbd82fc74494cb1b025a6bccfbe836a72e9d4abbf5",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\checkpoints\\epoch_2.pt": "f72b45546c4855ea2d8b55e5a61235c29ba0cdb5340ac7cdbf0686bec9c3cdb1",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\checkpoints\\epoch_3.pt": "535705d5fe68a382005896037d20b23d32339ef2b80677ddf5a0f64ae4ee8bec",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\checkpoints\\epoch_4.pt": "d24a0f0c55d3fdabdbbac429152b3714769931c17c3764bf0d3eeab9fcca0d1b",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\checkpoints\\epoch_5.pt": "973a43147351482b7466c9c0c71c8a29d883a51187b896cf8f041d7b3151405a",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\full\\dcee52a0d8484d75a46cc9b426940a39\\seed_2\\fixed_reference.pt": "750c0734d23b7bcf58f42c859766883084366cc704c55887744ca8e47953b59f",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_09cd69a188864177b0b4be469e5c3435\\seed_2\\checkpoints\\epoch_2.pt": "ac3855095e336e35ef244f0fe62de101fc677d12897a5c61bb902b2fbe236db1",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_09cd69a188864177b0b4be469e5c3435\\seed_2\\checkpoints\\epoch_3.pt": "2c6020ffd57c9cccd9f24fe4933fd21c655bd654fc695c7754a57b84c4a4177c",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_09cd69a188864177b0b4be469e5c3435\\seed_2\\checkpoints\\epoch_4.pt": "17a03a4052410e6d16836c48181c7d37416b5a3c685ad00aba5b6d26808fe5c4",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\admission_09cd69a188864177b0b4be469e5c3435\\seed_2\\checkpoints\\epoch_5.pt": "8a49edc4296688dd2e7d226978b8d24f3d3d7942b0c7ef72777352310d0ef5a7",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_comparison_20261104_01\\manifest.json": "e54a82d4407b7d4c85a69b53a61e19369fbad7cb186fd1a4d1b4f3a73963c958",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_comparison_20261104_01\\results.json": "50384e84d42e07a1e0d2f9e161649b19eada30c106962a451a8c545e9330fc58",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\checkpoints\\epoch_2.pt": "87e81bc07ac38cb07305dcef61bba173639774a06ba984c20d1e8e2cf0e1c16b",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\checkpoints\\epoch_3.pt": "0b469b7bb57ffb7cc8c68989b2314b97d719ec740f58df3e9c9a4207b1f35735",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\checkpoints\\epoch_4.pt": "b1be1cdc962cd1c24ae25218bdeea02288751c8ca875ebddf6eca1f7a26769eb",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\checkpoints\\epoch_5.pt": "cbff4860e1742aaba83a8032c3f8b6b3846bf8252bb9db3fb1d950c60f1b0338",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\checkpoints\\epoch_2.pt": "d34bd561394c7f824e0ca60f2e652a2caad6efee57f39ddd3aed89afa874f4ca",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\checkpoints\\epoch_3.pt": "369d74256c202488a27222ea20152a1b216ad4c965fd8536014cfa7dcbb049f6",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\checkpoints\\epoch_4.pt": "50ee0e887c45027a59db73a70e1bee7fa444115344166271a6adce8550821bde",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\checkpoints\\epoch_5.pt": "44a517b684dec5b99ffc0e0bc867c46b8823bf7f53e4fa54a2cc4922b73c146a",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\checkpoints\\epoch_2.pt": "87240c5455e7b2c4fd8a098b5965c893da6bfe6acdf05d14d07ced860c6748dc",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\checkpoints\\epoch_3.pt": "3ecc47a363101684add0dcbc1487ed75716c693e377e934111a43608c7890a02",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\checkpoints\\epoch_4.pt": "32df27cfd760acd0c9db5b67c865ff1f13274cbd930b99f56848babcb125609a",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\checkpoints\\epoch_5.pt": "d500146ad4cdd96f8e294facf0a77dee548e3e59635aa165925e8c27eeace0f0"
+  },
+  "bank_settings": {
+    "capacity_8": {
+      "ema_alpha": 0.03,
+      "max_memories_per_class": 8,
+      "admission_policy": "all_direct_correct",
+      "beta": 5.0,
+      "merge_distance_threshold": 0.2,
+      "normalization_epsilon": 1e-08
+    },
+    "capacity_16": {
+      "ema_alpha": 0.03,
+      "max_memories_per_class": 16,
+      "admission_policy": "all_direct_correct",
+      "beta": 5.0,
+      "merge_distance_threshold": 0.2,
+      "normalization_epsilon": 1e-08
+    }
+  },
+  "training_dataset_sha256": "e586140d4c70cdbad84d348b83c5072467362e5adfee0cb7bf3273e2cd7d656c",
+  "validation_only": true,
+  "test_set_opened": false,
+  "environment": {
+    "device": "cpu",
+    "gpu_model": null,
+    "cpu_model": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+    "num_threads": 4,
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.10",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "local_write_diagnostics": false,
+  "log_vector_encoding": "fp32_xor_ema_v1",
+  "disk_reserve_bytes": 134217728,
+  "shared_actual_cnn_training": true,
+  "backbone_feature_cache_used": false,
+  "selection_rule": "clean_correct_count; ties: mean of Gaussian/salt-pepper/occlusion AUC; smaller capacity",
+  "status": "complete",
+  "protected_artifacts_unchanged": true,
+  "exact_cnn_adam_and_control_every_epoch": true,
+  "all_mutation_audits_passed": true,
+  "artifact_type": "completed_seed_aggregate",
+  "source_runs": [
+    {
+      "run_directory": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_4705fb03a156457ba3fe92f491e89587",
+      "manifest_sha256": "9493fef63eeb100976249664625d5722c25b3f8aa3fcdf2ffb7952c96dcd3183",
+      "completed_seeds": [
+        {
+          "seed": 0,
+          "result_sha256": "8ae8656621ada58983481d92975c995905ff1f4875e8bd75a8a31c86f05ee34f"
+        }
+      ]
+    },
+    {
+      "run_directory": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_012131425295428b94973b8a9d2ca74f",
+      "manifest_sha256": "2bd48e51d279e23d6f2d6656b885c112ba900056aee6e3e35aa62a78fb2af538",
+      "completed_seeds": [
+        {
+          "seed": 1,
+          "result_sha256": "0892586cdec9a6fdc79aff011179611bfb15e1b872e107348de3d104b7807e55"
+        }
+      ]
+    },
+    {
+      "run_directory": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\capacity_d602ebf6c22f482d911e7371aaaf3162",
+      "manifest_sha256": "43b141911a57bfb10a101a07d1d9bbe8306d4d8aba5040ebae0f2c33326bc9cc",
+      "completed_seeds": [
+        {
+          "seed": 2,
+          "result_sha256": "96d19c6fa03ed605b3620d6ced7ba2f5595f1f8e48c247ffcde49905dc8c4c4c"
+        }
+      ]
+    }
+  ],
+  "aggregation_source": {
+    "commit": "5b35b4826ec80d92ccdbbcd31fa11d6c8da8640a",
+    "source_sha256": "e98688e11be15dac0e62408f737af56b8732803a69764cbc477bb3f7d4a5c48e"
+  },
+  "selection_scope": "All reported seeds; per-worker selections are not used."
+}

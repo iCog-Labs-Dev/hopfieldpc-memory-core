@@ -1,0 +1,457 @@
+{
+  "selection": {
+    "capacity": 16,
+    "clean_correct": 14772,
+    "secondary_mean_auc": 0.7515471463993428,
+    "criterion": "clean_correct_count; ties: mean of Gaussian/salt-pepper/occlusion AUC; smaller capacity",
+    "validation_selection_only": true
+  },
+  "clean": {
+    "direct": {
+      "correct_by_seed": [
+        4926,
+        4948,
+        4942
+      ],
+      "correct": 14816,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9877333333333334,
+      "helped": 0,
+      "harmed": 0,
+      "delta_vs_direct_pp": 0.0
+    },
+    "capacity_8": {
+      "correct_by_seed": [
+        4892,
+        4936,
+        4928
+      ],
+      "correct": 14756,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9837333333333333,
+      "helped": 34,
+      "harmed": 94,
+      "delta_vs_direct_pp": -0.4
+    },
+    "capacity_16": {
+      "correct_by_seed": [
+        4900,
+        4938,
+        4934
+      ],
+      "correct": 14772,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9848,
+      "helped": 30,
+      "harmed": 74,
+      "delta_vs_direct_pp": -0.29333333333333333
+    },
+    "accuracy_guided": {
+      "correct_by_seed": [
+        4883,
+        4922,
+        4919
+      ],
+      "correct": 14724,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9816,
+      "helped": 37,
+      "harmed": 129,
+      "delta_vs_direct_pp": -0.6133333333333333
+    },
+    "fixed_kmeans_reference": {
+      "correct_by_seed": [
+        4916,
+        4927,
+        4926
+      ],
+      "correct": 14769,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9846,
+      "helped": 43,
+      "harmed": 90,
+      "delta_vs_direct_pp": -0.31333333333333335
+    }
+  },
+  "robustness": {
+    "direct": {
+      "gaussian": 0.573299998541673,
+      "salt_pepper": 0.712837499876817,
+      "occlusion": 0.8787785740125748
+    },
+    "capacity_8": {
+      "gaussian": 0.6283733333150546,
+      "salt_pepper": 0.7627666667103767,
+      "occlusion": 0.8736928580772308
+    },
+    "capacity_16": {
+      "gaussian": 0.6230200037360191,
+      "salt_pepper": 0.7551833378771942,
+      "occlusion": 0.8764380975848153
+    },
+    "accuracy_guided": {
+      "gaussian": 0.6013566595812638,
+      "salt_pepper": 0.731170829385519,
+      "occlusion": 0.8643095308826083
+    },
+    "fixed_kmeans_reference": {
+      "gaussian": 0.6037533322970072,
+      "salt_pepper": 0.739716666440169,
+      "occlusion": 0.8747952353386652
+    }
+  },
+  "training": {
+    "capacity_8": {
+      "counts": {
+        "seed": 30,
+        "reason:bootstrap_seed": 30,
+        "skip": 26672,
+        "reason:class_already_seeded": 349,
+        "reason:direct_incorrect": 5,
+        "both_correct": 647632,
+        "harmed": 5270,
+        "both_wrong": 5135,
+        "merge": 633088,
+        "reason:within_threshold": 633088,
+        "add": 210,
+        "reason:beyond_threshold": 210,
+        "reason:both_wrong": 5135,
+        "reason:class_capacity_reached": 19604,
+        "helped": 1579,
+        "reason:helped": 1579
+      },
+      "exposures": 660000,
+      "genuine_comparisons": 659616,
+      "fallback": 384,
+      "successful_writes": 633328,
+      "entries_by_seed": [
+        80,
+        80,
+        80
+      ],
+      "own_class_correct_by_seed": [
+        80,
+        80,
+        80
+      ],
+      "snapshot_delta_accuracy_pp": -0.5595679910735943
+    },
+    "capacity_16": {
+      "counts": {
+        "seed": 30,
+        "reason:bootstrap_seed": 30,
+        "skip": 19217,
+        "reason:class_already_seeded": 349,
+        "reason:direct_incorrect": 5,
+        "both_correct": 648202,
+        "harmed": 4700,
+        "both_wrong": 5182,
+        "merge": 640304,
+        "reason:within_threshold": 640304,
+        "add": 449,
+        "reason:beyond_threshold": 449,
+        "reason:both_wrong": 5182,
+        "helped": 1532,
+        "reason:helped": 1532,
+        "reason:class_capacity_reached": 12149
+      },
+      "exposures": 660000,
+      "genuine_comparisons": 659616,
+      "fallback": 384,
+      "successful_writes": 640783,
+      "entries_by_seed": [
+        159,
+        160,
+        160
+      ],
+      "own_class_correct_by_seed": [
+        159,
+        159,
+        160
+      ],
+      "snapshot_delta_accuracy_pp": -0.48027943530781547
+    }
+  },
+  "per_class": {
+    "direct": {
+      "denominators": [
+        1453,
+        1778,
+        1471,
+        1526,
+        1479,
+        1386,
+        1490,
+        1556,
+        1402,
+        1459
+      ],
+      "correct": [
+        1445,
+        1769,
+        1452,
+        1490,
+        1458,
+        1369,
+        1478,
+        1539,
+        1386,
+        1430
+      ],
+      "accuracy": [
+        0.9944941500344116,
+        0.9949381327334084,
+        0.9870836165873556,
+        0.9764089121887287,
+        0.9858012170385395,
+        0.9877344877344877,
+        0.9919463087248322,
+        0.9890745501285347,
+        0.9885877318116976,
+        0.980123372172721
+      ]
+    },
+    "capacity_8": {
+      "denominators": [
+        1453,
+        1778,
+        1471,
+        1526,
+        1479,
+        1386,
+        1490,
+        1556,
+        1402,
+        1459
+      ],
+      "correct": [
+        1433,
+        1765,
+        1444,
+        1482,
+        1449,
+        1367,
+        1488,
+        1535,
+        1372,
+        1421
+      ],
+      "accuracy": [
+        0.9862353750860289,
+        0.9926884139482565,
+        0.981645139360979,
+        0.9711664482306684,
+        0.9797160243407708,
+        0.9862914862914863,
+        0.9986577181208054,
+        0.9865038560411311,
+        0.978601997146933,
+        0.973954763536669
+      ]
+    },
+    "capacity_16": {
+      "denominators": [
+        1453,
+        1778,
+        1471,
+        1526,
+        1479,
+        1386,
+        1490,
+        1556,
+        1402,
+        1459
+      ],
+      "correct": [
+        1439,
+        1764,
+        1447,
+        1482,
+        1456,
+        1369,
+        1484,
+        1533,
+        1373,
+        1425
+      ],
+      "accuracy": [
+        0.9903647625602202,
+        0.9921259842519685,
+        0.9836845683208701,
+        0.9711664482306684,
+        0.9844489519945909,
+        0.9877344877344877,
+        0.9959731543624161,
+        0.9852185089974294,
+        0.9793152639087018,
+        0.9766963673749143
+      ]
+    },
+    "accuracy_guided": {
+      "denominators": [
+        1453,
+        1778,
+        1471,
+        1526,
+        1479,
+        1386,
+        1490,
+        1556,
+        1402,
+        1459
+      ],
+      "correct": [
+        1430,
+        1758,
+        1443,
+        1470,
+        1445,
+        1361,
+        1487,
+        1535,
+        1367,
+        1428
+      ],
+      "accuracy": [
+        0.9841706813489333,
+        0.9887514060742407,
+        0.9809653297076818,
+        0.963302752293578,
+        0.9770114942528736,
+        0.9819624819624819,
+        0.9979865771812081,
+        0.9865038560411311,
+        0.9750356633380884,
+        0.9787525702535984
+      ]
+    },
+    "fixed_kmeans_reference": {
+      "denominators": [
+        1453,
+        1778,
+        1471,
+        1526,
+        1479,
+        1386,
+        1490,
+        1556,
+        1402,
+        1459
+      ],
+      "correct": [
+        1438,
+        1760,
+        1456,
+        1485,
+        1446,
+        1366,
+        1489,
+        1538,
+        1367,
+        1424
+      ],
+      "accuracy": [
+        0.9896765313145217,
+        0.9898762654668166,
+        0.9898028552005439,
+        0.973132372214941,
+        0.9776876267748479,
+        0.9855699855699855,
+        0.9993288590604027,
+        0.9884318766066839,
+        0.9750356633380884,
+        0.976010966415353
+      ]
+    }
+  },
+  "paired_vs_8": {
+    "0": {
+      "helped": 11,
+      "harmed": 3,
+      "both_correct": 4889,
+      "both_wrong": 97,
+      "mcnemar_p": 0.057373046875,
+      "evaluated": 5000,
+      "control_method": "capacity_8",
+      "delta_vs_control": 0.001600027084350586
+    },
+    "1": {
+      "helped": 6,
+      "harmed": 4,
+      "both_correct": 4932,
+      "both_wrong": 58,
+      "mcnemar_p": 0.75390625,
+      "evaluated": 5000,
+      "control_method": "capacity_8",
+      "delta_vs_control": 0.0004000067710876465
+    },
+    "2": {
+      "helped": 10,
+      "harmed": 4,
+      "both_correct": 4924,
+      "both_wrong": 62,
+      "mcnemar_p": 0.1795654296875,
+      "evaluated": 5000,
+      "control_method": "capacity_8",
+      "delta_vs_control": 0.0012000203132629395
+    }
+  },
+  "attention": {
+    "capacity_8": {
+      "mean_clean_entropy": 2.8444107373555503,
+      "mean_clean_entropy_over_log_entries": 0.6491085003565334,
+      "mean_clean_top1_mass": 0.14575531085332236
+    },
+    "capacity_16": {
+      "mean_clean_entropy": 3.5687191486358643,
+      "mean_clean_entropy_over_log_entries": 0.703466657739192,
+      "mean_clean_top1_mass": 0.08562240501244862
+    }
+  },
+  "disk": [
+    {
+      "seed": 0,
+      "committed_logs_bytes": 143366573,
+      "logs_by_capacity": {
+        "capacity_8": 71158676,
+        "capacity_16": 72207897
+      },
+      "excluded_tail_bytes": 0,
+      "checkpoint_bytes": 23164508,
+      "worker_total_bytes": 171253808
+    },
+    {
+      "seed": 1,
+      "committed_logs_bytes": 143004020,
+      "logs_by_capacity": {
+        "capacity_8": 71070504,
+        "capacity_16": 71933516
+      },
+      "excluded_tail_bytes": 26305038,
+      "checkpoint_bytes": 23165468,
+      "worker_total_bytes": 197212533
+    },
+    {
+      "seed": 2,
+      "committed_logs_bytes": 143068471,
+      "logs_by_capacity": {
+        "capacity_8": 71018559,
+        "capacity_16": 72049912
+      },
+      "excluded_tail_bytes": 0,
+      "checkpoint_bytes": 23164956,
+      "worker_total_bytes": 170960145
+    }
+  ],
+  "timing": {
+    "wall_minutes_including_interruption": 71.6248565475146,
+    "committed_seed_minutes": {
+      "0": 25.89087001333319,
+      "1": 24.530110131666635,
+      "2": 20.046275225000137
+    },
+    "shared_training_process_minutes": 59.41353874333338,
+    "corruption_evaluation_process_minutes": 2.1898511450000417,
+    "audit_process_minutes": 8.291549886666811
+  }
+}

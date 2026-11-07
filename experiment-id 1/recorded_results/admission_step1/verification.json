@@ -1,0 +1,19 @@
+{
+  "variant_id": "exp001_step01_online_all_direct_correct_admission_aggregate",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "cnn_adam_shuffle_exact_all_12_epochs": true,
+  "historical_clean_validation_comparisons_exact": 24,
+  "all_mutation_replays_exact": true,
+  "examples": 660000,
+  "successful_writes": 634526,
+  "fallback_exposures": 384,
+  "source_archive_digest_verified": true,
+  "test_set_opened": false,
+  "tests_passed": 427,
+  "parent_artifacts_unchanged": true,
+  "uncommitted_worker_tails_excluded": true
+}

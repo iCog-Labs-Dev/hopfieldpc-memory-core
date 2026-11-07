@@ -1,0 +1,249 @@
+{
+  "selection": {
+    "alpha": 0.03,
+    "clean_correct": 14756,
+    "secondary_mean_auc": 0.7549442860342207,
+    "criterion": "Maximize total clean validation correct; ties: mean of three corruption AUCs, then closest to 0.1, then smaller alpha.",
+    "validation_selection_only": true
+  },
+  "clean": {
+    "direct": {
+      "correct_by_seed": [
+        4926,
+        4948,
+        4942
+      ],
+      "correct": 14816,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9877333333333334,
+      "delta_vs_direct_pp": 0.0,
+      "helped": 0,
+      "harmed": 0
+    },
+    "accuracy_guided": {
+      "correct_by_seed": [
+        4883,
+        4922,
+        4919
+      ],
+      "correct": 14724,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9816,
+      "delta_vs_direct_pp": -0.6133333333333333,
+      "helped": 37,
+      "harmed": 129
+    },
+    "alpha_0.03": {
+      "correct_by_seed": [
+        4892,
+        4936,
+        4928
+      ],
+      "correct": 14756,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9837333333333333,
+      "delta_vs_direct_pp": -0.4,
+      "helped": 34,
+      "harmed": 94
+    },
+    "alpha_0.1": {
+      "correct_by_seed": [
+        4891,
+        4934,
+        4923
+      ],
+      "correct": 14748,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9832,
+      "delta_vs_direct_pp": -0.4533333333333333,
+      "helped": 35,
+      "harmed": 103
+    },
+    "alpha_0.3": {
+      "correct_by_seed": [
+        4889,
+        4930,
+        4920
+      ],
+      "correct": 14739,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9826,
+      "delta_vs_direct_pp": -0.5133333333333333,
+      "helped": 28,
+      "harmed": 105
+    },
+    "fixed_kmeans_reference": {
+      "correct_by_seed": [
+        4916,
+        4927,
+        4926
+      ],
+      "correct": 14769,
+      "evaluated": 15000,
+      "mean_accuracy": 0.9846,
+      "delta_vs_direct_pp": -0.31333333333333335,
+      "helped": 43,
+      "harmed": 90
+    }
+  },
+  "robustness": {
+    "direct": {
+      "gaussian": 0.573299998541673,
+      "salt_pepper": 0.712837499876817,
+      "occlusion": 0.8787785740125748
+    },
+    "accuracy_guided": {
+      "gaussian": 0.6013566595812638,
+      "salt_pepper": 0.731170829385519,
+      "occlusion": 0.8643095308826083
+    },
+    "alpha_0.03": {
+      "gaussian": 0.6283733333150546,
+      "salt_pepper": 0.7627666667103767,
+      "occlusion": 0.8736928580772308
+    },
+    "alpha_0.1": {
+      "gaussian": 0.6265300010641416,
+      "salt_pepper": 0.7616125009953975,
+      "occlusion": 0.8723428611244474
+    },
+    "alpha_0.3": {
+      "gaussian": 0.6252166693409285,
+      "salt_pepper": 0.7604749960203966,
+      "occlusion": 0.8712309492485864
+    },
+    "fixed_kmeans_reference": {
+      "gaussian": 0.6037533322970072,
+      "salt_pepper": 0.739716666440169,
+      "occlusion": 0.8747952353386652
+    }
+  },
+  "training": {
+    "alpha_0.03": {
+      "counts": {
+        "seed": 30,
+        "reason:bootstrap_seed": 30,
+        "skip": 26672,
+        "reason:class_already_seeded": 349,
+        "reason:direct_incorrect": 5,
+        "both_correct": 647632,
+        "harmed": 5270,
+        "both_wrong": 5135,
+        "merge": 633088,
+        "reason:within_threshold": 633088,
+        "add": 210,
+        "reason:beyond_threshold": 210,
+        "reason:both_wrong": 5135,
+        "reason:class_capacity_reached": 19604,
+        "helped": 1579,
+        "reason:helped": 1579
+      },
+      "exposures": 660000,
+      "genuine_comparisons": 659616,
+      "fallback": 384,
+      "successful_writes": 633328,
+      "snapshot_delta_accuracy_pp": -0.5595679910735943,
+      "final_entries": 240,
+      "prototypes_classified_as_own_class": 240
+    },
+    "alpha_0.1": {
+      "counts": {
+        "seed": 30,
+        "reason:bootstrap_seed": 30,
+        "skip": 25474,
+        "reason:class_already_seeded": 349,
+        "reason:direct_incorrect": 5,
+        "both_correct": 646988,
+        "harmed": 5914,
+        "both_wrong": 5190,
+        "merge": 634286,
+        "reason:within_threshold": 634286,
+        "add": 210,
+        "reason:beyond_threshold": 210,
+        "reason:both_wrong": 5190,
+        "reason:class_capacity_reached": 18406,
+        "helped": 1524,
+        "reason:helped": 1524
+      },
+      "exposures": 660000,
+      "genuine_comparisons": 659616,
+      "fallback": 384,
+      "successful_writes": 634526,
+      "snapshot_delta_accuracy_pp": -0.6655387376898074,
+      "final_entries": 240,
+      "prototypes_classified_as_own_class": 240
+    },
+    "alpha_0.3": {
+      "counts": {
+        "seed": 30,
+        "reason:bootstrap_seed": 30,
+        "skip": 25619,
+        "reason:class_already_seeded": 349,
+        "reason:direct_incorrect": 5,
+        "both_correct": 646788,
+        "harmed": 6114,
+        "both_wrong": 5238,
+        "merge": 634141,
+        "reason:within_threshold": 634141,
+        "add": 210,
+        "reason:beyond_threshold": 210,
+        "reason:both_wrong": 5238,
+        "reason:class_capacity_reached": 18551,
+        "helped": 1476,
+        "reason:helped": 1476
+      },
+      "exposures": 660000,
+      "genuine_comparisons": 659616,
+      "fallback": 384,
+      "successful_writes": 634381,
+      "snapshot_delta_accuracy_pp": -0.7031363702517829,
+      "final_entries": 240,
+      "prototypes_classified_as_own_class": 240
+    }
+  },
+  "disk": [
+    {
+      "seed": 0,
+      "committed_logs_bytes": 213985308,
+      "logs_by_alpha": {
+        "alpha_0.03": 71182089,
+        "alpha_0.1": 71415853,
+        "alpha_0.3": 71387366
+      },
+      "checkpoints_bytes": 23236332
+    },
+    {
+      "seed": 1,
+      "committed_logs_bytes": 213622417,
+      "logs_by_alpha": {
+        "alpha_0.03": 71069995,
+        "alpha_0.1": 71292442,
+        "alpha_0.3": 71259980
+      },
+      "checkpoints_bytes": 23236012
+    },
+    {
+      "seed": 2,
+      "committed_logs_bytes": 213376922,
+      "logs_by_alpha": {
+        "alpha_0.03": 71045027,
+        "alpha_0.1": 71181763,
+        "alpha_0.3": 71150132
+      },
+      "checkpoints_bytes": 23236588
+    }
+  ],
+  "timing": {
+    "wall_minutes_including_interruption": 67.62782245477041,
+    "committed_seed_minutes": {
+      "0": 49.33867996833336,
+      "1": 49.293533420000315,
+      "2": 42.763025736666656
+    },
+    "shared_training_process_minutes": 127.8618283983337,
+    "corruption_evaluation_process_minutes": 3.167191373333723,
+    "audit_process_minutes": 9.098025195000082
+  },
+  "total_exposure_records": 1980000,
+  "total_successful_writes": 1902235
+}

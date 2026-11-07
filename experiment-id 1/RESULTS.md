@@ -104,7 +104,7 @@ Each adaptive bank allocated 22,016 bytes of tensors, plus serialized metadata. 
 
 The [separate diagnosis](DIAGNOSIS.md) found no accuracy-causing defect in the audited paths. Sharpening the saved adaptive bank and freezing the encoder did not resolve the gap. Alternative endpoint bank construction improved validation performance without closing the direct-path gap. Those controls do not establish the outcome of a real during-training admission ablation.
 
-The next comparison is original accuracy-gated admission versus every directly correct training example, holding the other settings fixed. Alpha, capacity, initialization/refresh, epochs, and blending are subsequent separately identified comparisons, selected using validation data.
+The [online admission comparison](STEP01_ADMISSION.md), [alpha comparison](STEP02_ALPHA.md), and [8-versus-16 capacity comparison](STEP03_CAPACITY.md) are complete. Broader admission, alpha=0.03, and 16 slots give staged clean-validation gains, with the larger bank trading lower Gaussian/salt-and-pepper AUC for better clean and occlusion scores. Direct clean accuracy remains higher. Initialization/refresh, epochs, and blending remain subsequent separately identified comparisons, selected using validation data. These supplemental validation results do not replace the original test results above.
 
 ## Plots and saved evidence
 

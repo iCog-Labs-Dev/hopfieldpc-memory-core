@@ -1,0 +1,2526 @@
+{
+  "reason": "uncommitted low-disk tails excluded by latest epoch 4 cursors",
+  "files": [
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000081.jsonl.gz",
+      "bytes": 181851,
+      "sha256": "58eb728dab5da9fdb6cdc6c05c2039ba9f6fbbcc5b2cc46a73f3f19bd7ecdffe"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000082.jsonl.gz",
+      "bytes": 182201,
+      "sha256": "26f722b5a8ee9aa2950eaba52f34205289350ffa70693410f478f68691423fe8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000083.jsonl.gz",
+      "bytes": 182124,
+      "sha256": "2fe71c01fc7a5956c3c71501eaae6202a53e647bf3ebede7259978c21feae1d2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000084.jsonl.gz",
+      "bytes": 182383,
+      "sha256": "6b3037800fa4987a3c497daf3f8add6ee2a83c19b251cfd275c845413d54b21f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000085.jsonl.gz",
+      "bytes": 182609,
+      "sha256": "e6989fe879e1fed066d1456342404d481a6be86077ef219e6ecae19e84f3305a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000086.jsonl.gz",
+      "bytes": 181892,
+      "sha256": "23c6b4d7bba04eb54fac028c5e364429f1e393af7b375758742e7a307da960a3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000087.jsonl.gz",
+      "bytes": 181861,
+      "sha256": "9893b58c564e24ad46152332c4a0cccab5deb7822c0a6a25d9bbe797de3a0e6a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000088.jsonl.gz",
+      "bytes": 182126,
+      "sha256": "5135a5637ef78fdeb9de5c33dede23a416aefc2a91f6275e2b7526a148bdf80d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000089.jsonl.gz",
+      "bytes": 183034,
+      "sha256": "bae523bf38b123a74f80048640c4bfb295b8409e8b0eda540a1b7c6b42e1b94b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000090.jsonl.gz",
+      "bytes": 182494,
+      "sha256": "69fe9b14b707265cb6ef60b17756d95055e567586ad278c8bf60c4917ecc0c45"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000091.jsonl.gz",
+      "bytes": 181827,
+      "sha256": "993d909fa161ece3c65312d5622daa2a4daf8d4174a0baf83744671270ad4a51"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000092.jsonl.gz",
+      "bytes": 182484,
+      "sha256": "5b1d07bfaf1bdd691b65d2050f20b8c259e0f234c9151390f0d980faf640c4b0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000093.jsonl.gz",
+      "bytes": 182514,
+      "sha256": "0e0b6b1350f6bcde3d187283e78b63955479b93f05bba49c4bba85f6745dee83"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000094.jsonl.gz",
+      "bytes": 182730,
+      "sha256": "73e88f58e250d398724b45bb7c0c897df1f5132b4d711abf6dae6ea7859b1050"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000095.jsonl.gz",
+      "bytes": 182283,
+      "sha256": "7cadc21c0e012925161a5a8c4b49e1fc8815afbf31466214d39cfe056b4ddf8b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000096.jsonl.gz",
+      "bytes": 182905,
+      "sha256": "74cca4f3e7c403347c61fbab668554e76b4ad04732bec0c83d7fa4d7ece15e73"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000097.jsonl.gz",
+      "bytes": 182091,
+      "sha256": "1adc01501b88a011232fa33e69149da0650e7f2cf1951a1dfe6ee36558a16a4d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000098.jsonl.gz",
+      "bytes": 182014,
+      "sha256": "cf63f36b86bd9c05251602b101f256e5cc8938a28f0c24d01ceaf55564517437"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000099.jsonl.gz",
+      "bytes": 181783,
+      "sha256": "07dd4b193e77f42e753ab19cb1f745b8bcf689e949c8a00ee065832e638bffd1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000100.jsonl.gz",
+      "bytes": 182197,
+      "sha256": "8c3abffcdea57940e22933429fdd11d8289aee3da73331813cfddd99ff7787b6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000101.jsonl.gz",
+      "bytes": 182669,
+      "sha256": "fcb61217ef2313f34539d0257d98281fbe8e92d4b9724bbb2e30192902f2c724"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\events\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000102.jsonl.gz",
+      "bytes": 97002,
+      "sha256": "0b03a5403c882dbe7844697c034db019f97c088a830def83135ec0ddaa8b23e0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000155.npz",
+      "bytes": 252544,
+      "sha256": "7a7a44dc6e6760e4439983ca58c779ab6b7b1a0f5f8724ce6cbcf9c05c1c3c11"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000156.npz",
+      "bytes": 252471,
+      "sha256": "07d6de90f084dea5531c52d806c8147e886d894c2fc4563f775904b4e0faa821"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000157.npz",
+      "bytes": 252595,
+      "sha256": "f8799e4ede6a8bc0dd73ff36eea316b081f83690e73f2214af70583a079a5127"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000158.npz",
+      "bytes": 252653,
+      "sha256": "86368e88f9e7829189950126a51bc8b2206517b0247304be734d8d271341b930"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000159.npz",
+      "bytes": 252649,
+      "sha256": "18894ff0b2f08974ded8c4db9060dfc5a6c2a47f9fe47672ed6772263f03345c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000160.npz",
+      "bytes": 252651,
+      "sha256": "2ac25b32af39a52117c5afdf4ab243794a597550a56545f81f86db76d43a8b9e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000161.npz",
+      "bytes": 252440,
+      "sha256": "90c401ed0bed8ba61a73db00e62e86fa61b4555a84dbe1b3da8fd9007802e376"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000162.npz",
+      "bytes": 252460,
+      "sha256": "afdf2c06c0690aeabe62cd88668364c6a36241cac3caa5b8a439d4dac74e6abb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000163.npz",
+      "bytes": 252584,
+      "sha256": "2483850852b8ccc0ac5f3759735f31b1f293afd0082483c593fd71bdf80f8d0d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000164.npz",
+      "bytes": 252471,
+      "sha256": "39ad8660aab815e38256d07b15cb96e2e8324b60b400657bc0e2568f613d5c7e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000165.npz",
+      "bytes": 252697,
+      "sha256": "41399516be2ae47c44d7e9380b8fa8c5ea19c355d64b334f65fcdb7cd44ea171"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000166.npz",
+      "bytes": 252652,
+      "sha256": "d842ffff38ab9fe19944313931ba05caf6cfdcde857007ca11de4f76ac0d47dd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000167.npz",
+      "bytes": 252558,
+      "sha256": "7a560920f73f330954caff54422923cb36568c0bc6e23c96f49cbb4e3c06d05e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000168.npz",
+      "bytes": 252530,
+      "sha256": "634855058e8b3729692ba45a0d8a3ca5f160b8ef5f9d6d5920afe57193410a7b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000169.npz",
+      "bytes": 252603,
+      "sha256": "4e986ac54561f9fcade20187394c48ae655ff3c388abb35a005c3425ede1f2db"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000170.npz",
+      "bytes": 252500,
+      "sha256": "25196f81d1eee69bc0d5c603ee749d2742ec52180a8158fad4a4482574931c1d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000171.npz",
+      "bytes": 252446,
+      "sha256": "6ae391a988f6d1bff4b66cdc09f088911e85f6f0e77583077253b6de5e54bdc2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000172.npz",
+      "bytes": 252463,
+      "sha256": "a378730b94b1e2563760e41b8d368ebba7d5d371f278feb140440309fe4a50da"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000173.npz",
+      "bytes": 252580,
+      "sha256": "f6f7100b68b3526c5e8c24a6b77398f8ee4aa38b84ab2741478adaa549803844"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000174.npz",
+      "bytes": 252626,
+      "sha256": "cae54e58fb37512eef98524b6575219a0297f38b4a68023302492ffc84eeb165"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000175.npz",
+      "bytes": 252481,
+      "sha256": "4c6e2246baacfb5094a3b49679e9a8a76244247de168c970b0441b7667b7eff5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000176.npz",
+      "bytes": 252554,
+      "sha256": "bd8a0046c4082de95b11cba7f7d1d9667d3a98d01661f6bae70384ee75504850"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000177.npz",
+      "bytes": 252569,
+      "sha256": "469e2fa7f5eefe684fef26eecf095c75ac6860d3241379fb5d9ff6c01cdb606c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000178.npz",
+      "bytes": 252566,
+      "sha256": "de6de0b9f1bcdf8da5b151a7c78260e49920f322d99a04a0ce1e0e2b802c7a6e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000179.npz",
+      "bytes": 252764,
+      "sha256": "244a43a4cb9e722068dd8392f0740df68f0723686a82718b6436fd54e0b811b3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000180.npz",
+      "bytes": 252498,
+      "sha256": "0214312152ce1d94c01121d28c920586664349ef2960c18ecc790c472de977ff"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000181.npz",
+      "bytes": 252490,
+      "sha256": "4ee37b5795b926ef3d482c729285a31a6ea1e37912088b6083c247af45185c8c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000182.npz",
+      "bytes": 252425,
+      "sha256": "11b0001e76c5b2eb11f97f1847d6c2073aaa842644ca1e8a53c87b80a2020154"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000183.npz",
+      "bytes": 252543,
+      "sha256": "4a86e15d80c074db680d4fa39cd8bba5dfd0fbdc63c151b7668f76658480c54d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000184.npz",
+      "bytes": 252618,
+      "sha256": "28abf265b7a2826a18bfb924cce5af76bb39d223889acdd803587e3fa765a169"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000185.npz",
+      "bytes": 252556,
+      "sha256": "bfcdf2c84afd8b53736d2b736e4f602bfc86f56648571072674c0eb91b257ee0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000186.npz",
+      "bytes": 252499,
+      "sha256": "0a7b75a241f95b9f413e24fece461b2e07efd8567910baa6511aa5cbe17f30df"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000187.npz",
+      "bytes": 252571,
+      "sha256": "895fc57ac29fc2509024a5802b0cb5e13c53a74d63b39b2bbe5a589f16f04477"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000188.npz",
+      "bytes": 252752,
+      "sha256": "162f46826eb97f6db46cbf06ae3cb986657b49529d4da70604dc37934b472a03"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000189.npz",
+      "bytes": 252706,
+      "sha256": "03a346df78791e50415c1193140adcf787881e0e27a8e295f905b4bb566e3583"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000190.npz",
+      "bytes": 252444,
+      "sha256": "e0d22097fa088d432b9af762f1a54a45a050c050cab1955c9ee7e8ae564a0d28"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000191.npz",
+      "bytes": 252551,
+      "sha256": "4c93369f99e873e7fb3fa5525910256f5dda90b709873de79591e4c8f8c17680"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000192.npz",
+      "bytes": 252705,
+      "sha256": "5f9bb935b735e2e60815222d9f6113ce482e427a717970448e1e30cbbc5cb9e0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000193.npz",
+      "bytes": 252678,
+      "sha256": "524a1e64eff89f126d493195b05507db6ae5ef216b595fba62d0312aa32d5bbf"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000194.npz",
+      "bytes": 252421,
+      "sha256": "247c2ad92e7859694594159fffdf06e8f15c74e77224110c3b890ab70c6d368f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000195.npz",
+      "bytes": 252530,
+      "sha256": "12c38e942ab6c1dd4c6d0a486020b5b6d55fb6b9bca9755054216657d311420e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000196.npz",
+      "bytes": 252667,
+      "sha256": "f4681c30742d54ca2988e9374f5e804ac019dc29d62ac52acdfb8a90ff633b45"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p03\\writes\\chunk_3fd5ba0dd8eb4716acb205706f7ae857_000197.npz",
+      "bytes": 94007,
+      "sha256": "1b6ef03a35c4c16c18755ce5a45ca0be4bde4f2bcd82d0b72816d250c367dbe6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000081.jsonl.gz",
+      "bytes": 181910,
+      "sha256": "50553a0f4170e64acaa2747e66caf870919a078e8e97cfbd23f9705b0dd82c34"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000082.jsonl.gz",
+      "bytes": 181931,
+      "sha256": "6f3e9ae040b35fdfe9138cee57108309e0bb5bc79df2494ac513c0a43d93caea"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000083.jsonl.gz",
+      "bytes": 182414,
+      "sha256": "d28a2a3364b279602021f3580c73caf963c95f5151bdc02a401702088172667b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000084.jsonl.gz",
+      "bytes": 182487,
+      "sha256": "c06486ac1bed5624739d2cd77bd6905c9208bf975b561121c9f8caf7dddd1037"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000085.jsonl.gz",
+      "bytes": 181770,
+      "sha256": "c914ca895c57236b5fc6f4952ebf4e31464bd2ec54c4acb256ad344fe71f64cf"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000086.jsonl.gz",
+      "bytes": 181421,
+      "sha256": "48b495f43e8067c602b0029e0b36735a3946d394a85436cfc03074922c27dc81"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000087.jsonl.gz",
+      "bytes": 181086,
+      "sha256": "e87486dd86e943a9d371f81ad3337dc24c7cd4ca84e5654f250f6b605fc0dab7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000088.jsonl.gz",
+      "bytes": 182423,
+      "sha256": "a85740f2dc72a6535589f23d209f5e8936e1092172925d2b020bbec64576572d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000089.jsonl.gz",
+      "bytes": 182340,
+      "sha256": "cd96eb84651e40188a2ad26397494da3b6c14cf4860d5e734d9639566c872647"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000090.jsonl.gz",
+      "bytes": 181857,
+      "sha256": "f04dae790eae90385ae082a2a2a74d9cd21816008fe9e4b117c451789d119806"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000091.jsonl.gz",
+      "bytes": 181252,
+      "sha256": "0c067fb99e339bc15986c376dd05878b486c1dfd4effe08ae759f60082b1e943"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000092.jsonl.gz",
+      "bytes": 181932,
+      "sha256": "9c3464a0e7add7d432a7529ad397c56b0cdc89b8001d548711c25bc18f618433"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000093.jsonl.gz",
+      "bytes": 182482,
+      "sha256": "84f2c3bcd4fedaf4e704af30890c1e9c580d8de022aae44a8452fcb6d1a66324"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000094.jsonl.gz",
+      "bytes": 182480,
+      "sha256": "0abb05bded95eaa4b218e8d3725b48190a66d48e34307ab0d62c583906af86ab"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000095.jsonl.gz",
+      "bytes": 182296,
+      "sha256": "7ba3c265e12abde5412a27a0683037013ea2ccd8d3580db61ab4b5475b008c82"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000096.jsonl.gz",
+      "bytes": 182642,
+      "sha256": "99e10b2e433da3ebcffcce8e1c61947a9202c0d27f559d24674f8b282db5708f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000097.jsonl.gz",
+      "bytes": 182078,
+      "sha256": "a99c1ffeb09e935d1bb5ca5c9542a12e964c128dc7cbaef3fe0d3a50be96b3d1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000098.jsonl.gz",
+      "bytes": 181326,
+      "sha256": "c213a814a277c373af8035508bbd7af5c3e9a100ddabd2ebeec6cc78fddf1ddb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000099.jsonl.gz",
+      "bytes": 181560,
+      "sha256": "ba3b954b8259a167d4839182a6e2f5fb135079466845e67f8b2b938688530a22"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000100.jsonl.gz",
+      "bytes": 181844,
+      "sha256": "04006e447a7863298bf1f43eeae16f50b005b25080fd4d471d6f269dbf9c2e0e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000101.jsonl.gz",
+      "bytes": 182584,
+      "sha256": "c98a6192b45be77ad408bf1ef5a964f896ca7ffd9846b42abe9c1db704d89ba4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\events\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000102.jsonl.gz",
+      "bytes": 99897,
+      "sha256": "13dc39ddf27276e15891075cd6aa952390896854f6ba6ecead09e25a656b23c1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000156.npz",
+      "bytes": 252536,
+      "sha256": "e0628057a5d7a57504cee931d702fda70c148556c0533cccfd8e176804213217"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000157.npz",
+      "bytes": 252471,
+      "sha256": "375a48609fbfd4a61cd0c752f703685ad51367ba0379e83c85de45ebf1719941"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000158.npz",
+      "bytes": 252607,
+      "sha256": "0127b7678a12d55885660b0e33449ae4308607934ff2943391be11190e3f6c47"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000159.npz",
+      "bytes": 252620,
+      "sha256": "961131f88d113f9f4385ee89828321cc99348053eb15f20a14daf811b393bcd3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000160.npz",
+      "bytes": 252662,
+      "sha256": "c53d701c21f6551ab9f3d0fed392211ab981cd012dfcfd60407e17390fcfd7dc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000161.npz",
+      "bytes": 252675,
+      "sha256": "748e62184b1966b42bdccc359e514d751cac6b1671fee669b9c2792489d4fa7f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000162.npz",
+      "bytes": 252425,
+      "sha256": "0be71b2a99b481c50b2383910b92e21981d7d2627aed273f7260b52f6c5ad9f4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000163.npz",
+      "bytes": 252456,
+      "sha256": "d6eada414b03fe1d1d0c4339ec6140ba211086cc8bd847d188b8c084aeba2c8c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000164.npz",
+      "bytes": 252584,
+      "sha256": "cdf0e4e1ea4c353b6d929a8d03e2e6e1b51616be450e0e21798b39df18ea1c2f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000165.npz",
+      "bytes": 252485,
+      "sha256": "6267410deaf80907c510085f4ee0ca7e5824c96a0b2e655786e9d16f60fbb11b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000166.npz",
+      "bytes": 252717,
+      "sha256": "ad97d5abd072b04a34e4f395f9c57becabf8ed934b5377795672523fccc36eb5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000167.npz",
+      "bytes": 252633,
+      "sha256": "6c51b743da7d4a1c6b205aa41de2cca80716260f62a7a6b0dd3370662bbe4175"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000168.npz",
+      "bytes": 252606,
+      "sha256": "2a0ba80454870ee603bb1c989fe99b76dd9c9fc672db9508e33275e5ba564613"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000169.npz",
+      "bytes": 252524,
+      "sha256": "75a493dc688839a19151f2c910c650598b7cd4d164881e2e96fedebdc5b8e5b2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000170.npz",
+      "bytes": 252634,
+      "sha256": "91736d5ac7ec50a5199936785e705baf431369a2e42bf0700c1be1cc101ce8a5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000171.npz",
+      "bytes": 252502,
+      "sha256": "db0178022041511b9756bba54fe4b7db8d1eb4d2fece8aee6d3f2f407f2a266a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000172.npz",
+      "bytes": 252444,
+      "sha256": "db1112fe610bc3e73d41c4d25977cafd12da89035ad1ea0a2c47122020f981d7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000173.npz",
+      "bytes": 252479,
+      "sha256": "268964d59ec4bfca30b0d2012197806068d91428a3feb41c7da9b9a4b9d3a536"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000174.npz",
+      "bytes": 252564,
+      "sha256": "992409b3e9d6067ed61d775ee31d79b73ccf2e4fca7f8a67bcdccec881a7d531"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000175.npz",
+      "bytes": 252603,
+      "sha256": "f5a5845016ce29622b8f0876d25a8d96210c785a69319c40b60287dc103de39e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000176.npz",
+      "bytes": 252539,
+      "sha256": "7646ae1885cb5fcdeddaf1d6f3c4a2beae80df1c487d4529dbe223fa8a9742be"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000177.npz",
+      "bytes": 252544,
+      "sha256": "389cdfc05b9cf6d2843d8d387f83160633a9bd097fd652536bab6e7fec00d1ca"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000178.npz",
+      "bytes": 252540,
+      "sha256": "67fb9450e00e771e55eb644522b1323b1f232a73acc57a976b10bf4354630075"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000179.npz",
+      "bytes": 252599,
+      "sha256": "d4ce3821ce3041837507fd0cfd8f530082a344c187c04975e9896150e7c6dc53"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000180.npz",
+      "bytes": 252762,
+      "sha256": "846cfa9897211208c99108dcebf9bd32fbbab3fd5c30feb686c2b68da820fdec"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000181.npz",
+      "bytes": 252531,
+      "sha256": "d65f337f2fbec634dda39b7709f409de20639976bfcfe52227b2f530c5870c7e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000182.npz",
+      "bytes": 252501,
+      "sha256": "91c77acef494ea4523ee673190c2e1a8587a04dbd24a111132d52625d2188cc4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000183.npz",
+      "bytes": 252398,
+      "sha256": "fd090f2c5c590c70ddac97201a6dd4fb49987f9f7d9aed464faa890671576eee"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000184.npz",
+      "bytes": 252510,
+      "sha256": "b558bf3fa50e38923bb1e5f67f3244cf64d56d5056f2d4315bf0b3ae916a9e8c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000185.npz",
+      "bytes": 252641,
+      "sha256": "8394a5e3fa2931f843092569c8b722098a6dc170cbb3dd74e6e8db6b736bb216"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000186.npz",
+      "bytes": 252514,
+      "sha256": "35a2ea5fced36fa01c5d79d7a489b3ccbf9edd41210ecdde0bb59347993e3a3e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000187.npz",
+      "bytes": 252515,
+      "sha256": "249605ba9ea7395f71b402ceb1ed8b048529a2c43f48a35ee8f28d4cdc551ec4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000188.npz",
+      "bytes": 252555,
+      "sha256": "2df176719dfb271243296207c33215a6b710f1bb77532af7b1109e322de8084b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000189.npz",
+      "bytes": 252778,
+      "sha256": "8de22e8f2f0a088e7105620de1977f9240cdea6b2d4d61d33431e249d9172fb0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000190.npz",
+      "bytes": 252730,
+      "sha256": "ea509810bbf57c5596970020872bbcfd51ba63560155fdfb8d02691ec30395ca"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000191.npz",
+      "bytes": 252444,
+      "sha256": "28c7e0218e3ae6ae0dcd1578b8fac0298d1705af81cb2ea98da49efd4d2fb6b1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000192.npz",
+      "bytes": 252560,
+      "sha256": "347c3af55f255d6101c6542cb0eb9743c3aef94ea36ad6bec48c50ad215ee0d6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000193.npz",
+      "bytes": 252685,
+      "sha256": "f236da7f7d0f5ebd85c9f3fcc26a9c97e2681e6a5d9c24ce8f6555131adaa853"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000194.npz",
+      "bytes": 252714,
+      "sha256": "c708ec569c79df944af652a9e1c6a934c87168946d5081f67131dd8cbe05ca97"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000195.npz",
+      "bytes": 252439,
+      "sha256": "1885d324916fe346ef63874b35f9505993a9d6253d1379a1e829ade7833d9355"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000196.npz",
+      "bytes": 252500,
+      "sha256": "012c14f9d28d0252094f542170d4cbcddce5c9bc41770acb4157fee144379113"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000197.npz",
+      "bytes": 252618,
+      "sha256": "d3f03b3b541092ad7a7905ccbd31cfce13c40ff1a8b2661c42c7b56a4780448a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p1\\writes\\chunk_7fb1f6da7f184f44bd9c7a05d38d84a7_000198.npz",
+      "bytes": 110962,
+      "sha256": "f3b06028a101bdb044f57dae080e935b0207f86a02ffc01c07837d94bcb21259"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000081.jsonl.gz",
+      "bytes": 181093,
+      "sha256": "af31d453a147606498b376c35e76b7cb326e0a6543987a3e094dcf46302d5307"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000082.jsonl.gz",
+      "bytes": 180602,
+      "sha256": "ce898dede01fc9edb4da1ab6c939b7219a71937b2299dbaeceadee5a1ec4adf3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000083.jsonl.gz",
+      "bytes": 181806,
+      "sha256": "e0783fcaf32333e52c764392cb19f7687d01b9b0de0620234670fa63c47bc460"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000084.jsonl.gz",
+      "bytes": 181433,
+      "sha256": "113f1c999b2a333b798b58bfba56a38b1ebf30c4a25177f869ef77c50bbfbb2c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000085.jsonl.gz",
+      "bytes": 181304,
+      "sha256": "472cb3b762ea653e56ccead6b1163e498c37c96f5ca125724f90565d66e9e264"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000086.jsonl.gz",
+      "bytes": 181168,
+      "sha256": "c79b3e7e709303dff3e9a1745e16cc82d21d8b1ad4accf48c8db0aa9a61be9a7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000087.jsonl.gz",
+      "bytes": 180898,
+      "sha256": "d57bdc9328e9889e714ecd745d2c7388a56db7a4c68b9068c89e588f8382d348"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000088.jsonl.gz",
+      "bytes": 181638,
+      "sha256": "60ee60109cdb329fb8b40e77b1b70c704825c855b2972fc51cdbeecfc50b1606"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000089.jsonl.gz",
+      "bytes": 181776,
+      "sha256": "508485c76f1c8e6424464b6130b5dec5fb8e14362189e80aa8789bf9d69b0251"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000090.jsonl.gz",
+      "bytes": 181264,
+      "sha256": "7ae057ad225138437cccc0911a642ecbc8327cb56da883907d7fd82c169fd7f9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000091.jsonl.gz",
+      "bytes": 181156,
+      "sha256": "3fd55a35702b7e614e2ac82fa56be73e6b5069cafb09321781c3cfd2640b0db1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000092.jsonl.gz",
+      "bytes": 182118,
+      "sha256": "ebdf4319ad95b5879383602dd973687b3dbf778e010909994bf17bf03aed3e3f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000093.jsonl.gz",
+      "bytes": 182047,
+      "sha256": "05f1ce2074cdc2885235a82d02c5feccb5e54b34e4a3d48d376385f77776549b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000094.jsonl.gz",
+      "bytes": 182215,
+      "sha256": "b1062a4d26f80934407120167d82d78fcb30fbd4b5a07fa3bd866f6898d6df46"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000095.jsonl.gz",
+      "bytes": 181602,
+      "sha256": "1df06155922f30fc29a650791bab57cd8c04d940e417b451a42706194e7e0974"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000096.jsonl.gz",
+      "bytes": 181879,
+      "sha256": "e6667a94ebaf9a8e9b3f747830ce4386cfa0ccc0d1467c39114f5d4beb58bded"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000097.jsonl.gz",
+      "bytes": 181368,
+      "sha256": "c8aa98b31ceab013e48b9ff98eeb54f9fedbc8e8af0db01b1269f759d39926f5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000098.jsonl.gz",
+      "bytes": 181084,
+      "sha256": "c197553a1b05a9d413c0e1a1f1ffc6a74f4708dfa14793ae37be0253d0269705"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000099.jsonl.gz",
+      "bytes": 180709,
+      "sha256": "ecdfead545bbc3b8c4e81e986d5a81142f840a0bf13086dff02ef064bf89ea47"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000100.jsonl.gz",
+      "bytes": 180678,
+      "sha256": "38460a2eab3424971f76e6f62e83f62d6dc80dd6bd681f48f47bc1d9bce98156"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000101.jsonl.gz",
+      "bytes": 181501,
+      "sha256": "620714bd255e8d05ed2fbf1698c8f172c2550198d110907660d2e695d7b6a54e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\events\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000102.jsonl.gz",
+      "bytes": 98966,
+      "sha256": "ac1b0cc227c120013bff4718721db2cb66bd7eadfab30e739dbe5eb3257bfc15"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000156.npz",
+      "bytes": 252546,
+      "sha256": "976dccc844802228e61ff11814bf4bf5e302d725542afae2b13084489f3917bc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000157.npz",
+      "bytes": 252473,
+      "sha256": "5d4f8a20a4382c604043dace0938245baff68c83a7fe9986c31ba4a2e603891f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000158.npz",
+      "bytes": 252602,
+      "sha256": "a326c5c3b4c619f11ca6d831372bffa14eccfe97e930591096dd61c10fb1fc18"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000159.npz",
+      "bytes": 252599,
+      "sha256": "62df30a0c9a702a5b1c8ec7698599ec545d1237f8379104edd087f904de1639c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000160.npz",
+      "bytes": 252657,
+      "sha256": "ceac3d9676c9e6c75bcf99f81961c1be9f26ffdcfb40b31f2b95257a70cd6109"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000161.npz",
+      "bytes": 252660,
+      "sha256": "37ce06825044ea31728d6bc5917946c9b8b03b7ffca8fd57fe0627eb633df89a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000162.npz",
+      "bytes": 252410,
+      "sha256": "e8ea4d76e050e4c6808736c900764ee96f84576599439f85893589ded071792e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000163.npz",
+      "bytes": 252463,
+      "sha256": "1293e94f18a790d433c9fc71c677f9f6f6e96d9eadf529f11ef4b59e3e7b5e5e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000164.npz",
+      "bytes": 252592,
+      "sha256": "3b8c1a643e0714087695c0cbf6b9cf55b46493eb6006207f290a3eacebff4325"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000165.npz",
+      "bytes": 252485,
+      "sha256": "52a9a99d181b2609f3879e630950566fdc45aa4c3ca8b9423bad4cf240010da8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000166.npz",
+      "bytes": 252723,
+      "sha256": "35bf5a6b252f3e788db9ada92372047754b4ed253c6ce84b272bfab717838ae2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000167.npz",
+      "bytes": 252655,
+      "sha256": "fed8b921b7d2e25053646d1e1ec6dce5d289b89723282c91d66aa7d884cc3c13"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000168.npz",
+      "bytes": 252581,
+      "sha256": "7afe78c7c3c9d0b84a718791da8838268f71fba2202cd2d0b815fbef9ff8ea8e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000169.npz",
+      "bytes": 252537,
+      "sha256": "7b1442d9f6e7fe50ef5976126cbb349a3c8514228e995a4c541daa8e4b910b49"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000170.npz",
+      "bytes": 252626,
+      "sha256": "04a491443e68a65c68e2e887a6c2057c6f78964b2f3acf36ee1d09ebc045b424"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000171.npz",
+      "bytes": 252501,
+      "sha256": "a3d9cb9620cd4d083592efbaf986b5344f209e2f8c0d1822384cd6822e8ff914"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000172.npz",
+      "bytes": 252433,
+      "sha256": "406aca6d971a9ce16193b231a3b47c6600e716ed5eb30402e715a5e914ef7f27"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000173.npz",
+      "bytes": 252499,
+      "sha256": "2ada1aab78cb571b8f7d8b6a9d54efe409b9e2bc683267e5bd1f5c0cdf0320cd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000174.npz",
+      "bytes": 252583,
+      "sha256": "0a1f8ca247697a0aa991ce203c1d4941af615996a8de57e5bcdc9129e2a29706"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000175.npz",
+      "bytes": 252638,
+      "sha256": "1c27b66fb1c675289999f63c4a328f2c295deb35c0b7834351088ce7a4c7beb2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000176.npz",
+      "bytes": 252507,
+      "sha256": "540741f7c05c8e32ad1328e0e4e216ef4df617c3cb9916412fbf8afefab8a6ef"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000177.npz",
+      "bytes": 252555,
+      "sha256": "2106604fa32922004f47795a603bf82c141cbf99a1462c99260c616270307154"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000178.npz",
+      "bytes": 252562,
+      "sha256": "58e70c06fac74d8f623afeaf28e3da5d51be4b2921cc0df9c7d007b96e9c73fa"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000179.npz",
+      "bytes": 252568,
+      "sha256": "c2cb7ac2c8cda662e7b7e3f2b2617382dafcfb72d9c3e32926e05dc6cc5a980d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000180.npz",
+      "bytes": 252745,
+      "sha256": "a40870132d2fcf64d72b46631b953b9d40fb4897dd2b32edab23c00ee6834710"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000181.npz",
+      "bytes": 252516,
+      "sha256": "612762a53a68c294be43d3159b828438b2d7a7200ff3bd3db918a96cb8c117da"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000182.npz",
+      "bytes": 252514,
+      "sha256": "2b94f316e5dfc21764827ff4c2d616b6ab05e49f91c8827c288de3e6aef9c362"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000183.npz",
+      "bytes": 252440,
+      "sha256": "515a48046af508da3a9daa2ac19df4d6ed4c9ad72d4aaeb111486ea240d6f4ba"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000184.npz",
+      "bytes": 252533,
+      "sha256": "2823a6ef79f178221c46927a4c54536ae1eb28abe536893096cc26490aeb2aba"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000185.npz",
+      "bytes": 252634,
+      "sha256": "4e47a2da14622187a73c1338656b6838227e23938f8756e630a3c8b2e0dfb5b3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000186.npz",
+      "bytes": 252537,
+      "sha256": "62ddcfea8dc736b3269b1ec3a97608994ac66c68104c3df076b5586f9f76a47c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000187.npz",
+      "bytes": 252496,
+      "sha256": "06ff94ebaa4dddd846fe5dda678658690733a6c13b9ac206426b40acc1754e2a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000188.npz",
+      "bytes": 252597,
+      "sha256": "2da5e9b3be42087fe30a1e9e3f08a838232d1bb19e9b0122211a3c8e57178975"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000189.npz",
+      "bytes": 252749,
+      "sha256": "7bfddd7a259c1bf3ce2c8a4c97d4ddd486f0b978ff4b349282b864f4edb78d13"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000190.npz",
+      "bytes": 252746,
+      "sha256": "8fbafbb38950e1857da2800c44b733e4c50c291e730776117fbc6deb3f25ba0f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000191.npz",
+      "bytes": 252439,
+      "sha256": "42b86886e3ebf8e62771f8447b6ec81d81e077bdc928b0a762f2bb9f5c4dc039"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000192.npz",
+      "bytes": 252560,
+      "sha256": "80aea83b7f17d3a46054ab0a13821fd1701de17c4a05250da8117014061883aa"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000193.npz",
+      "bytes": 252730,
+      "sha256": "caf8c26a168b3b77de1a63404305a9cf6f02ff64c972566dd7460779a853987f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000194.npz",
+      "bytes": 252671,
+      "sha256": "ce835a1e606ae40e59622699c261366fd4d38875604f7078e50f4ca2e1e86f04"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000195.npz",
+      "bytes": 252432,
+      "sha256": "3076a6de57e887bc327ec2e796ca636d3c47b1b47a80fcd71ee011bb5c01b517"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000196.npz",
+      "bytes": 252510,
+      "sha256": "ab02aba8b646e07c078276d6edcd7b722636b20d9da7e9842c92293c44d2658c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000197.npz",
+      "bytes": 252664,
+      "sha256": "8b65a09bbf53192912606cf953bc8c8f0e2b24ec3e13f01a3d42f6c782c6643c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2\\seed_0\\alpha_0p3\\writes\\chunk_3622f01d1cd84a46bcff06fe3cbd1230_000198.npz",
+      "bytes": 107041,
+      "sha256": "cf6a0611946a0501c51c218099801c832cd8ba7c19b1569c61f5186256266ea0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000081.jsonl.gz",
+      "bytes": 181567,
+      "sha256": "a1cfe2af27dcb6a83c22b7ea3bf6fd2780c8b1cd682958b33018c68cd3536f03"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000082.jsonl.gz",
+      "bytes": 182452,
+      "sha256": "587ef5872a67e1b098b8681eb2ec014f1290109d6355afd601dc7c83163c36bc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000083.jsonl.gz",
+      "bytes": 181844,
+      "sha256": "f85ab9c3e1e58b20c2d1135bdfbd374f6686826b7cfe657beb2f99a707aec0fc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000084.jsonl.gz",
+      "bytes": 181202,
+      "sha256": "1756e85207f14aee0c7eb1c0ddbbae3cd8b88e06b62d750088d4092d7401c21a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000085.jsonl.gz",
+      "bytes": 181689,
+      "sha256": "3f489e65f36aba9836657e6a15cebc519e3d1f54ea0c0bb1a623ef25a8f0f8c5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000086.jsonl.gz",
+      "bytes": 181681,
+      "sha256": "a9fe28a9f3b9040fa212781e30cc6a1f72d9d0c93dda64660dddbe80b8ffccfd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000087.jsonl.gz",
+      "bytes": 182574,
+      "sha256": "89b5f610d61346a37d573f6b3849577bf9114027d46f1394486a8d55861d43ef"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000088.jsonl.gz",
+      "bytes": 182397,
+      "sha256": "4d56a4ce522ad272b8362a9ed87a893222b26944bed699138300bc06756ebad9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000089.jsonl.gz",
+      "bytes": 182535,
+      "sha256": "0550736eecc4944c479afe84d48d570e9e90b873fcc30293c123369d6f29c76b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000090.jsonl.gz",
+      "bytes": 182506,
+      "sha256": "000cedc4948cd646453c01aaf70392f769f292e71ff6a7620b1fe8baa21b0d2a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000091.jsonl.gz",
+      "bytes": 182252,
+      "sha256": "2cf723b8a8e28e336d7e9d87970cc24baf356a500ff2b6677c2e09084d887876"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000092.jsonl.gz",
+      "bytes": 182234,
+      "sha256": "ce0483c6a6e2cc2e11c8cbafd824a213c8259b272a860fe696ec065dca17ee9f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\events\\chunk_694591a5431c4fd993c543ec2781c46a_000093.jsonl.gz",
+      "bytes": 51935,
+      "sha256": "e26f26ca0aba7c6e5013a564668ea8573f0d6b9ebf4065d7b75658e7e622f3bb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000156.npz",
+      "bytes": 252479,
+      "sha256": "ac3a1510148c8488276e4a5bdef3b621875347fa6e1ed0ca281d667e93f29a35"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000157.npz",
+      "bytes": 252637,
+      "sha256": "2669bb3a042a4873fc3f6781c07d865bc372145c9c086ea88fe9ab42c9b595d6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000158.npz",
+      "bytes": 252731,
+      "sha256": "3a11185fbd373ecaa8bbc8c0a5be548565167380d31cdc717717a7d15b2858a6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000159.npz",
+      "bytes": 252638,
+      "sha256": "93b62b0dae571e614deede2406112f6999f927303acdbcb8ced00405847c954f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000160.npz",
+      "bytes": 252495,
+      "sha256": "2ef87009ddb66d5dcfcefa912b2acb2de8842784c46ed3be98aa9c0b747afe45"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000161.npz",
+      "bytes": 252674,
+      "sha256": "b5ce3c130650da06cc70e6f15551ea8094d5388059e4b43ae13bdaeac3136d2f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000162.npz",
+      "bytes": 252673,
+      "sha256": "068e0988187aeae4f6f4482653e05de3ce0e008eec3fac7f4bcd77f27dbcb65c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000163.npz",
+      "bytes": 252774,
+      "sha256": "d216ced86d3527a66ee93a39259d90391056650002f851c7c14ae5a3e9ec3810"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000164.npz",
+      "bytes": 252572,
+      "sha256": "4aafc590d8c02e625b7a2bdf1d13229289743ecba07f7ccb6d8efdbf5c978e2a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000165.npz",
+      "bytes": 252606,
+      "sha256": "28cf3c1d957ba9f6ad69d9bec8316e135b487d9dbd33db658770bc9058f38e51"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000166.npz",
+      "bytes": 252728,
+      "sha256": "0475b945b857c92d4d889a6766e2b45b0d7d7f82d1bada921fb3c7d79641d506"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000167.npz",
+      "bytes": 252657,
+      "sha256": "325d6c1a6be837d96c4eca93fc3d4fb6f21434666380c1b97b706bf0e667c781"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000168.npz",
+      "bytes": 252639,
+      "sha256": "7488d77debfc7c2b6605fe727e302cda1cfbe1761b6ddd12a98df3803c04fd5a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000169.npz",
+      "bytes": 252589,
+      "sha256": "b50df66b49b6b8f4453f994171f536ad254ace71442f96562c2178cf9d39db49"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000170.npz",
+      "bytes": 252414,
+      "sha256": "5142ecadbd18e8972bf37781544167520173b538c1b3c43b2a9f02a06fd89a73"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000171.npz",
+      "bytes": 252493,
+      "sha256": "abd3ba6a8b7f4daab2b25c84989cc47459cc7cf0e2a562255ecd9f57296bac60"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000172.npz",
+      "bytes": 252598,
+      "sha256": "9ce8c521b111cd82740be405cfb785caa23dd13e9e39bde63bff57922f29e555"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000173.npz",
+      "bytes": 252533,
+      "sha256": "11ee451452fe8ad56b81d1abdbeee977461e88944c6a90cd0be37d245efb0eed"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000174.npz",
+      "bytes": 252450,
+      "sha256": "518a25581a2d6a57e18f665ad34a3dbb1738317d0c22ac3f16413a7504ae1c15"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000175.npz",
+      "bytes": 252478,
+      "sha256": "37085411a25ea52327501a490d5996731c916b9411ea69a37aff21879f96c130"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000176.npz",
+      "bytes": 252594,
+      "sha256": "9b89fecb36a56ed5442c804345d155fc758c488da376a9710992a149337ca096"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000177.npz",
+      "bytes": 252575,
+      "sha256": "c11450eefd14deb1a749d766b2424e2df730040e2d3c41323b511a9d1f983964"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000178.npz",
+      "bytes": 252617,
+      "sha256": "c0a56f3cc8b52a673d662764179cf769db6c4796dc5db6cf6728300030cba740"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000179.npz",
+      "bytes": 252551,
+      "sha256": "42e3572a570f1ce1bf0c737fc42a5ae8bb64013ab9772bacba4612f161c076c4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p03\\writes\\chunk_694591a5431c4fd993c543ec2781c46a_000180.npz",
+      "bytes": 33064,
+      "sha256": "ac5399aff5cd148c113b672504de68e7abd156d782ce7b999161c851d8ea1b04"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000081.jsonl.gz",
+      "bytes": 182184,
+      "sha256": "ba00a0c7cdf82f4c8a7d628077aff8bf6cf03839213320ee71d0c3dfb0c240f6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000082.jsonl.gz",
+      "bytes": 182500,
+      "sha256": "fab0a26731eeda2c89f7ea7ee73146b5f7234e3ea136629b7ef4c7801618c8eb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000083.jsonl.gz",
+      "bytes": 182196,
+      "sha256": "e082af5957f33479f900776fa7b0b752a848116ca41d04c5b6c98292df43dc0d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000084.jsonl.gz",
+      "bytes": 182020,
+      "sha256": "43241abd0894b6322f5ca4a08bf1c7742ecf7bf498fb904776cc45d56bc5e8e4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000085.jsonl.gz",
+      "bytes": 182107,
+      "sha256": "e603326a7c6edb63ace71603f9d29868d286273f86dbce01a14f61b35a83e32f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000086.jsonl.gz",
+      "bytes": 181913,
+      "sha256": "e0565b0e74543baf9d6defd31534c74f47668c86214b827f3617cb3aad6ed7a0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000087.jsonl.gz",
+      "bytes": 182774,
+      "sha256": "774f0067719f0a7013050e2c3ac6912df2f7dc7fb25798389b981bca6aa85bbb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000088.jsonl.gz",
+      "bytes": 182818,
+      "sha256": "923c5019637b4e41837f3789f392bbf8e97ef6803d775f3eeda78f218653591f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000089.jsonl.gz",
+      "bytes": 182707,
+      "sha256": "c3b414c050c9bbbbfe6dd06f11d4af37f8d04007a0070d31caa70878dd6523ba"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000090.jsonl.gz",
+      "bytes": 182549,
+      "sha256": "c1fed73b105a60efb961aea72eca41c8e5902c992064f15a5c8c7234820014ff"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000091.jsonl.gz",
+      "bytes": 182438,
+      "sha256": "f8146ebf5933662af690bedb0b226129c50ce7bf50c04f55b73a9a93dfe397e8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000092.jsonl.gz",
+      "bytes": 182289,
+      "sha256": "4cf020e307383e0ee69c5f0908918f1a46ee1bbf26e6a154641e3a4f64d70203"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\events\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000093.jsonl.gz",
+      "bytes": 53051,
+      "sha256": "080ecc1acd42dd12633489b11b17c216150e5102128dd56ae55b7dcedda3e25f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000156.npz",
+      "bytes": 252520,
+      "sha256": "65016c38ec651d5a3f5c879c9f96a35c6c76290890382544013768c71e8c9c0b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000157.npz",
+      "bytes": 252632,
+      "sha256": "94fdc76882a4f4a0ad09dc50627f15e7aa56b0dccddd7d54aeab1dc00caa7de2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000158.npz",
+      "bytes": 252721,
+      "sha256": "14d03c5ccca30f33e30d240dd8fd8aa05d24f38029afe7add6f6e14c86441fb2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000159.npz",
+      "bytes": 252641,
+      "sha256": "028cc4e90b548b8ef3cc961b1b71f15eabbdb87031155285cf3c92e5c85133af"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000160.npz",
+      "bytes": 252486,
+      "sha256": "8dd4cdf1cd6a8d7ff7562d998a13ec5f09b81281d0304bcf9749c51006f3ab1c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000161.npz",
+      "bytes": 252648,
+      "sha256": "256d4bafa779d5e2f15eb69af87dd2ec40799c21a76cb11ffb4161f67b4e83d4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000162.npz",
+      "bytes": 252665,
+      "sha256": "89b6d7aebe96ed554788af46b75bb0235a6eee0c821814b99cdb9ddbf7443dcf"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000163.npz",
+      "bytes": 252792,
+      "sha256": "5cc2e46be4e53df5f1c82de03dba0bc3724b5f267458f176da28e0541be4a0b0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000164.npz",
+      "bytes": 252562,
+      "sha256": "156248f3ce5d48a8241b103f155b80308197b3d4ab54409191b7249ef4745f7d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000165.npz",
+      "bytes": 252602,
+      "sha256": "b70b9b654026ebb3dead2a8d59859b69a07ad2b4b541e1e49fc8c1d80aac3a82"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000166.npz",
+      "bytes": 252733,
+      "sha256": "dba0d9bb414ec9926ebeac2a9cae7ceb5ba9b23562719387c20512f9a93db437"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000167.npz",
+      "bytes": 252649,
+      "sha256": "6985e8e55bb935b6c50d109b097ab54c07709cb36b3a5b3c547e8af8bceb1bd0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000168.npz",
+      "bytes": 252624,
+      "sha256": "acef5a45303d064ffb68041e8c2c38cc2e81c3d646809d269add466e31b96e65"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000169.npz",
+      "bytes": 252551,
+      "sha256": "255b2dfd4255d5ccc6fe914b37d2b4da5e93c8283b6244572e55173d53c97405"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000170.npz",
+      "bytes": 252431,
+      "sha256": "df2e9dbb628d4bff8419d5197f42b4b252e1aa37b7d84eaaae532e31f6cbf118"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000171.npz",
+      "bytes": 252478,
+      "sha256": "3fa139ab54b648fa221c62f3c92e9a4151b8dec076c2b5ac2404eaf855efac1a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000172.npz",
+      "bytes": 252576,
+      "sha256": "bcb2690ae85869b92e8cdf7c9d09a6f64a4bd146c2d261ae30b52da39f3c7043"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000173.npz",
+      "bytes": 252558,
+      "sha256": "986c2db9f1ace24454a2a11ceca950bee8c75820d6def7ce809ee0d49d64821d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000174.npz",
+      "bytes": 252433,
+      "sha256": "de69241b811bab47e1d5d684636f45f2970b87892028d29f8ab3a4ca09d98173"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000175.npz",
+      "bytes": 252519,
+      "sha256": "c4a939118fa7f2b8b80e647030c033c25f33dd044e89c4c3e18a2954a87b5751"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000176.npz",
+      "bytes": 252562,
+      "sha256": "2d9cf9ccafcc865012b8d57f66a90b1c7181f8139fd7d7669cdb8220228f8746"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000177.npz",
+      "bytes": 252606,
+      "sha256": "7355fc8e20d84000f4a5781455caf61735eab05a07474b0516b7154475278937"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000178.npz",
+      "bytes": 252597,
+      "sha256": "23a78dc9ef929a448461889d7bbde8f60ebe392d6b42a5ec9bd282a27dbf412c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000179.npz",
+      "bytes": 252531,
+      "sha256": "3bcb1ae5f40a5059a2a9358b9b064104b2357d2c3f1f6946521d7a58d9d74987"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p1\\writes\\chunk_8c35240b1fa34a0394d3ef0f7c6fd10f_000180.npz",
+      "bytes": 37963,
+      "sha256": "4befa2738f367e70817ef90c2a214e6570f30e38c0e0c08f4e8e9b9f062a58b4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000081.jsonl.gz",
+      "bytes": 181467,
+      "sha256": "cb80c4ddca6514a3d07eb44adf77ce78881da7650d89ce1021e30f7f4b7a3a20"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000082.jsonl.gz",
+      "bytes": 182079,
+      "sha256": "18f9e8a42a0f31caf0dab3ea2abc8def7cb7cfc4880b332a362d39a29d3884d0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000083.jsonl.gz",
+      "bytes": 181877,
+      "sha256": "f72ddf340513d890dd6a8ac79f62b1432b8e9abfc08c0e3586265a5e7efb12b8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000084.jsonl.gz",
+      "bytes": 180389,
+      "sha256": "e08086fe928bc6ec43682613610a0c065ba4453d25980bbd8f5cec161a47c542"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000085.jsonl.gz",
+      "bytes": 181320,
+      "sha256": "3ac9f6ea52ef0244d6ed86daba53fe927e7fd2d94cd79407f656cb6885de53bb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000086.jsonl.gz",
+      "bytes": 181354,
+      "sha256": "0499cded64463e9d9719d22191a406c2316517d32367965f48634e4855dc5109"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000087.jsonl.gz",
+      "bytes": 182341,
+      "sha256": "75b260c5a8a7c2303b34b335ab572d7a760568b4c7d1b916742e7e3cb3f70180"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000088.jsonl.gz",
+      "bytes": 182280,
+      "sha256": "538697535d16575df6393f68146b80988f4cc2dcf0fbe7adf77f47b642076fca"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000089.jsonl.gz",
+      "bytes": 182179,
+      "sha256": "b5b0670c82bfc2e6fc4f714a42e57ab89cf1d022610fc6630a3e44563897374b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000090.jsonl.gz",
+      "bytes": 181623,
+      "sha256": "882669b0036160aaea7fa24f1a74e5a46612450449abfb719186a04f7f022a03"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000091.jsonl.gz",
+      "bytes": 181530,
+      "sha256": "d495f3bdb5a2784c0746e151b28d7b45efebe8799974b125b7ceca50882ca338"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000092.jsonl.gz",
+      "bytes": 181964,
+      "sha256": "5477b07d25282518a271acb29ca8266238e64cc6fad7173e2b98fe9633d1f7d2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\events\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000093.jsonl.gz",
+      "bytes": 52741,
+      "sha256": "22e69243620ef0e637d4537fa7f2e87c7b6e4b190b7c08f0a4933ff8b7f48608"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000156.npz",
+      "bytes": 252513,
+      "sha256": "c62c9c7d58cbb689a571b49ccfd61d4bbd43a60d1d8770ef2ca982ee57f2fcb0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000157.npz",
+      "bytes": 252629,
+      "sha256": "8718dc912997e153127a2a695af15490d7a41af28bf803ae0cd5fb242d077f69"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000158.npz",
+      "bytes": 252718,
+      "sha256": "ac9b144862226b4bb96d116c77bfd23eff77097878ce619adc35949257b8b99c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000159.npz",
+      "bytes": 252654,
+      "sha256": "299b5049f199c51db642820fa14a57f080c34c68ade0fc1cf87527e93872dce3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000160.npz",
+      "bytes": 252494,
+      "sha256": "d4ea8a1527888c6f94ae5a857f931f1ece42d3da006d6f6483553827155c88b0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000161.npz",
+      "bytes": 252648,
+      "sha256": "9861685fa4b1329e5b38df887e4008818af11873b5161fd9891768f2033c146d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000162.npz",
+      "bytes": 252674,
+      "sha256": "f0a1bf8a3ab1000a4aede6b1cedec8e401e204c33979fccfa81a6a07ab5e6456"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000163.npz",
+      "bytes": 252815,
+      "sha256": "aa6f4c23273030ff9c649c11d0a426b32209df780179727c307e4a5bd34da1b1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000164.npz",
+      "bytes": 252544,
+      "sha256": "bb1b7f7b200a8a7d832eb4e09e8b4012f5799ba2fdc6abd7399b42603e61169d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000165.npz",
+      "bytes": 252602,
+      "sha256": "d2ed77924172409f456f080210340f87ea962db9db94de83e5f236c59a7f8604"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000166.npz",
+      "bytes": 252744,
+      "sha256": "f6675095fff568c7e567a82a3e0f8b577b0fcbe3b29879a13e89520d64fe3e33"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000167.npz",
+      "bytes": 252633,
+      "sha256": "a0244bf9133720ed681a76500e856f5881347bfea02b20d35f89652bb6b42ebf"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000168.npz",
+      "bytes": 252640,
+      "sha256": "8ce79fbf08abec194b20841288cc790ccedae9160201cb49663562da4ad7ae05"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000169.npz",
+      "bytes": 252580,
+      "sha256": "b8dcf47545a050030cb9eaa908bd08faaf2ce7037491b2cc7f0ce917f2ebd4e6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000170.npz",
+      "bytes": 252417,
+      "sha256": "61e938395cf01c22e3eaa1b1d8d0677af3ed90ebfddcd7a196fec4c0e7ba50b8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000171.npz",
+      "bytes": 252488,
+      "sha256": "01180876c9fab2be26ef94ff1ba1ca5b794688a39d213b4cb958ef212466b016"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000172.npz",
+      "bytes": 252585,
+      "sha256": "277e910ad7b28e3fd629f8b3946fe300d7835e254de0d5bb855433aa83a3335d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000173.npz",
+      "bytes": 252547,
+      "sha256": "6d86c7a47924b47d6f0f9ba17ab162819b4cd445acdad55800dd65eeb2e89ec2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000174.npz",
+      "bytes": 252440,
+      "sha256": "fc9ad5b25e103d4db84b4368ec21c6ed8648779ccd6f88bbf9ca22784d6f058b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000175.npz",
+      "bytes": 252479,
+      "sha256": "6be111ee45e46dae0bcfee6a0c82d6b0e4b56234dd5730a551d27fbaf8eeee28"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000176.npz",
+      "bytes": 252555,
+      "sha256": "f342ab75fcdbc0865abf9c11fb75f0595b4ac801ec7486ca0d5ce478bcaea138"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000177.npz",
+      "bytes": 252620,
+      "sha256": "4c4f13c72ca61408c7bd63da1321e666385e021b9ba3c9ce4bdb5be9e1e90a4e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000178.npz",
+      "bytes": 252604,
+      "sha256": "3e0c18d96f8a3f8770d416cf6fab4d77beb6c59ff2a134a71c177eb4ba64ed1e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000179.npz",
+      "bytes": 252543,
+      "sha256": "d13a3de4553948a538a3f2e5e018eec17f4c03858084e17dbe023562962d52a4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133\\seed_2\\alpha_0p3\\writes\\chunk_6adeb0af7b274aabb72b7b86211dce4e_000180.npz",
+      "bytes": 36988,
+      "sha256": "af3a91df13b2027efb9e128ae0d46325e4846419e265fba82dfaddb4e27a6908"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000081.jsonl.gz",
+      "bytes": 181604,
+      "sha256": "9d440589e8fa6c1da309d22d9e26e28a365301d63f3518bf2fcda4eda876aca4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000082.jsonl.gz",
+      "bytes": 181690,
+      "sha256": "108c1422fab73859cebc99b7f784370ade6f3a171e328d635477205d4168fbdd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000083.jsonl.gz",
+      "bytes": 181873,
+      "sha256": "453dbe80320d0ff921606a4a968e0e4ea314cdbf6d4624314aa2163f6135d323"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000084.jsonl.gz",
+      "bytes": 181645,
+      "sha256": "df4945b74c8349820ccb55356e784376b65773a097cf7baf79c50d1d713879b6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000085.jsonl.gz",
+      "bytes": 181380,
+      "sha256": "823d137905e9443ff4f9729e610d819f0ef0badd7eb46429fa8cee62672127c4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000086.jsonl.gz",
+      "bytes": 181146,
+      "sha256": "c1426f8c1e2cc936f7d2017d0c721ead4d5cfac30abf60a77f98758945ee50e4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000087.jsonl.gz",
+      "bytes": 181657,
+      "sha256": "b15a742357fc301027ee7a0c890e2730f0b1174a234a8ca7a898a9005c9abded"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000088.jsonl.gz",
+      "bytes": 181950,
+      "sha256": "64f83ec69c64e59f1bcba04070c1fb608b5dea51e79a08deee4aac84c6f20ff5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000089.jsonl.gz",
+      "bytes": 181784,
+      "sha256": "a97ea4936a01b0ab310608aa787039333d8e2a77c93b091b1a06e7cc7fb621fe"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000090.jsonl.gz",
+      "bytes": 182104,
+      "sha256": "c1b603507b8d70b06b7854818ee3463c103bb972cda9e1a9cadd6bcbe9eb1872"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000091.jsonl.gz",
+      "bytes": 182828,
+      "sha256": "0adcaa099640a5ee9bc87077d4ae140bc26973b9b098de23fe6dbb6da67e87ff"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000092.jsonl.gz",
+      "bytes": 182282,
+      "sha256": "7a51cf8c74e3a80ce2dc53b2fe07cd14c8920912d9ac248a6b11056f5e7b2b64"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000093.jsonl.gz",
+      "bytes": 182246,
+      "sha256": "347afd16fc2125ed7a47a958e9584a4afa004874e3e02180d6a6149d0ee98010"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000094.jsonl.gz",
+      "bytes": 182457,
+      "sha256": "50e42d3826ce999bef669065305ee68b8931a84bca15c8ef24309a729662b81e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000095.jsonl.gz",
+      "bytes": 182278,
+      "sha256": "13b48063fecb8b3731ff6d7b6f8fe612574223f58208f86f6f8c8be059c728ee"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000096.jsonl.gz",
+      "bytes": 181380,
+      "sha256": "fc9481a633b52c7f6758cfee8e0d79d36f5cc9888e626b5c362f484cab3f7d72"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000097.jsonl.gz",
+      "bytes": 182143,
+      "sha256": "5366d638a1f8a1987e9662731c87b68a3e9e0922a37a3c00f0b41ec1d1ea8037"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000098.jsonl.gz",
+      "bytes": 181027,
+      "sha256": "1741b473567db1fefe2209e624e980c335fec461cff1e45c4d00c69d838cbf29"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000099.jsonl.gz",
+      "bytes": 182213,
+      "sha256": "38705618e60addf7aaba4e65e5aac73f45798437272e3c1caad5471455313861"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000100.jsonl.gz",
+      "bytes": 182026,
+      "sha256": "bf0d76ca336f3cfc26f7f80b4fc8c7772b952cd699953492ba8908e9fc57dda3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000101.jsonl.gz",
+      "bytes": 182152,
+      "sha256": "fb3af2f984aa478db779cf3aa365dc5e675e3498a6c93e201f656bd22bc11749"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\events\\chunk_2717c98ad88c42b9b000f67fe55d8095_000102.jsonl.gz",
+      "bytes": 94214,
+      "sha256": "47a27c85621ef4b59f5f1ec6953c50c5296cf176eaee389b09251fb42ceb8287"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000155.npz",
+      "bytes": 252650,
+      "sha256": "5c12f758b14984531a3e018bec6fd57566cd676e72aec768dc81a47dec46c1d7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000156.npz",
+      "bytes": 252618,
+      "sha256": "6f656bb551581def2097b61dd2f72af59857dfa1fe139a09636d06d6c16ea550"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000157.npz",
+      "bytes": 252645,
+      "sha256": "a2f7ffe48cd3ed5ea197edd3cab156bb4703ac03e35a2582852b927c42f5a8d2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000158.npz",
+      "bytes": 252776,
+      "sha256": "57296374201f9a3ebefdb9c29ee532f5fb42973acd2a9f1e75ea615bcef0ae94"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000159.npz",
+      "bytes": 252761,
+      "sha256": "87bb150f61d39d2e72ea47a785ef9f00851059e60f2824aa9e5db64feee847e0"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000160.npz",
+      "bytes": 252707,
+      "sha256": "f88353f400da677694147479893660b98f96263631d4d7d0942dfc471cc584b3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000161.npz",
+      "bytes": 252611,
+      "sha256": "05d7f3e941a78f813241c14e4f9d7ebcd136268fe9c92f3c5756e668d20e9728"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000162.npz",
+      "bytes": 252645,
+      "sha256": "e9d30e8bd54a61bdff82eabff796efeb1436cc8baba2078cc7b230af64f085fa"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000163.npz",
+      "bytes": 252915,
+      "sha256": "d7f43911e3965388b46dcfa98f4e0de41ca3f338adbfbb75b63b5eb7b7d850a1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000164.npz",
+      "bytes": 252826,
+      "sha256": "ddbef6baf90611ce4358444cd43a2b839e905d5f22c50ab92daebed0f8801a00"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000165.npz",
+      "bytes": 252850,
+      "sha256": "b982503b9c4a119557bccc3eea0285cfa02f25b478ae788493c267461acd7c16"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000166.npz",
+      "bytes": 252596,
+      "sha256": "d98822bdbd3a37ad180a951d160b7d30d2291b5a8b2a978fbcaad213a85ddef9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000167.npz",
+      "bytes": 252639,
+      "sha256": "cbd8945f0fdf658bfcd9e0574479dfcc43da4422efc16ebacbd6ec30b3b11cfd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000168.npz",
+      "bytes": 252693,
+      "sha256": "2cb3fdfc048a0bb4f0172667cf6751d4a651cb29eefbbb1e757a4365f87a3a5b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000169.npz",
+      "bytes": 252729,
+      "sha256": "b29fc38791a2819405fd67bbb7be99eadf6c0f854f6998a0e7d05c4a3c6c4464"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000170.npz",
+      "bytes": 252778,
+      "sha256": "fc0d66e8235b78339bf724e2763073f582a6e0acf0626a1e611076990ea2bc35"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000171.npz",
+      "bytes": 252870,
+      "sha256": "d1ae400ec3fd2dd13fbc061cf5d87035f728d95fd7746e1de103543d6c42cea5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000172.npz",
+      "bytes": 252766,
+      "sha256": "611d31132c4ccdfa7d434d0cf6e76770a6b39cf334f9a1402c0ea2b291d5b979"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000173.npz",
+      "bytes": 252743,
+      "sha256": "f21320148f2dc1ec4b7aa17347c9be5fcca84cdf06703406176fa73803855a3e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000174.npz",
+      "bytes": 252579,
+      "sha256": "2212d891a3a11ef8754275151524486b9f22ef5dad8ba8c283fee3035322bcb4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000175.npz",
+      "bytes": 252554,
+      "sha256": "7281acb78cb720b0e98b58da70ebbd43b9747f1ba9506dc5a93e1c0be97a1923"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000176.npz",
+      "bytes": 252646,
+      "sha256": "27af2ef999b840e95c13d3b1f86a76a9b2f1daad02478f699b7dbbb19b03b42b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000177.npz",
+      "bytes": 252729,
+      "sha256": "0918ca634106c6bf1e15f14df26389bece633f9e67d32216c5828d90f83843ae"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000178.npz",
+      "bytes": 252521,
+      "sha256": "8c0bfd309c0477973e7761a3cc3d6ff9cb0560d6fe8aac767226dd1e06be9a92"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000179.npz",
+      "bytes": 252564,
+      "sha256": "5e14bb1bfaeb100f774c3cde78eb55530515777be0d9f5e0ce0db187f9c1ba34"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000180.npz",
+      "bytes": 252618,
+      "sha256": "ac32207540a3c6a48679d4e1b46c3b29e438bf17e4f002212d9d22e9ddd3bf30"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000181.npz",
+      "bytes": 252525,
+      "sha256": "1f6ac54f6702789393e497daf8e431907f417a086740b97cfbe96b9a240aa471"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000182.npz",
+      "bytes": 252671,
+      "sha256": "4b30d5f856f22bf082476c9eb7bb2a263f4c0290497b0203919572cd78408c70"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000183.npz",
+      "bytes": 252635,
+      "sha256": "f6e8e44e0d84da81e97e3ebfaf0c99405a5faee71ec28c9c0412aa7366d67c3e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000184.npz",
+      "bytes": 252450,
+      "sha256": "f9d8709fba5f68820ceecb1abd7eb7398e49e0a79c6d9e8de537e6c7f2c83319"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000185.npz",
+      "bytes": 252719,
+      "sha256": "11880b1dcf1ca29ce3ca6a2a84a7be75a94e1502eae71f84994ab53431be4feb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000186.npz",
+      "bytes": 252774,
+      "sha256": "6ad1f835edf9208861fc6956a9e2e09e57d06c9239300f416a8389acf036855c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000187.npz",
+      "bytes": 252603,
+      "sha256": "5babf10577c954e3bf77323bff8788270fc5391e8ac6a9634a1c1a6c2020ec55"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000188.npz",
+      "bytes": 252652,
+      "sha256": "4de10a43bb2bc4fb1f67d5ed7b95316e64086892bd81152e4f73162f95f986f5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000189.npz",
+      "bytes": 252644,
+      "sha256": "c9e569bd1ea08655e7bf72380e3410eebf8b215a8eabee5a207f875dc4df6c35"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000190.npz",
+      "bytes": 252711,
+      "sha256": "aadbf2af2a19987969cd6dd46d78c408ba222dd9cb5f39ad87b10ef596bdb190"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000191.npz",
+      "bytes": 252729,
+      "sha256": "9ab2b9766560ee359655df52038043c67e8a27d56de2818eacab8ce710c2c2e9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000192.npz",
+      "bytes": 252749,
+      "sha256": "b2be4a1acb4106e386896e67c2d884e9ea6733afea7d679de4115a3931363aa8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000193.npz",
+      "bytes": 252626,
+      "sha256": "b0dc62198abe5528088118bec484c0190e781a68b203738a0dc30a6f3acd4fdd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000194.npz",
+      "bytes": 252690,
+      "sha256": "9174d7803332e166929838f699e92e8e350e8bc7f341e7241238d5bbeef947f5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000195.npz",
+      "bytes": 252599,
+      "sha256": "de3f07d0206d976237457f8328277badbdb3f55cf8308faa23a1162302bcaa77"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000196.npz",
+      "bytes": 252752,
+      "sha256": "5c64a3ef419c43006bcc170dbf0ed4856fb206b150cffdfa7066c9f360bc6024"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p03\\writes\\chunk_2717c98ad88c42b9b000f67fe55d8095_000197.npz",
+      "bytes": 82051,
+      "sha256": "f38d107d8b82a9e317119a18c5f9fd826163927bc8ec79b7cf5a67b5858a379d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000081.jsonl.gz",
+      "bytes": 182128,
+      "sha256": "2899650de7b5b182c69e1fe485ed209e58a536463bb80c8ae141b2364230d303"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000082.jsonl.gz",
+      "bytes": 182491,
+      "sha256": "0a1857b53e4bb923b7fa02dff64306ec8ee8248e1c0107c3fb5ec7f06875b24d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000083.jsonl.gz",
+      "bytes": 182293,
+      "sha256": "5f4f4809107eecdba8ca1c05aa4538b08c58af5bfd485734b1572e070d5a9de2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000084.jsonl.gz",
+      "bytes": 182576,
+      "sha256": "76b109b7939a0ba8ddd217025fa1140d0962198e1e5bb88d26073464df7e5ecb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000085.jsonl.gz",
+      "bytes": 181485,
+      "sha256": "c8ff5a740f5327abbf61f0b861e5375231ccd0a71dfcfaf84bf15b6131614f54"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000086.jsonl.gz",
+      "bytes": 181931,
+      "sha256": "531d24f35030d1171fba21eff5e074c269037560da88ef43823f202d2531cb0e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000087.jsonl.gz",
+      "bytes": 182153,
+      "sha256": "8ae26c04e904c41b1ca0138f42f6443ac591a889548c4bc7f37879d331c657d3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000088.jsonl.gz",
+      "bytes": 182488,
+      "sha256": "9174d33cc92245503ed1713d29cf431f65f662d3b6bf366857e663d367e87992"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000089.jsonl.gz",
+      "bytes": 182602,
+      "sha256": "16e191ea7a7852afab2c259c691811f6d7d31a085135a6586d1265e7dc3690d2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000090.jsonl.gz",
+      "bytes": 182393,
+      "sha256": "a4ef0aa52527a100ea2d5fb810581ea4b5ebe786e6da2d042c6289d5f69c81bc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000091.jsonl.gz",
+      "bytes": 182354,
+      "sha256": "15f2bb3127f6abde4b128cc73cfbf5918564246695968b8482154f34536da0bc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000092.jsonl.gz",
+      "bytes": 183044,
+      "sha256": "bfba1dabf63e4da1d79b2eb379ad36b4ba4dded6bb46457be21077d4a33f21c2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000093.jsonl.gz",
+      "bytes": 182634,
+      "sha256": "aae116c26e4cc1ec2d3b7b79114c2339313dce6fd2ea263457e54425cc073a20"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000094.jsonl.gz",
+      "bytes": 183189,
+      "sha256": "10cabad5931e6a563d4203d4cd1c4d9e95ed7ec479511f54c6d3bc3cf845295d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000095.jsonl.gz",
+      "bytes": 182868,
+      "sha256": "21e8f13f58eda883b91740ac3e68be5577933bec090e2ee6ff7d66823f3e0684"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000096.jsonl.gz",
+      "bytes": 182657,
+      "sha256": "a40cdd3b10cfe98563b37925184af2c38614e1aef2458f9206002708151dc360"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000097.jsonl.gz",
+      "bytes": 182422,
+      "sha256": "9dafc5e0bc0f303785a995611b3a0694661aec00014e008bb1259e0e56603976"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000098.jsonl.gz",
+      "bytes": 182353,
+      "sha256": "9b510460749e88733b1c305a8355b9661cc731503e41b5cae0855dae8aa90b9e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000099.jsonl.gz",
+      "bytes": 182406,
+      "sha256": "0bf56e39fc7d6ad20e5bf5c0c3f8bfc8e76c0d922144e51880d09dfe56e9988f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000100.jsonl.gz",
+      "bytes": 182218,
+      "sha256": "381db1e32ce062d29f5c9faddcb2b43ba1820b6bcc9f81458aa6972856d2836b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000101.jsonl.gz",
+      "bytes": 182792,
+      "sha256": "969353bf1cea4cad604679f9dce292643f1ea25e55b6d5c7796977708393b95c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\events\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000102.jsonl.gz",
+      "bytes": 97072,
+      "sha256": "6319db0faae11291da13676a95b30016a386ca2cff3cb89afe3f65a6f8a62722"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000155.npz",
+      "bytes": 252640,
+      "sha256": "1d68eb6fbb533dd2debd14a4c463d685be06a9c09ae244909efe526cc5e1e59e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000156.npz",
+      "bytes": 252624,
+      "sha256": "961beb2bbc113306e7b358460f45d5ee544f586ba33986834933e0c7c2de07d3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000157.npz",
+      "bytes": 252661,
+      "sha256": "59915da3f30292aed342d119b5c841671bcc1e79ef77be2396e3c39e427b9413"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000158.npz",
+      "bytes": 252769,
+      "sha256": "d6a94ffae156c28c3a76d33a3c5c60c4e93a3843c414b83d5a2fd1132cb42de5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000159.npz",
+      "bytes": 252758,
+      "sha256": "349650f2005edf606d847c4197ec24b801d7e16c4a7d819d314770b15fce5449"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000160.npz",
+      "bytes": 252717,
+      "sha256": "51d200c601684fac547dabbabbba31c9e9adbf024ac01294fee97f66cbcef2ce"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000161.npz",
+      "bytes": 252601,
+      "sha256": "7099561f7aeabfeef893640f8a3d790c9e60ce56886e091bbe56439fe47f774b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000162.npz",
+      "bytes": 252646,
+      "sha256": "ef0b73e88d38b124bf59ce4b71adf98cbd5651f5164504a4957ddde0c405670f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000163.npz",
+      "bytes": 252904,
+      "sha256": "5b3606eaf8df381a0a75e7e4823ae76f7d4c850106eb3397d0eec89f0d5848f2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000164.npz",
+      "bytes": 252832,
+      "sha256": "2949ff64ebf69817cba92d41b4f62fb6d7c27273ec57c16300e3d08c6959035f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000165.npz",
+      "bytes": 252839,
+      "sha256": "5e1adb7ac85ff0f8b56fe10b2937f580794b9cfe793be2d6698dea46daabb575"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000166.npz",
+      "bytes": 252610,
+      "sha256": "b582a910fb2a5f66ea49dd8da08282e24ddb4a3cfdae1a434b482f6be854c5a9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000167.npz",
+      "bytes": 252563,
+      "sha256": "6b20e5b5c9a4f2af5d255bc1636b07c3d7199f1f8c840068658e7ebb916d6d8a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000168.npz",
+      "bytes": 252705,
+      "sha256": "f946466b37b011c1e019009a0486abcebbc98134102ae4f47bb646b88b9ad5a8"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000169.npz",
+      "bytes": 252700,
+      "sha256": "ab325543ddb27ee55cc8bd5249269fe337882f42cf55ae4ec808b1384e82a65b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000170.npz",
+      "bytes": 252796,
+      "sha256": "46a791c54a1c56f3bff88f4007f54742e5244ab360eb070f1e8f2d26ceb6a7df"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000171.npz",
+      "bytes": 252849,
+      "sha256": "8f8208b739561f6c1ca97beedcf028a84be5a297a2021b6c0ecc2c96695fd8eb"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000172.npz",
+      "bytes": 252777,
+      "sha256": "2e744f3615dcaab252cfbbc966376f694e7c63b5c3da39039c1039b8c82ad071"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000173.npz",
+      "bytes": 252733,
+      "sha256": "06313b30397f3da3916b302c75c483460e3c992c3183c5f02104e84e0561339f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000174.npz",
+      "bytes": 252542,
+      "sha256": "eb41ba75dbe7005e0ad074e11d9176fe61cdae80e13504c7aabcf9b83878d26f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000175.npz",
+      "bytes": 252589,
+      "sha256": "e41cfbcc4e3ee7c2e2bbae72220cf72a8ccb67844d7e59ec19f74de2f3e89bde"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000176.npz",
+      "bytes": 252618,
+      "sha256": "0f2e97d4a4a358c7ee72464c3447974357521364c6f149c0b62913c2d790ad2d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000177.npz",
+      "bytes": 252727,
+      "sha256": "140c182b06d0017f9cbb5bf96718a84dd941484456728943966cbeefd0d26b4b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000178.npz",
+      "bytes": 252556,
+      "sha256": "8a06f55f091fa7e7cb4969b4ba3456584a4bd07bd7550fdfdbac0ea7dfb79d62"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000179.npz",
+      "bytes": 252534,
+      "sha256": "4e019d799a0041991ddc2ce44eed7274cdc49a90ab37bdfcbb9fbee53c7cb8c5"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000180.npz",
+      "bytes": 252622,
+      "sha256": "b20523e96b12dd88a461590b7ed85f3ba4e27e370359af1507ee97f8541be773"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000181.npz",
+      "bytes": 252518,
+      "sha256": "de570d9c6a669ea191c6dd0481dd645a30e20e979b2af08b0cc529e12ff7cc70"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000182.npz",
+      "bytes": 252633,
+      "sha256": "0395b5dc9765208cda58e1bc179bdf41d18d215c1b0ce928d78fd8af11c3ea53"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000183.npz",
+      "bytes": 252614,
+      "sha256": "9df5844f8d805f7649731b900f6aa3f2f400f65273493c4366abb7783421c798"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000184.npz",
+      "bytes": 252413,
+      "sha256": "a06a7a582fdf3d00daf8365ec0ad8ba64e5ab60b087c060e5f06dafe3a47f87b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000185.npz",
+      "bytes": 252692,
+      "sha256": "ba988e931615d44be901e9a9db30f66b616dda651fe13d90839c07015ad9d231"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000186.npz",
+      "bytes": 252811,
+      "sha256": "862079b8a9fcb81e6fd9207d698d67d2d6fe5f13b32166771737d9101075b01b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000187.npz",
+      "bytes": 252652,
+      "sha256": "cf22d77936d28bf981bcc3b775e2067c5d35384baee691b6ba7b22594960fb07"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000188.npz",
+      "bytes": 252654,
+      "sha256": "b9c0cd94294f3fb49c1a3e443675fd23ffde8e6ef553aa7f5c5d6bf94af833b7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000189.npz",
+      "bytes": 252630,
+      "sha256": "a135a776dac58aabe676d605149433a7d408175b034e99c503e558d8e844a33a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000190.npz",
+      "bytes": 252737,
+      "sha256": "257102c803f4e4166c9b80b71462076e66a547168f274fc524522f8c4faebf3c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000191.npz",
+      "bytes": 252685,
+      "sha256": "1c0ef18ecc6483419e1158460f23b521e3253b1bc77041d9611f1dcebf65e628"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000192.npz",
+      "bytes": 252753,
+      "sha256": "e8c3df3fba4377835260653c2a02bd6bfecb887c2e89f85748efca0342a4cc4e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000193.npz",
+      "bytes": 252680,
+      "sha256": "5918f0c158ad5eca8043ddde19d6fca37ccea58a17c932ced7d952c4d01f9af2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000194.npz",
+      "bytes": 252657,
+      "sha256": "ff70d1868eff0efb977617b7451cb5d388224c1932a4d538d864fbac998d0d8c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000195.npz",
+      "bytes": 252609,
+      "sha256": "1718f1648a0418fbbd032d8803063b895c54972e68764bdc66fa72aa86e6f168"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000196.npz",
+      "bytes": 252745,
+      "sha256": "5f274d1a322cd6aad1330e0d453fc9af3db5e22bf2e488eeb8dee056b26a9683"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p1\\writes\\chunk_f0ddf11f8c354a4b8e97e90a452983c1_000197.npz",
+      "bytes": 96021,
+      "sha256": "f9bab4874c84b00c5dc38a7108e0008121c071d304d8614ef7ef65000c42dc93"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000081.jsonl.gz",
+      "bytes": 182059,
+      "sha256": "71673cabdb540e96309b305feb852d9361b919e507d308de9747a7229dd30880"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000082.jsonl.gz",
+      "bytes": 182180,
+      "sha256": "ddfec156ae65774cc70cab3ccf8c112d6149de82dab1b73c05286baf7388198b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000083.jsonl.gz",
+      "bytes": 182247,
+      "sha256": "96564c5057e8d1f9a637b998ab25ead995d81dc995827e47398922ad25eaacc1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000084.jsonl.gz",
+      "bytes": 182334,
+      "sha256": "1d8f3e86442568d811395011ff9dbbaeedf0978bf7b7a71bfdcd86c759a64596"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000085.jsonl.gz",
+      "bytes": 181485,
+      "sha256": "5116b5ef5dc4a5cc20bfc7812a5fd41e77e0716e1171fb94bb388db01950671c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000086.jsonl.gz",
+      "bytes": 181915,
+      "sha256": "6454796dfd6950dbb29b3d18c08194b61189940ef37dc3b8b982c9967fc7415a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000087.jsonl.gz",
+      "bytes": 181874,
+      "sha256": "a43ae15d45b20d8a1020c654ce67f2b10dd9083584a1455b7aba18dd5bae9a0b"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000088.jsonl.gz",
+      "bytes": 182897,
+      "sha256": "dcd69671c99f79ddb92399cdce7f1cf78d908fd16596db6e631cf430fc86d0cc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000089.jsonl.gz",
+      "bytes": 182202,
+      "sha256": "af76ad0e0f8135db33d1147c7056449c36c784bfe106ac5bf77e0667f0fe12bd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000090.jsonl.gz",
+      "bytes": 182180,
+      "sha256": "9e457db2ef73a4d56976e5707d0fd272ebe223e76a28af9646ad485eb47c71fd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000091.jsonl.gz",
+      "bytes": 182653,
+      "sha256": "9b59713625ffbbdb8081f65d6a5048ff0819857bbf44a7165d8bc413674e4cc6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000092.jsonl.gz",
+      "bytes": 182604,
+      "sha256": "637d77b545350b2afcf404cc3ef6d8abc303e1d76954754d4139d57a52fab3a2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000093.jsonl.gz",
+      "bytes": 182186,
+      "sha256": "bea8a3b2632fcb752502d20f5583ddf6b026f2f0f9c56e41e4d2402792ea3663"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000094.jsonl.gz",
+      "bytes": 182579,
+      "sha256": "fd2b72195072ecc2eb8c311419f483b708ee3cfb77dc40bb94f3ad4fa188b369"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000095.jsonl.gz",
+      "bytes": 182727,
+      "sha256": "52da04a56bb0db69256db26a7c7eaf6cb7ca4a77563f2c83a2fd2511dd4922a2"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000096.jsonl.gz",
+      "bytes": 182305,
+      "sha256": "0eda521f7ab8155c8db4b3a834813f97c2aef3d35975c8f9e57a8a6d8e9b5f32"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000097.jsonl.gz",
+      "bytes": 182281,
+      "sha256": "8d4d3cf5f4566979a6f6f2e9960e69fb3ce68e5b6f49ea745b1c2f298ae6c953"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000098.jsonl.gz",
+      "bytes": 182243,
+      "sha256": "6e4ad5060e826c7167be0c6d2729a38370d14f0ec11fe7f42ecd17656ba9358a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000099.jsonl.gz",
+      "bytes": 181943,
+      "sha256": "c888d64e18049f926d6498e5a887d70570ac66e1c612c2d9b072b9f75c5a1dfd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000100.jsonl.gz",
+      "bytes": 181538,
+      "sha256": "5fb7a3471ec111e11e42c48075b615bbb62746c36611acb5ddb723c3909628fc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000101.jsonl.gz",
+      "bytes": 182760,
+      "sha256": "051f8fed234704e507f14b7d1ad5a4a9a775f9c9b9dfc721a06fb05131d274e7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\events\\chunk_8c3d09f48601414b99a4a6a21873722e_000102.jsonl.gz",
+      "bytes": 97473,
+      "sha256": "766cf37b70706bcb24e99e4df40c71578c0d9e6662a189e6382ecee045c13c66"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000155.npz",
+      "bytes": 252622,
+      "sha256": "7d5a811b97dc14ed176c2791b946d0bd95f2cf5811a34ce93d228e6be91fa194"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000156.npz",
+      "bytes": 252599,
+      "sha256": "139384bde41e7dc7938dd5b5ff2a1aada96745994e5960f51c85b33f9edd0575"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000157.npz",
+      "bytes": 252628,
+      "sha256": "253171e7594d1fefc7b0b9b6358417866062de5829a51710e870b1c691f232a4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000158.npz",
+      "bytes": 252748,
+      "sha256": "6e0b2bbee139c77c9c71e2bdbd4bb94e04610696525b72e7b02a1b1da9e03673"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000159.npz",
+      "bytes": 252743,
+      "sha256": "8c7e22f921023d58c4ed822ba94b11e1fa1f434b6e689dcf3d87e7b8f71c49cd"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000160.npz",
+      "bytes": 252719,
+      "sha256": "15e3e1d6020d432612ee4ddbbcfdee65f5e004a6a986b2178fbfbf22590ed901"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000161.npz",
+      "bytes": 252636,
+      "sha256": "a1191b8623454924d5bc7a9544424dcc8b9872d32230a5213027540c0b3dbeba"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000162.npz",
+      "bytes": 252608,
+      "sha256": "68e6f9ac7b2a0b115f1e8c6ef772c2199b60fef480cdb515dc56d885c240c375"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000163.npz",
+      "bytes": 252920,
+      "sha256": "7238b9c8cc39a160ec6f77e487429a43c68945ad38e3bc84979dd57089d1a98f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000164.npz",
+      "bytes": 252843,
+      "sha256": "930416a12df63b6bb5250fa467dd2d2e1a8208a5741e79b75435d7d42a55fe41"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000165.npz",
+      "bytes": 252839,
+      "sha256": "0ed4416d698752568da37e4116f76901511454d0da2066122dd7cf5e26fb2111"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000166.npz",
+      "bytes": 252616,
+      "sha256": "9b1091d3a6dd91eb753c13d19a96d0b3c48a25ced1dcbd522fe42d05953f8acc"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000167.npz",
+      "bytes": 252555,
+      "sha256": "557e6265b04b9e6d37e08feb3f5c522ffaf3fc0f2c9c01e31fad7f236107aa79"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000168.npz",
+      "bytes": 252720,
+      "sha256": "632027f21771882bbc95f2729b0ddc5b35302148dca7bd3ce8025dad61e91388"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000169.npz",
+      "bytes": 252706,
+      "sha256": "b94e90b62220e5005168fcaa1132b982c4911ee84b4ddb81ad3812b6101d0bed"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000170.npz",
+      "bytes": 252813,
+      "sha256": "82afeab33c52d899a57e87fce0f7055168f8dc3bfbfa56a128dc406f759dc36e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000171.npz",
+      "bytes": 252869,
+      "sha256": "8f81eb8c6aafd4ed46c17bc87d368c78ab17e537ccf781851bbe6bc587564982"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000172.npz",
+      "bytes": 252774,
+      "sha256": "ee5e395aa4d71ceb1648a2a95fb94c69ec5d9be51bc3f10d81f7225c6c8ecdff"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000173.npz",
+      "bytes": 252745,
+      "sha256": "52ecf68a96e8d48c6448bb0f75a2e6061fff83e329133bcd43df94867abbde2e"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000174.npz",
+      "bytes": 252540,
+      "sha256": "fc089085218e6eb4600b80201c2eeee538a58e64f9ab03fe33d74caa85ad6a4d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000175.npz",
+      "bytes": 252585,
+      "sha256": "f2423c54ed076aff728ba3d4aa91daffb88bead429363bf7b7ed31db23858aa4"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000176.npz",
+      "bytes": 252611,
+      "sha256": "fa293b61b5dcbe7dea8bc6c3e39a76e6a1fa4b3924e85b861b3cff189bcf967f"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000177.npz",
+      "bytes": 252741,
+      "sha256": "f1a58f1375170b344f58883963cbffa3f1abdee9b495013062117d0e57b95130"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000178.npz",
+      "bytes": 252531,
+      "sha256": "e23400a23a83717eaecc4b0d5e8b7ecec099245add93b0dba8c3d3ef6b5637b3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000179.npz",
+      "bytes": 252539,
+      "sha256": "78df39158fa93d131ef288aff4f9480f88661ed1c236f56ab5404a84b63b82d9"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000180.npz",
+      "bytes": 252634,
+      "sha256": "8ba5a3d4006701c603010f49f83ec444d10e1048eeeddfa2c7bb74ee80713f5c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000181.npz",
+      "bytes": 252528,
+      "sha256": "a58ee0289e88457f748a5c081e3332647271d27a77e41f38ff3a3705d2a06658"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000182.npz",
+      "bytes": 252644,
+      "sha256": "b3bce5c2acd1985390b90c9869e8731e34373748a6038a170bd6ea46113f8276"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000183.npz",
+      "bytes": 252611,
+      "sha256": "1401280877d3aeaf469f94b09e85d71f572b375c5f3bede3559126380d5c009a"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000184.npz",
+      "bytes": 252427,
+      "sha256": "ed79d293be357a3ecb3eb7748ff3da221d3d5cc8d19d6d3c9b4e693a1c1fc448"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000185.npz",
+      "bytes": 252672,
+      "sha256": "133ab96c46fcf06099b36a63220b0c1fde5c59871df3573b5cd342c7c72e2fd6"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000186.npz",
+      "bytes": 252807,
+      "sha256": "d123d0b11056079c0d3917a2c61477737c43c886709fa72eba21943f7dfb1b2d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000187.npz",
+      "bytes": 252644,
+      "sha256": "e4b7129f91ed99f5a6a10d0c3e9edf9d863d552bd5f152810f92bc644d2cc763"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000188.npz",
+      "bytes": 252650,
+      "sha256": "59bd6594b27f070489875939415f150d8c4b289454bb93a1af91507a91efe4e3"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000189.npz",
+      "bytes": 252629,
+      "sha256": "94281ba34392778ac4ed3e1a7a29048b06f8b5994f43f2703931310a6a029042"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000190.npz",
+      "bytes": 252742,
+      "sha256": "0d4c0909a19bf2e7e061c9c91bc1abdfad3d7ec603d8a7d9962d4c5da45fabc7"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000191.npz",
+      "bytes": 252702,
+      "sha256": "0ca55649305c1601b25ee475543c6ed835f0d8ea926cbdb7a91faba163b8144d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000192.npz",
+      "bytes": 252738,
+      "sha256": "df16692d7d496a6dc669941db0f54af881cb3e5f515559f10b44796ebf4b8801"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000193.npz",
+      "bytes": 252659,
+      "sha256": "b201dbb20c0e4d70bbb28676321ebd3d1f6e05fb2f95a3d76fac22ee5de083b1"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000194.npz",
+      "bytes": 252655,
+      "sha256": "3f25b1c84741d4f2fdf5033282fb7527359cd2b48e442011bf4185658ae4330d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000195.npz",
+      "bytes": 252605,
+      "sha256": "ab3521399d0041d9462c3f41c44f9bdc7a14f30f0bfecea0ef76fcc662d5fb3d"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000196.npz",
+      "bytes": 252771,
+      "sha256": "4116196350d61ff719f0c4e021555deb2cdbb8a11f022812bed0e8069266883c"
+    },
+    {
+      "path": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4\\seed_1\\alpha_0p3\\writes\\chunk_8c3d09f48601414b99a4a6a21873722e_000197.npz",
+      "bytes": 98258,
+      "sha256": "2503cc2229a65c949dcbc558da65089076af4133578167132c1f3569efbcdc1a"
+    }
+  ],
+  "bytes_reclaimed": 112777969
+}

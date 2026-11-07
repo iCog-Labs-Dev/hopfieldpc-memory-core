@@ -8,7 +8,11 @@ buffers, not optimizer-trained `learnable_memory` parameters or FabricPC.
 
 [Results](RESULTS.md) summarizes the completed three-seed MNIST experiment.
 [Diagnosis](DIAGNOSIS.md) documents the separate validation-only controls and
-their limits. The compact reports, plots, and structured metrics in
+their limits. [Step 1](STEP01_ADMISSION.md) reports the completed three-seed
+online admission comparison. [Step 2](STEP02_ALPHA.md) reports the completed
+alpha=0.03/0.1/0.3 comparison, with clean validation accuracy as the primary
+criterion. [Step 3](STEP03_CAPACITY.md) reports the completed 8-versus-16 capacity
+comparison and its noise tradeoff. The compact reports, plots, and structured metrics in
 `recorded_results/` are versioned so they remain available in a fresh checkout.
 Their export manifest records the original artifact paths and SHA-256 hashes.
 Full checkpoints, compressed event logs, MNIST data, and historical smoke runs
@@ -25,10 +29,62 @@ python -B "experiment-id 1/diagnose_bank_selection.py" --frozen-control <frozen_
 These commands require the corresponding local checkpoints and logs. They
 create separate validation-only outputs; the bank-selection script is an
 endpoint construction control, not a during-training admission ablation.
-The original experiment and the completed controls are preserved as the
-comparison point for the next admission-rule experiment.
+The original experiment and the completed controls are preserved as comparison
+points. Alpha=0.03 won the tested grid by a small margin. The subsequent
+capacity comparison selected 16 per digit for clean accuracy, with lower
+Gaussian/salt-and-pepper AUC than eight. Direct CNN clean accuracy remains higher.
+The [capacity protocol](STEP03_CAPACITY_PROTOCOL.md) was fixed before training.
+
+## Step 1: online admission ablation
+
+`admission_ablation.py` continues the saved empty-bank warm-up checkpoints with
+the encoder and head still learning. Its `all_direct_correct` policy permits
+both-correct and direct-correct/Hopfield-wrong training examples. Bootstrap,
+snapshot ordering, nearest same-class assignment, threshold, alpha, capacity,
+beta, epochs, and direct-only CNN loss remain the same. The original runner's
+default policy is still `accuracy_guided`.
+
+```powershell
+python -B "experiment-id 1/admission_ablation.py" --run-dir <full_run_directory>
+python -B "experiment-id 1/admission_ablation.py" --resume <admission_output_directory>
+python -B "experiment-id 1/admission_ablation.py" --aggregate <worker_run_directory> <other_worker_directory>
+python -B -m pytest "experiment-id 1/tests/test_admission_ablation.py" -q
+```
+
+The control uses the original train/validation IDs and never opens the official
+test dataset. It checks the CNN, Adam, and private shuffle states against the
+original CPU checkpoints after every epoch; any difference stops the run.
+The existing final fixed reference is reused only with the identical final CNN.
+Final clean and corruption measurements compare direct, original admission,
+all-direct-correct admission, and fixed K-means on validation data.
+
+Each output has a distinct `results/variants/admission_<id>/` directory with
+source and parent hashes, per-example/mutation logs, epoch checkpoints and log
+cursors, exact mutation replay audit, CSV/JSON metrics, a report, and a plot.
+Resume continues from the last committed epoch and verifies source, config,
+training data, and parent artifacts. More admissions change write frequency;
+this comparison therefore measures the entire admission-policy intervention.
+No alpha, capacity, beta, or epoch tuning is included in Step 1.
+Independent `--seeds` workers can be pooled with `--aggregate`. Aggregation
+checks compatible source/data/settings, rejects duplicate or unaudited seeds,
+rehashes the original artifacts, and excludes unfinished tails. Its manifest
+points to each worker's checkpoints and logs; an aggregate is not resumable.
 
 ## Run
+
+Step 2 compared alpha=0.03/0.1/0.3 with clean validation accuracy first; see
+[the results](STEP02_ALPHA.md) and [fixed protocol](STEP02_ALPHA_PROTOCOL.md).
+It shares actual CNN training
+across independent banks and requires the alpha=0.1 control to reproduce Step 1.
+
+```powershell
+python -B "experiment-id 1/alpha_ablation.py" --step1-run <completed_step1_comparison_directory>
+python -B "experiment-id 1/alpha_ablation.py" --resume <alpha_output_directory>
+python -B "experiment-id 1/alpha_ablation.py" --aggregate <worker_seed0_directory> <worker_seed1_directory> <worker_seed2_directory>
+python -B "experiment-id 1/capacity_ablation.py" --step2-run <completed_step2_comparison_directory>
+python -B "experiment-id 1/capacity_ablation.py" --resume <capacity_worker_directory>
+python -B "experiment-id 1/capacity_ablation.py" --aggregate <worker_seed0_directory> <worker_seed1_directory> <worker_seed2_directory>
+```
 
 From the repository root, after `python -m pip install -r requirements.txt`:
 

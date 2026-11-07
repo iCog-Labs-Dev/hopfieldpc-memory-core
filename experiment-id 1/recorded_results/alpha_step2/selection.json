@@ -1,0 +1,7 @@
+{
+  "alpha": 0.03,
+  "clean_correct": 14756,
+  "secondary_mean_auc": 0.7549442860342207,
+  "criterion": "Maximize total clean validation correct; ties: mean of three corruption AUCs, then closest to 0.1, then smaller alpha.",
+  "validation_selection_only": true
+}

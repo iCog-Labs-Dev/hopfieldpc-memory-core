@@ -1,0 +1,73 @@
+{
+  "experiment": "exp001_step02_all_correct_alpha_sweep",
+  "aggregate_directory": "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_comparison_20261104_01",
+  "source_runs": [
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a1f0ac29439e407aab63ca344a68ffd2",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_ca01a88e93694448b76de459543fd0e4",
+    "C:\\Users\\fraol\\Documents\\hopfiled\\experiment-id 1\\results\\variants\\alpha_a33eb053939c4fc7a726dd087a54d133"
+  ],
+  "files": {
+    "alpha_epoch_validation.png": {
+      "bytes": 70680,
+      "sha256": "717fee2771de68725c95bcdd5f0c6f69a3aa886b11c83f235c4945126f276d63"
+    },
+    "alpha_summary.png": {
+      "bytes": 104343,
+      "sha256": "b7ac12a4a754d5e035df6913ffdfce8fed3790e9f61c685ab4f552f3813e7c57"
+    },
+    "analysis_summary.json": {
+      "bytes": 6749,
+      "sha256": "98cf0d9aa155e013db281519371950f939cfcf6f14d040e863532e7e5fc6b48f"
+    },
+    "codec_preflight.json": {
+      "bytes": 552,
+      "sha256": "7c2d294d963546723f55a2a0a919ba13204c020f31c97c2ff8c38583d4d84471"
+    },
+    "discarded_tails.json": {
+      "bytes": 168972,
+      "sha256": "fa586f8d4e27aeff9977d347c57c8cc151ee9eed1e22103424a7dd1fb4dac341"
+    },
+    "manifest.json": {
+      "bytes": 12551,
+      "sha256": "e54a82d4407b7d4c85a69b53a61e19369fbad7cb186fd1a4d1b4f3a73963c958"
+    },
+    "report.md": {
+      "bytes": 1730,
+      "sha256": "c33ef42550816e5c8f3155a84c42447193af040ebfb4145ab2db9b3185eecf0b"
+    },
+    "resolved_settings.json": {
+      "bytes": 2518,
+      "sha256": "67fff5a5fd84d559689daa8f981405ccdb92a369d8b5bb462c7c503c5f2cf21b"
+    },
+    "results.csv": {
+      "bytes": 33156,
+      "sha256": "06e58050785f5c1c775f28deacbe376784d7cf87ce94544ede85b360f4aee313"
+    },
+    "results.json": {
+      "bytes": 1675791,
+      "sha256": "50384e84d42e07a1e0d2f9e161649b19eada30c106962a451a8c545e9330fc58"
+    },
+    "selection.json": {
+      "bytes": 269,
+      "sha256": "b73120b33dcb91d70a5f9a6b6c67781e3ca4097c13b11afb70f98b07d9570c17"
+    },
+    "training_source.json": {
+      "bytes": 277,
+      "sha256": "1e9a77d9479173211f550ba619cb739370b70db66e9a5a449f40400d3980255d"
+    },
+    "training_source.zip": {
+      "bytes": 1433584,
+      "sha256": "8afe79f3fe6432158ecb70c1ccc4047e32cd9e24c4166a9c1bcd05d44d4f8eaa"
+    },
+    "validation_corruptions.png": {
+      "bytes": 157364,
+      "sha256": "548606e623186c802870857b40e3a2114c46eaf999d2901affecfc7e84509842"
+    },
+    "verification.json": {
+      "bytes": 3031,
+      "sha256": "01b9c7ce4180f8491fa832fc6dcdeb5f4efff14b7c4e75cbd313e50bfbf3023d"
+    }
+  },
+  "large_checkpoints_and_logs": "Local and ignored; committed cursors and worker paths are in results.json.",
+  "training_source_archive": "One archive of the identical source tree verified in every worker."
+}

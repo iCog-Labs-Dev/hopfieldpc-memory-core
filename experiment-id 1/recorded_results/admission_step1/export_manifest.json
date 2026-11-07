@@ -1,0 +1,45 @@
+{
+  "description": "Completed Step 1, validation-only, seeds 0/1/2. Raw worker checkpoints and compressed mutation logs remain local.",
+  "files": {
+    "results.json": {
+      "original_path": "results/variants/admission_comparison_20261104_01/results.json",
+      "sha256": "899f321a734387a88c741a7a462c1812b532f24d09ffef2c0c8c8610165b2eb3",
+      "bytes": 978495
+    },
+    "results.csv": {
+      "original_path": "results/variants/admission_comparison_20261104_01/results.csv",
+      "sha256": "75cc4586358760b32e5e1ad01cbb18bf50cf53bc5ad088f12c5602061fe1a4c3",
+      "bytes": 21807
+    },
+    "report.md": {
+      "original_path": "results/variants/admission_comparison_20261104_01/report.md",
+      "sha256": "612b93f1f0e831aa4d896832d6c3abbf14f64c0b93bd515ada294c685abd1d4b",
+      "bytes": 2602
+    },
+    "manifest.json": {
+      "original_path": "results/variants/admission_comparison_20261104_01/manifest.json",
+      "sha256": "abf4999a52f7a47435de25cdc536661120b081fadd76b2e6854d38b7b7aeacfd",
+      "bytes": 6054
+    },
+    "verification.json": {
+      "original_path": "results/variants/admission_comparison_20261104_01/verification.json",
+      "sha256": "f8cc5b14aed1a6b18813196a8bcccdfad4086918120f76db80618e92d3a1c900",
+      "bytes": 538
+    },
+    "validation_corruptions.png": {
+      "original_path": "results/variants/admission_comparison_20261104_01/validation_corruptions.png",
+      "sha256": "989bf76fd0f1418e800cbcab0ae3af2c2a6ce6d306bc8984e6b933b27ca7272b",
+      "bytes": 148480
+    },
+    "training_source.zip": {
+      "original_path": "results/variants/admission_3c910d3b4c6a42dfa20a1c9715a4a5d3/training_source.zip",
+      "sha256": "7a6dbc5a8c0f06fc8774d3375631d4051f47858a0deebf3b6d184592ae94c9de",
+      "bytes": 582755
+    },
+    "training_source.json": {
+      "original_path": "results/variants/admission_3c910d3b4c6a42dfa20a1c9715a4a5d3/training_source.json",
+      "sha256": "deb22ff1560f5433d8be47144cf0acd2638718d34066854eb46c71aaccbfc47b",
+      "bytes": 342
+    }
+  }
+}

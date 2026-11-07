@@ -1,0 +1,10 @@
+{
+  "source": {
+    "commit": "5b35b4826ec80d92ccdbbcd31fa11d6c8da8640a",
+    "source_sha256": "ac1d653a4b5279d9587d8e5d077a5e8d6fb80ddfc808cff79cad25d7b3f16ae3"
+  },
+  "source_tree_digest_verified": true,
+  "file_count": 70,
+  "archive_sha256": "7a6dbc5a8c0f06fc8774d3375631d4051f47858a0deebf3b6d184592ae94c9de",
+  "bytes": 582755
+}
