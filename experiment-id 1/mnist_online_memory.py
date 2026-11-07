@@ -1,7 +1,7 @@
 """Experiment 1: online accuracy-guided memory, isolated from Task 13 caches.
 
 Eligibility uses a pre-write batch snapshot; ordered commits recompute assignment.
-CNN gradients come exclusively from the direct path. See README.md in this folder.
+CNN gradients come exclusively from the direct path. See RESULTS.md in this folder.
 """
 from __future__ import annotations
 
