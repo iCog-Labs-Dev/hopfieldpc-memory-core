@@ -15,6 +15,7 @@ be tested directly and reused by HopfieldMemory.
 
 from __future__ import annotations
 
+import math
 from typing import Literal, overload
 
 import torch
@@ -267,4 +268,86 @@ def kmeans_prototypes(
             if members.shape[0] > 0:
                 centroids[j] = members.mean(dim=0)
     return centroids
+
+
+@torch.no_grad()
+def masked_centered_retrieve(
+    query: torch.Tensor,
+    values: torch.Tensor,
+    center: torch.Tensor,
+    mask: torch.Tensor,
+    *,
+    beta: float = 5.0,
+    num_updates: int = 1,
+    normalization_epsilon: float = 1e-8,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Retrieve raw prototypes using masked softmax over centered cosine scores.
+
+    Implements Equation (4) from Prototype Selection.pdf:
+        w_j = softmax(beta * q_tilde @ M_tilde_j^T * m_j + (-inf) * (1 - m_j))
+    """
+
+    validate_query_memory(query, values)
+    eps = validate_normalization_epsilon(normalization_epsilon)
+    if mask.ndim != 1 or mask.shape[0] != values.shape[0]:
+        raise ValueError("mask must have shape [num_memories].")
+    active_mask = mask.bool()
+    if not active_mask.any():
+        raise ValueError("At least one prototype must be active for retrieval.")
+
+    q = query - center
+    m = values - center
+    if not torch.isfinite(q).all() or not torch.isfinite(m[active_mask]).all():
+        raise FloatingPointError(
+            "Nonfinite centered query or active memory."
+        )
+
+    views = torch.zeros_like(m)
+    views[active_mask] = F.normalize(m[active_mask], dim=-1, eps=eps)
+    mask_float = active_mask.to(query.dtype)
+
+    raw = query
+    weights = torch.zeros(
+        query.shape[0],
+        values.shape[0],
+        dtype=query.dtype,
+        device=query.device,
+    )
+    for _ in range(num_updates):
+        query_view = F.normalize(raw - center, dim=-1, eps=eps)
+        scores = beta * (query_view @ views.T) * mask_float
+        scores = scores.masked_fill(~active_mask.unsqueeze(0), float("-inf"))
+        weights = torch.softmax(scores, dim=-1)
+        raw = weights @ values
+    if not torch.isfinite(raw).all() or not torch.isfinite(weights).all():
+        raise FloatingPointError("Nonfinite masked retrieval output.")
+    return raw, weights
+
+
+@torch.no_grad()
+def principal_split_direction(
+    members: torch.Tensor,
+    fallback_dim: int,
+    eps: float = 1e-8,
+) -> torch.Tensor:
+    """Compute first principal component direction of assigned embeddings S_{j,n}."""
+
+    if members.shape[0] >= 2:
+        centered = members - members.mean(dim=0, keepdim=True)
+        cov_scale = centered.norm(dim=-1).mean()
+        if torch.isfinite(cov_scale) and cov_scale > eps:
+            try:
+                _, s, vh = torch.linalg.svd(centered, full_matrices=False)
+                direction = vh[0]
+                scale = s[0] / math.sqrt(max(members.shape[0] - 1, 1))
+                if torch.isfinite(direction).all() and scale > eps:
+                    return F.normalize(direction, dim=-1, eps=eps) * scale
+            except RuntimeError:
+                pass
+    unit = torch.zeros(
+        fallback_dim, dtype=members.dtype, device=members.device
+    )
+    unit[0] = 1.0
+    return unit
+
 

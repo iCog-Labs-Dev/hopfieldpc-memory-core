@@ -10,6 +10,10 @@ from hopfieldpc import (
     UPDATE_METHODS,
     BasePrototypeUpdater,
     CachedOccupancyBank,
+    DynamicEMAOnlineBank,
+    DynamicHybridOnlineBank,
+    DynamicKalmanOnlineBank,
+    DynamicMomentumOnlineBank,
     EMAOnlineBank,
     EMAPrototypeUpdater,
     HybridOnlineBank,
@@ -28,8 +32,10 @@ from hopfieldpc import (
     kalman_momentum_step,
     kalman_step,
     kalman_uncertainty_update,
+    masked_centered_retrieve,
     momentum_step,
     momentum_velocity_update,
+    principal_split_direction,
 )
 
 
@@ -198,4 +204,39 @@ def test_dedicated_ema_momentum_kalman_modules_match_dispatcher() -> None:
     h_out = hybrid_kalman_momentum_step(cur, cand, vel, unc, accuracy=0.5, gamma=0.9, epsilon=1e-8, process_noise=0.01)
     assert torch.allclose(k_out.uncertainty, k_u)
     assert torch.allclose(h_out.uncertainty, k_u)
+
+
+def test_dynamic_online_banks_and_masked_retrieve() -> None:
+    values = torch.tensor([[2.0, 0.0], [0.0, 3.0], [-2.0, 0.0]])
+    center = torch.zeros(2)
+    mask = torch.tensor([True, False, True])
+    query = torch.tensor([[0.1, 2.5]])
+    retrieved, weights = masked_centered_retrieve(
+        query, values, center, mask, beta=5.0
+    )
+    assert weights.shape == (1, 3)
+    assert weights[0, 1].item() == pytest.approx(0.0, abs=1e-7)
+    assert torch.isfinite(retrieved).all()
+
+    pc = principal_split_direction(
+        torch.tensor([[1.0, 0.0], [-1.0, 0.0]]), fallback_dim=2
+    )
+    assert pc.shape == (2,) and torch.isfinite(pc).all()
+
+    for cls, expected_method in [
+        (DynamicEMAOnlineBank, "ema"),
+        (DynamicMomentumOnlineBank, "momentum_only"),
+        (DynamicKalmanOnlineBank, "kalman_only"),
+        (DynamicHybridOnlineBank, "hybrid"),
+    ]:
+        bank = cls(2, num_classes=2, max_memories_per_class=4, initial_memories_per_class=2)
+        assert bank.update_method == expected_method
+        bank.initialize_center(torch.zeros(2))
+        for c, vec in enumerate(([1.0, 0.0], [0.0, 1.0])):
+            p = bank.plan_candidate(torch.tensor(vec), c, bootstrap=True)
+            bank.commit(p, example_id=c, step=c, epoch=1)
+        assert bank.ready
+        out, w = bank.retrieve_masked(torch.tensor([[1.0, 0.0]]))
+        assert out.shape == (1, 2) and w.shape == (1, 8)
+
 

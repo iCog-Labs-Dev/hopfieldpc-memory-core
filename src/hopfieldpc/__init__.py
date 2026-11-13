@@ -29,6 +29,12 @@ from .diagnostics import (
     topk_mass,
     topk_recall,
 )
+from .dynamic import (
+    DynamicEMAOnlineBank,
+    DynamicHybridOnlineBank,
+    DynamicKalmanOnlineBank,
+    DynamicMomentumOnlineBank,
+)
 from .ema import (
     EMAOnlineBank,
     EMAPrototypeUpdater,
@@ -39,7 +45,9 @@ from .functional import (
     centered_retrieve,
     hopfield_retrieve,
     kmeans_prototypes,
+    masked_centered_retrieve,
     multi_step_retrieve,
+    principal_split_direction,
 )
 from .kalman import (
     HybridOnlineBank,
@@ -74,6 +82,10 @@ __all__ = [
     "BasePrototypeUpdater",
     "CachedOccupancyBank",
     "CandidateProposal",
+    "DynamicEMAOnlineBank",
+    "DynamicHybridOnlineBank",
+    "DynamicKalmanOnlineBank",
+    "DynamicMomentumOnlineBank",
     "EMAOnlineBank",
     "EMAPrototypeUpdater",
     "HopfieldMemory",
@@ -105,11 +117,13 @@ __all__ = [
     "kalman_step",
     "kalman_uncertainty_update",
     "kmeans_prototypes",
+    "masked_centered_retrieve",
     "max_attention_weight",
     "momentum_step",
     "momentum_velocity_update",
     "multi_step_retrieve",
     "positive_int",
+    "principal_split_direction",
     "retrieval_distance",
     "selected_memory_distance",
     "topk_mass",
