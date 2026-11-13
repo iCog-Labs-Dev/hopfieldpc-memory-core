@@ -17,6 +17,7 @@ from online_memory import OnlineHopfieldBank, correctness_categories
 from online_memory_artifacts import EventWriter, read_events, timed
 from mnist_online_memory import checked_logits
 from hopfieldpc.diagnostics import attention_entropy
+from hopfieldpc.online import CachedOccupancyBank
 
 VECTOR_ENCODING = 'fp32_xor_ema_v1'
 
@@ -97,25 +98,6 @@ def decode_vectors(event, vectors, previous):
     if zlib.crc32(new.tobytes()) != int(vectors['new_crc32'][row]):
         raise ValueError('New-vector reconstruction checksum differs.')
     return candidate, old, new
-
-
-class CachedOccupancyBank(OnlineHopfieldBank):
-    """Cache derived counts; rebuild after insertion, replay, or state loading."""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._count_size = -1
-        self._counts: list[int] = []
-
-    def occupancy(self) -> list[int]:
-        if self._count_size != len(self.metadata):
-            self._counts = super().occupancy()
-            self._count_size = len(self.metadata)
-        return list(self._counts)
-
-    def set_extra_state(self, state: dict[str, Any]) -> None:
-        super().set_extra_state(state)
-        self._count_size = -1
 
 
 def make_alpha_bank(cfg, dim: int, alpha: float) -> CachedOccupancyBank:
