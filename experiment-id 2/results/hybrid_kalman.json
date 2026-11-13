@@ -1,0 +1,729 @@
+{
+  "config": {
+    "methods": [
+      "ema",
+      "hybrid",
+      "momentum_only",
+      "kalman_only"
+    ],
+    "device": "auto",
+    "epochs": 5,
+    "warmup_epochs": 1,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "val_size": 5000,
+    "train_subset": null,
+    "test_subset": null,
+    "eval_batch_size": 256,
+    "prototypes_per_class": 8,
+    "update": {
+      "alpha": 0.1,
+      "gamma": 0.9,
+      "epsilon": 1e-08,
+      "process_noise": 0.01,
+      "initial_uncertainty": 1.0
+    },
+    "corruptions": {
+      "gaussian": [
+        0.0,
+        0.1,
+        0.2,
+        0.3,
+        0.5,
+        0.7,
+        1.0
+      ],
+      "salt_pepper": [
+        0.0,
+        0.05,
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "occlusion": [
+        0,
+        7,
+        10,
+        14
+      ]
+    }
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "methods": {
+        "ema": {
+          "train_accuracy": 0.9938363636363636,
+          "validation_accuracy": 0.9768,
+          "test_accuracy": 0.9834,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9429090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9832181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9888
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9915272727272727
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9929272727272728
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9834,
+              "0.1": 0.9806,
+              "0.2": 0.9684,
+              "0.3": 0.9042,
+              "0.5": 0.4245,
+              "0.7": 0.208,
+              "1.0": 0.1465
+            },
+            "salt_pepper": {
+              "0.0": 0.9834,
+              "0.05": 0.9633,
+              "0.1": 0.9116,
+              "0.2": 0.7248,
+              "0.3": 0.4861,
+              "0.4": 0.2969
+            },
+            "occlusion": {
+              "0": 0.9834,
+              "7": 0.9172,
+              "10": 0.803,
+              "14": 0.5774
+            }
+          },
+          "direct_train_accuracy": 0.9938363636363636,
+          "direct_validation_accuracy": 0.9858,
+          "direct_test_accuracy": 0.9886
+        },
+        "hybrid": {
+          "train_accuracy": 0.9938363636363636,
+          "validation_accuracy": 0.9774,
+          "test_accuracy": 0.9831,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9429090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9832181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9888
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9915272727272727
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9929272727272728
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9831,
+              "0.1": 0.9808,
+              "0.2": 0.9679,
+              "0.3": 0.9027,
+              "0.5": 0.4114,
+              "0.7": 0.1958,
+              "1.0": 0.1416
+            },
+            "salt_pepper": {
+              "0.0": 0.9831,
+              "0.05": 0.9622,
+              "0.1": 0.9093,
+              "0.2": 0.7146,
+              "0.3": 0.4728,
+              "0.4": 0.2847
+            },
+            "occlusion": {
+              "0": 0.9831,
+              "7": 0.9156,
+              "10": 0.7989,
+              "14": 0.5665
+            }
+          },
+          "direct_train_accuracy": 0.9938363636363636,
+          "direct_validation_accuracy": 0.9858,
+          "direct_test_accuracy": 0.9886
+        },
+        "momentum_only": {
+          "train_accuracy": 0.9938363636363636,
+          "validation_accuracy": 0.979,
+          "test_accuracy": 0.9834,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9429090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9832181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9888
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9915272727272727
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9929272727272728
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9834,
+              "0.1": 0.9816,
+              "0.2": 0.9699,
+              "0.3": 0.9144,
+              "0.5": 0.4817,
+              "0.7": 0.2339,
+              "1.0": 0.1566
+            },
+            "salt_pepper": {
+              "0.0": 0.9834,
+              "0.05": 0.9604,
+              "0.1": 0.9154,
+              "0.2": 0.7398,
+              "0.3": 0.5157,
+              "0.4": 0.3207
+            },
+            "occlusion": {
+              "0": 0.9834,
+              "7": 0.9179,
+              "10": 0.8031,
+              "14": 0.5692
+            }
+          },
+          "direct_train_accuracy": 0.9938363636363636,
+          "direct_validation_accuracy": 0.9858,
+          "direct_test_accuracy": 0.9886
+        },
+        "kalman_only": {
+          "train_accuracy": 0.9938363636363636,
+          "validation_accuracy": 0.9784,
+          "test_accuracy": 0.9844,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9429090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9832181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9888
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9915272727272727
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9929272727272728
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9844,
+              "0.1": 0.9837,
+              "0.2": 0.9757,
+              "0.3": 0.9369,
+              "0.5": 0.5198,
+              "0.7": 0.2414,
+              "1.0": 0.1544
+            },
+            "salt_pepper": {
+              "0.0": 0.9844,
+              "0.05": 0.9663,
+              "0.1": 0.9248,
+              "0.2": 0.7615,
+              "0.3": 0.5461,
+              "0.4": 0.3514
+            },
+            "occlusion": {
+              "0": 0.9844,
+              "7": 0.9163,
+              "10": 0.799,
+              "14": 0.5691
+            }
+          },
+          "direct_train_accuracy": 0.9938363636363636,
+          "direct_validation_accuracy": 0.9858,
+          "direct_test_accuracy": 0.9886
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "methods": {
+        "ema": {
+          "train_accuracy": 0.9954181818181819,
+          "validation_accuracy": 0.9842,
+          "test_accuracy": 0.9831,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9459090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9848181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9898727272727272
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9918545454545454
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9935272727272727
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9831,
+              "0.1": 0.9829,
+              "0.2": 0.9795,
+              "0.3": 0.9443,
+              "0.5": 0.6789,
+              "0.7": 0.3892,
+              "1.0": 0.222
+            },
+            "salt_pepper": {
+              "0.0": 0.9831,
+              "0.05": 0.9607,
+              "0.1": 0.9138,
+              "0.2": 0.7657,
+              "0.3": 0.5864,
+              "0.4": 0.4225
+            },
+            "occlusion": {
+              "0": 0.9831,
+              "7": 0.9124,
+              "10": 0.7975,
+              "14": 0.5784
+            }
+          },
+          "direct_train_accuracy": 0.9954181818181819,
+          "direct_validation_accuracy": 0.99,
+          "direct_test_accuracy": 0.9918
+        },
+        "hybrid": {
+          "train_accuracy": 0.9954181818181819,
+          "validation_accuracy": 0.9858,
+          "test_accuracy": 0.9849,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9459090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9848181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9898727272727272
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9918545454545454
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9935272727272727
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9849,
+              "0.1": 0.9852,
+              "0.2": 0.9818,
+              "0.3": 0.9488,
+              "0.5": 0.6803,
+              "0.7": 0.3849,
+              "1.0": 0.2245
+            },
+            "salt_pepper": {
+              "0.0": 0.9849,
+              "0.05": 0.9655,
+              "0.1": 0.9233,
+              "0.2": 0.7731,
+              "0.3": 0.588,
+              "0.4": 0.4169
+            },
+            "occlusion": {
+              "0": 0.9849,
+              "7": 0.9171,
+              "10": 0.7985,
+              "14": 0.5853
+            }
+          },
+          "direct_train_accuracy": 0.9954181818181819,
+          "direct_validation_accuracy": 0.99,
+          "direct_test_accuracy": 0.9918
+        },
+        "momentum_only": {
+          "train_accuracy": 0.9954181818181819,
+          "validation_accuracy": 0.9848,
+          "test_accuracy": 0.9847,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9459090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9848181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9898727272727272
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9918545454545454
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9935272727272727
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9847,
+              "0.1": 0.9835,
+              "0.2": 0.9799,
+              "0.3": 0.9453,
+              "0.5": 0.7043,
+              "0.7": 0.4037,
+              "1.0": 0.2321
+            },
+            "salt_pepper": {
+              "0.0": 0.9847,
+              "0.05": 0.9658,
+              "0.1": 0.9261,
+              "0.2": 0.7856,
+              "0.3": 0.6061,
+              "0.4": 0.4339
+            },
+            "occlusion": {
+              "0": 0.9847,
+              "7": 0.919,
+              "10": 0.8023,
+              "14": 0.5916
+            }
+          },
+          "direct_train_accuracy": 0.9954181818181819,
+          "direct_validation_accuracy": 0.99,
+          "direct_test_accuracy": 0.9918
+        },
+        "kalman_only": {
+          "train_accuracy": 0.9954181818181819,
+          "validation_accuracy": 0.9826,
+          "test_accuracy": 0.9832,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9459090909090909
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9848181818181818
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9898727272727272
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9918545454545454
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9935272727272727
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9832,
+              "0.1": 0.9831,
+              "0.2": 0.9784,
+              "0.3": 0.9411,
+              "0.5": 0.6705,
+              "0.7": 0.3823,
+              "1.0": 0.2213
+            },
+            "salt_pepper": {
+              "0.0": 0.9832,
+              "0.05": 0.9613,
+              "0.1": 0.9161,
+              "0.2": 0.7672,
+              "0.3": 0.5836,
+              "0.4": 0.4116
+            },
+            "occlusion": {
+              "0": 0.9832,
+              "7": 0.9188,
+              "10": 0.8048,
+              "14": 0.603
+            }
+          },
+          "direct_train_accuracy": 0.9954181818181819,
+          "direct_validation_accuracy": 0.99,
+          "direct_test_accuracy": 0.9918
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "methods": {
+        "ema": {
+          "train_accuracy": 0.9961090909090909,
+          "validation_accuracy": 0.9836,
+          "test_accuracy": 0.9858,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9382
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9845818181818182
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9893272727272727
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9926363636363637
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9940727272727272
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9858,
+              "0.1": 0.9835,
+              "0.2": 0.9785,
+              "0.3": 0.9475,
+              "0.5": 0.6635,
+              "0.7": 0.3412,
+              "1.0": 0.1947
+            },
+            "salt_pepper": {
+              "0.0": 0.9858,
+              "0.05": 0.9733,
+              "0.1": 0.9494,
+              "0.2": 0.8439,
+              "0.3": 0.6616,
+              "0.4": 0.4355
+            },
+            "occlusion": {
+              "0": 0.9858,
+              "7": 0.9224,
+              "10": 0.8164,
+              "14": 0.5979
+            }
+          },
+          "direct_train_accuracy": 0.9961090909090909,
+          "direct_validation_accuracy": 0.9878,
+          "direct_test_accuracy": 0.9906
+        },
+        "hybrid": {
+          "train_accuracy": 0.9961090909090909,
+          "validation_accuracy": 0.985,
+          "test_accuracy": 0.9873,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9382
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9845818181818182
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9893272727272727
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9926363636363637
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9940727272727272
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9873,
+              "0.1": 0.9861,
+              "0.2": 0.9809,
+              "0.3": 0.9524,
+              "0.5": 0.6801,
+              "0.7": 0.3506,
+              "1.0": 0.1975
+            },
+            "salt_pepper": {
+              "0.0": 0.9873,
+              "0.05": 0.976,
+              "0.1": 0.9543,
+              "0.2": 0.8532,
+              "0.3": 0.6798,
+              "0.4": 0.4547
+            },
+            "occlusion": {
+              "0": 0.9873,
+              "7": 0.9233,
+              "10": 0.8174,
+              "14": 0.5991
+            }
+          },
+          "direct_train_accuracy": 0.9961090909090909,
+          "direct_validation_accuracy": 0.9878,
+          "direct_test_accuracy": 0.9906
+        },
+        "momentum_only": {
+          "train_accuracy": 0.9961090909090909,
+          "validation_accuracy": 0.9826,
+          "test_accuracy": 0.9847,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9382
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9845818181818182
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9893272727272727
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9926363636363637
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9940727272727272
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9847,
+              "0.1": 0.9841,
+              "0.2": 0.979,
+              "0.3": 0.9509,
+              "0.5": 0.686,
+              "0.7": 0.3677,
+              "1.0": 0.2019
+            },
+            "salt_pepper": {
+              "0.0": 0.9847,
+              "0.05": 0.9703,
+              "0.1": 0.9439,
+              "0.2": 0.8427,
+              "0.3": 0.683,
+              "0.4": 0.4708
+            },
+            "occlusion": {
+              "0": 0.9847,
+              "7": 0.9195,
+              "10": 0.806,
+              "14": 0.5868
+            }
+          },
+          "direct_train_accuracy": 0.9961090909090909,
+          "direct_validation_accuracy": 0.9878,
+          "direct_test_accuracy": 0.9906
+        },
+        "kalman_only": {
+          "train_accuracy": 0.9961090909090909,
+          "validation_accuracy": 0.9842,
+          "test_accuracy": 0.9864,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.9382
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9845818181818182
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9893272727272727
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9926363636363637
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9940727272727272
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.9864,
+              "0.1": 0.9848,
+              "0.2": 0.9806,
+              "0.3": 0.9583,
+              "0.5": 0.6859,
+              "0.7": 0.3579,
+              "1.0": 0.2045
+            },
+            "salt_pepper": {
+              "0.0": 0.9864,
+              "0.05": 0.9795,
+              "0.1": 0.9606,
+              "0.2": 0.8678,
+              "0.3": 0.6881,
+              "0.4": 0.4594
+            },
+            "occlusion": {
+              "0": 0.9864,
+              "7": 0.9224,
+              "10": 0.8132,
+              "14": 0.5781
+            }
+          },
+          "direct_train_accuracy": 0.9961090909090909,
+          "direct_validation_accuracy": 0.9878,
+          "direct_test_accuracy": 0.9906
+        }
+      }
+    }
+  ]
+}
