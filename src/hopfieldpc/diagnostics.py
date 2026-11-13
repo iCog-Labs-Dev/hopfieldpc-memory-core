@@ -250,3 +250,29 @@ def build_retrieval_diagnostics(
         }
 
     return diagnostics
+
+
+def correctness_categories(
+    direct: torch.Tensor,
+    hopfield: torch.Tensor,
+    targets: torch.Tensor,
+) -> list[str]:
+    """Per-example correctness only; arguments are predictions, never confidences."""
+
+    if (
+        direct.shape != targets.shape
+        or hopfield.shape != targets.shape
+        or targets.ndim != 1
+    ):
+        raise ValueError("Predictions and targets must have matching [batch] shapes.")
+    return [
+        "harmed"
+        if d and not h
+        else "helped"
+        if h and not d
+        else "both_correct"
+        if d
+        else "both_wrong"
+        for d, h in zip((direct == targets).tolist(), (hopfield == targets).tolist())
+    ]
+

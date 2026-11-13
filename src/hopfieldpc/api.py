@@ -51,6 +51,82 @@ class HopfieldMemoryOutput(NamedTuple):
     diagnostics: dict[str, Any]
 
 
+UPDATE_METHODS: tuple[str, ...] = (
+    "ema",
+    "hybrid",
+    "momentum_only",
+    "kalman_only",
+)
+
+
+@dataclass(frozen=True)
+class BankSnapshot:
+    """Immutable snapshot of active online memory bank entries."""
+
+    values: torch.Tensor
+    labels: torch.Tensor
+    entry_ids: torch.Tensor
+    center: torch.Tensor
+    version: int
+    ready: bool
+
+
+@dataclass(frozen=True)
+class CandidateProposal:
+    """Planned candidate action for an online Hopfield memory bank."""
+
+    action: str
+    reason: str
+    version: int
+    slot: int | None
+    label: int
+    candidate: torch.Tensor
+    new_value: torch.Tensor | None
+    distance: float | None
+
+    @property
+    def is_write(self) -> bool:
+        return self.action in ("seed", "add", "merge")
+
+
+class KalmanMomentumStepOutput(NamedTuple):
+    """Output container for a functional Kalman-momentum prototype step."""
+
+    new_value: torch.Tensor
+    velocity: torch.Tensor
+    uncertainty: torch.Tensor
+    gain: torch.Tensor
+
+
+def positive_int(name: str, value: Any) -> int:
+    """Validate that value is a positive integer (excluding bool)."""
+
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ValueError(f"{name} must be a positive integer.")
+    return value
+
+
+def validate_normalization_epsilon(value: object) -> float:
+    """Validate that normalization_epsilon is a positive finite real number."""
+
+    if (
+        isinstance(value, bool)
+        or not isinstance(value, numbers.Real)
+        or not math.isfinite(value)
+        or value <= 0
+    ):
+        raise ValueError("normalization_epsilon must be positive and finite.")
+    return float(value)
+
+
+def validate_update_method(method: str) -> str:
+    """Validate that method is a supported prototype update method."""
+
+    if method not in UPDATE_METHODS:
+        raise ValueError(f"Unknown method {method!r}.")
+    return method
+
+
 def _require_tensor(name: str, value: object) -> torch.Tensor:
     """Validate that a value is a torch.Tensor and return it."""
 
