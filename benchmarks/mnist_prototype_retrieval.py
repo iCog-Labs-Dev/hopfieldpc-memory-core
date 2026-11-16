@@ -73,6 +73,7 @@ from benchmarks.mnist_baseline import (
 )
 from hopfieldpc import HopfieldMemory
 from hopfieldpc.api import validate_beta
+import torch.nn.functional as F
 
 WINNER_DELTA = 0.005
 ALPHA = 0.05
@@ -281,6 +282,56 @@ def kmeans(
             if members.shape[0] > 0:
                 centroids[j] = members.mean(dim=0)
     return centroids
+
+def kmedoids(x:torch.Tensor,k:int,*,generator:torch.Generator,iters:int = 25)->torch.Tensor:
+    """Seeded k-medoids++ / FasterPAM on rows of x [N, D]; returns medoids [k, D]."""
+   
+    """ Normalize rows to unit length (L2 norm = 1).
+    Why: Hopfield retrieval scores patterns by dot product (beta * X @ xi).
+    On unit vectors, ||a - b||^2 = 2 - 2 * (a . b), so Euclidean distance
+    (used by cdist in fasterpam) ranks neighbours exactly like the dot-product
+    similarity used at retrieval time. Without this, clustering and retrieval
+    disagree about what "close" means, and vector length (norm) leaks into the
+    medoid choice instead of just direction/content.
+    """
+    x = F.normalize
+    n = x.shape[0]
+    if k >= n:
+        raise ValueError(f"k ({k}) must be smaller than the number of points ({n}).")
+
+    dist = torch.cdist(x,x)
+    medoids = torch.randint(0,n,(1,),generator=generator,device=x.device)
+    while medoids.shape[0] < k:
+        d2 = dist[:,medoids].min(dim=1).values.pow(2)
+        nxt = torch.multinomial(d2/d2.sum(),1,generator=generator)
+        medoids = torch.cat([medoids,nxt])
+
+    # 2. Cache nearest (d1) and second-nearest (d2) medoid distances for every point
+    top2_d, top2_idx = dist[:, medoids].topk(2, dim=1, largest=False)
+    d1, d2, nearest = top2_d[:, 0], top2_d[:, 1], top2_idx[:, 0]
+
+    for _ in range(iters):
+        swapped = False
+        order = torch.randperm(n,generator=generator,device=x.device)
+        for c in order.tolist():
+            if (medoids == c).any():
+                continue
+            d_ic = dist[:,c]
+            gain_add = torch.clamp(d_ic - d1,max=0.0).sum()
+            removal_loss = torch.minimum(d_ic,d2) - torch.minimum(d1,d2)
+            delta = torch.full((k,),gain_add,dtype=x.dtype,device = x.device)
+            delta.scater_add(0,nearest,removal_loss)
+
+            best_m = int(delta.argmin().item())
+            if delta[best_m] < -1e-6:
+                medoids[best_m] = c
+                top2_d, top2_idx = dist[:, medoids].topk(2, dim=1, largest=False)
+                d1, d2, nearest = top2_d[:, 0], top2_d[:, 1], top2_idx[:, 0]
+                swapped = True
+        if not swapped:
+            break
+    return x[medoids]
+
 
 
 def build_memory(
