@@ -342,6 +342,7 @@ def build_memory(
     center: bool,
     seed: int,
     num_classes: int = 10,
+    method: str = "kmeans"
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
     """Stored patterns for the embedding bridge.
 
@@ -353,11 +354,15 @@ def build_memory(
     Returns (memory [C*per_class, D], memory_labels [C*per_class], center | None).
     """
     generator = torch.Generator().manual_seed(seed)
+    methods = {"kmeans": kmeans, "kmedoids": kmedoids}
+    if method not in methods:
+        raise ValueError(f"method must be one of {sorted(methods)}, got {method!r}")
+    cluster_fn = methods[method]
     blocks, block_labels = [], []
     for c in range(num_classes):
         zc = z_train[labels == c]
         blocks.append(zc.mean(dim=0, keepdim=True) if per_class == 1
-                      else kmeans(zc, per_class, generator=generator))
+                      else cluster_fn(zc, per_class, generator=generator))
         block_labels.append(torch.full((per_class,), c, dtype=torch.long))
     mean = z_train.mean(dim=0) if center else None
     return torch.cat(blocks), torch.cat(block_labels), mean
