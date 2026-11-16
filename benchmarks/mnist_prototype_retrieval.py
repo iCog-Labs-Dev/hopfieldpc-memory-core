@@ -294,12 +294,12 @@ def kmedoids(x:torch.Tensor,k:int,*,generator:torch.Generator,iters:int = 25)->t
     disagree about what "close" means, and vector length (norm) leaks into the
     medoid choice instead of just direction/content.
     """
-    x = F.normalize
-    n = x.shape[0]
+    x_norm = F.normalize(x, dim=1)
+    n = x_norm.shape[0]
     if k >= n:
         raise ValueError(f"k ({k}) must be smaller than the number of points ({n}).")
 
-    dist = torch.cdist(x,x)
+    dist = torch.cdist(x_norm,x_norm)
     medoids = torch.randint(0,n,(1,),generator=generator,device=x.device)
     while medoids.shape[0] < k:
         d2 = dist[:,medoids].min(dim=1).values.pow(2)
@@ -318,9 +318,9 @@ def kmedoids(x:torch.Tensor,k:int,*,generator:torch.Generator,iters:int = 25)->t
                 continue
             d_ic = dist[:,c]
             gain_add = torch.clamp(d_ic - d1,max=0.0).sum()
-            removal_loss = torch.minimum(d_ic,d2) - torch.minimum(d1,d2)
+            removal_loss = torch.minimum(d_ic,d2) - torch.minimum(d1,d_ic)
             delta = torch.full((k,),gain_add,dtype=x.dtype,device = x.device)
-            delta.scater_add(0,nearest,removal_loss)
+            delta.scatter_add_(0,nearest,removal_loss)
 
             best_m = int(delta.argmin().item())
             if delta[best_m] < -1e-6:
@@ -620,28 +620,29 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
     variants = memory_variants(configured)
     runs: list[BaselineRun] = []
     hop_nets: list[MnistNet] = []
-    variant_nets: dict[str, list[MnistNet]] = {name: [] for name, _, _ in variants}
+    variant_nets: dict[str, list[MnistNet]] = {name: [] for name, _, _, _ in variants}
     pixel_nets: list[PixelHopfieldNet | None] = []
     setup_times: list[float] = []
     val_curves: dict[str, list[list[float]]] = {"embedding": [], "pixel": []}
-    variant_curves: dict[str, list[list[float]]] = {name: [] for name, _, _,_ in variants}
+    variant_curves: dict[str, list[list[float]]] = {name: [] for name, _, _, _ in variants}
     for seed in cfg["seeds"]:
         run = prepare_baseline_run(cfg, data, seed, device, retrain=retrain)
         start = time.perf_counter()
-        hop = build_embedding_net(run, *configured, beta=betas[0],method=configured[2])
+        hop = build_embedding_net(run, configured[0], configured[1], beta=betas[0], method=configured[2])
         proto_t = run.prototype_time_s if configured[2] == "kmeans" else 0.0
-        setup_times.append(run.prototype_time_s + time.perf_counter() - start)
+        setup_times.append(proto_t + time.perf_counter() - start)
         val_curves["embedding"].append(beta_curve(hop, run, betas, sel_sets))
 
         for name, per_class, center, method_in_variant in variants:
-            net = hop if (per_class, center) == configured else build_embedding_net(
-                run, per_class, center, beta=betas[0]
+            net = hop if (per_class, center, method_in_variant) == configured else build_embedding_net(
+                run, per_class, center, beta=betas[0], method=method_in_variant
             )
             variant_nets[name].append(net)
             variant_curves[name].append(
                 val_curves["embedding"][-1] if net is hop
                 else beta_curve(net, run, betas, sel_sets)
             )
+
 
         pixel_net = None
         if "pixel" in cfg["placements"]:
@@ -723,7 +724,7 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
 
         # E9: memory design, each variant at its own validation-selected beta.
         seed_idx = runs.index(run)
-        for i, (name, _, _) in enumerate(variants):
+        for i, (name, _, _, _) in enumerate(variants):
             vnet = variant_nets[name][seed_idx]
             assert isinstance(vnet.bridge, HopfieldBridge)
             vnet.bridge.set_retrieval(beta=variant_betas[name], num_updates=1)
