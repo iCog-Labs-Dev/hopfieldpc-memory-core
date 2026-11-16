@@ -610,7 +610,7 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
 
     # Stage 1: frozen baselines, memories, Hopfield nets, validation curves.
     sel_sets = cfg["beta_selection_sets"]
-    configured = (cfg["prototypes_per_class"], cfg["center_prototypes"])
+    configured = (cfg["prototypes_per_class"], cfg["center_prototypes"],cfg.get("proto_method", "kmeans"),), 
     variants = memory_variants(configured)
     runs: list[BaselineRun] = []
     hop_nets: list[MnistNet] = []
@@ -618,15 +618,16 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
     pixel_nets: list[PixelHopfieldNet | None] = []
     setup_times: list[float] = []
     val_curves: dict[str, list[list[float]]] = {"embedding": [], "pixel": []}
-    variant_curves: dict[str, list[list[float]]] = {name: [] for name, _, _ in variants}
+    variant_curves: dict[str, list[list[float]]] = {name: [] for name, _, _,_ in variants}
     for seed in cfg["seeds"]:
         run = prepare_baseline_run(cfg, data, seed, device, retrain=retrain)
         start = time.perf_counter()
-        hop = build_embedding_net(run, *configured, beta=betas[0])
+        hop = build_embedding_net(run, *configured, beta=betas[0],method=configured[2])
+        proto_t = run.prototype_time_s if configured[2] == "kmeans" else 0.0
         setup_times.append(run.prototype_time_s + time.perf_counter() - start)
         val_curves["embedding"].append(beta_curve(hop, run, betas, sel_sets))
 
-        for name, per_class, center in variants:
+        for name, per_class, center, method_in_variant in variants:
             net = hop if (per_class, center) == configured else build_embedding_net(
                 run, per_class, center, beta=betas[0]
             )
