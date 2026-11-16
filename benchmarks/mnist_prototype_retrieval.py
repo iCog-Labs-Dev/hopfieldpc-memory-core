@@ -1585,16 +1585,24 @@ def plot_costs(raw: dict[str, Any], path: Path) -> bool:
 
 
 def main(argv: list[str] | None = None) -> None:
-    args = build_arg_parser(
+    parser = build_arg_parser(
         "Task 13: MNIST prototype retrieval, Baseline vs Hopfield (one variable at a time)."
-    ).parse_args(argv)
+    )
+    parser.add_argument(
+        "--proto-method",
+        choices=("kmeans", "kmedoids"),
+        default="kmedoids",
+        help="Clustering method for selecting prototypes per class.",
+    )
+    args = parser.parse_args(argv)
     cfg = config_from_args(args)
-    print(f"Running Task 13 from {args.config}{' (quick)' if cfg['quick'] else ''}")
+    cfg["proto_method"] = args.proto_method
+    print(f"Running Task 13 [{args.proto_method}] from {args.config}{' (quick)' if cfg['quick'] else ''}")
     raw = run_experiment(cfg, retrain=args.retrain)
     text, summary = build_report(raw)
     print()
     print(text)
-    output_dir = Path(cfg["reports_dir"])
+    output_dir = Path(cfg["reports_dir"]) / args.proto_method
     save_reports(raw, summary, output_dir)
     print(f"\nReports saved to: {output_dir}")
 
