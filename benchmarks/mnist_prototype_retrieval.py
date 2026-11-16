@@ -531,7 +531,7 @@ def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]
     designs = [(1, False,"kmeans"), (1, True,"kmeans"), (8, True,"kmeans"),(8,True,"kmedoids")]
     if configured not in designs:
         designs.append(configured)
-    return [(f"k={k}{' centered' if c else ' raw'}{f'({m})'if k > 1 else ''}", k, c) for k, c,m in designs]
+    return [(f"k={k}{' centered' if c else ' raw'}{f'({m})'if k > 1 else ''}", k, c,m) for k, c,m in designs]
 
 
 def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float,method: str = "kmeans") -> MnistNet:
