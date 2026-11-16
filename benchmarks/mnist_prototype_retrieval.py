@@ -525,13 +525,15 @@ def compare_on_test(run: BaselineRun, hop_net: MnistNet, kind: str, level: float
     return compare_outputs(run, base_out, hop_out, run.splits.test_labels)
 
 
-def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]:
+def memory_variants(configured: tuple[int, bool,str]) -> list[tuple[str, int, bool,str]]:
+    
     """E9 memory designs: class means raw, class means centered, 8/class centered,
     plus the configured design if it is none of these."""
-    designs = [(1, False,"kmeans"), (1, True,"kmeans"), (8, True,"kmeans"),(8,True,"kmedoids")]
+    designs: list[tuple[int, bool, str]] = [(1, False,"kmeans"), (1, True,"kmeans"), (8, True,"kmeans"),(8,True,"kmedoids")]
     if configured not in designs:
         designs.append(configured)
-    return [(f"k={k}{' centered' if c else ' raw'}{f'({m})'if k > 1 else ''}", k, c,m) for k, c,m in designs]
+    return [ (f"k={k}{' centered' if c else ' raw'}{f' ({m})' if k > 1 else ''}", k, c, m)
+    for k, c, m in designs]
 
 
 def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float,method: str = "kmeans") -> MnistNet:
@@ -610,7 +612,11 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
 
     # Stage 1: frozen baselines, memories, Hopfield nets, validation curves.
     sel_sets = cfg["beta_selection_sets"]
-    configured = (cfg["prototypes_per_class"], cfg["center_prototypes"],cfg.get("proto_method", "kmeans"),), 
+    configured = (
+        int(cfg["prototypes_per_class"]),
+        bool(cfg["center_prototypes"]),
+        str(cfg.get("proto_method", "kmeans")),
+    )
     variants = memory_variants(configured)
     runs: list[BaselineRun] = []
     hop_nets: list[MnistNet] = []
