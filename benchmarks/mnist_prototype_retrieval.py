@@ -528,10 +528,10 @@ def compare_on_test(run: BaselineRun, hop_net: MnistNet, kind: str, level: float
 def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]:
     """E9 memory designs: class means raw, class means centered, 8/class centered,
     plus the configured design if it is none of these."""
-    designs = [(1, False), (1, True), (8, True)]
+    designs = [(1, False,"kmeans"), (1, True,"kmeans"), (8, True,"kmeans"),(8,True,"kmedoids")]
     if configured not in designs:
         designs.append(configured)
-    return [(f"k={k}{' centered' if c else ' raw'}", k, c) for k, c in designs]
+    return [(f"k={k}{' centered' if c else ' raw'}{f'({m})'if k > 1 else ''}", k, c) for k, c,m in designs]
 
 
 def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float) -> MnistNet:
