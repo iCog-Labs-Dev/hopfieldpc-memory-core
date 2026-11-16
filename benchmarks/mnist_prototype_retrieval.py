@@ -534,10 +534,10 @@ def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]
     return [(f"k={k}{' centered' if c else ' raw'}{f'({m})'if k > 1 else ''}", k, c) for k, c,m in designs]
 
 
-def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float) -> MnistNet:
+def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float,method: str = "kmeans") -> MnistNet:
     """Hopfield net whose L8 memory is built from ``run``'s training embeddings."""
     memory, labels, offset = build_memory(
-        run.z_train, run.splits.train_labels, per_class=per_class, center=center, seed=run.seed
+        run.z_train, run.splits.train_labels, per_class=per_class, center=center, seed=run.seed, method = method
     )
     net = build_hopfield_net(run.net, memory, labels, beta=beta, center=offset)
     assert isinstance(net, MnistNet) and isinstance(net.bridge, HopfieldBridge)
