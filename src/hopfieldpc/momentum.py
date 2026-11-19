@@ -30,6 +30,33 @@ def momentum_velocity_update(
 
 
 @torch.no_grad()
+def responsibility_momentum_velocity_update(
+    velocity: torch.Tensor,
+    innovation: torch.Tensor,
+    responsibility: torch.Tensor | float,
+    *,
+    gamma_mom: float = 0.9,
+) -> torch.Tensor:
+    """Update momentum velocity with responsibility-modulated retention gamma_ij = gamma_mom ** r_ij.
+
+    Supports both single-slot tensors ([..., D] with scalar or [...] r_ij) and
+    batched/pairwise tensors ([N, D] or [B, N, D]).
+    """
+
+    if not 0 <= gamma_mom <= 1:
+        raise ValueError("gamma_mom must be in [0, 1].")
+    if isinstance(responsibility, torch.Tensor):
+        r = responsibility.to(dtype=velocity.dtype, device=velocity.device).clamp(0.0, 1.0)
+        gamma_r = torch.pow(torch.as_tensor(gamma_mom, dtype=velocity.dtype, device=velocity.device), r)
+        if gamma_r.ndim < velocity.ndim:
+            gamma_r = gamma_r.unsqueeze(-1)
+        return gamma_r * velocity + (1.0 - gamma_r) * innovation
+    r_val = max(0.0, min(1.0, float(responsibility)))
+    gamma_r_scalar = gamma_mom ** r_val
+    return velocity * gamma_r_scalar + (1.0 - gamma_r_scalar) * innovation
+
+
+@torch.no_grad()
 def momentum_step(
     current: torch.Tensor,
     candidate: torch.Tensor,

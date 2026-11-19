@@ -276,3 +276,88 @@ def correctness_categories(
         for d, h in zip((direct == targets).tolist(), (hopfield == targets).tolist())
     ]
 
+
+@torch.no_grad()
+def kish_effective_sample_size(
+    first_order_mass: torch.Tensor,
+    second_order_mass: torch.Tensor,
+    *,
+    eps: float = 1e-8,
+) -> torch.Tensor:
+    """Compute Kish effective sample size N_Kish = N_j^2 / (S_j + eps)."""
+
+    return first_order_mass.pow(2) / (second_order_mass + eps)
+
+
+@torch.no_grad()
+def john_sharpness_index(
+    first_order_mass: torch.Tensor,
+    second_order_mass: torch.Tensor,
+    *,
+    eps: float = 1e-8,
+) -> torch.Tensor:
+    """Compute John Sharpness Index r_cond_j = S_j / (N_j + eps)."""
+
+    return second_order_mass / (first_order_mass + eps)
+
+
+@torch.no_grad()
+def gram_off_diagonal_stats(
+    gram: torch.Tensor,
+    mask: torch.Tensor,
+) -> dict[str, float]:
+    """Compute mean and max off-diagonal similarity over active prototypes."""
+
+    active = mask.bool()
+    n_active = int(active.sum().item())
+    if n_active < 2:
+        return {"mean_off_diag": 0.0, "max_off_diag": 0.0, "active_count": n_active}
+    sub = gram[active][:, active]
+    off_mask = ~torch.eye(n_active, dtype=torch.bool, device=gram.device)
+    vals = sub[off_mask]
+    return {
+        "mean_off_diag": float(vals.mean().item()),
+        "max_off_diag": float(vals.max().item()),
+        "active_count": n_active,
+    }
+
+
+@torch.no_grad()
+def support_diagnostics_summary(
+    first_order: torch.Tensor,
+    second_order: torch.Tensor,
+    kish_ess: torch.Tensor,
+    sharpness: torch.Tensor,
+    mask: torch.Tensor,
+) -> dict[str, Any]:
+    """Summarize active prototype support, Kish ESS, and sharpness distributions."""
+
+    active = mask.bool()
+    if not active.any():
+        return {
+            "active_count": 0,
+            "mass_first_order": [],
+            "mass_second_order": [],
+            "kish_ess": [],
+            "sharpness": [],
+            "mean_mass_first_order": 0.0,
+            "mean_effective_support": 0.0,
+            "mean_kish_ess": 0.0,
+            "mean_sharpness": 0.0,
+        }
+    n1 = first_order[active]
+    s2 = second_order[active]
+    kish = kish_ess[active]
+    sharp = sharpness[active]
+    return {
+        "active_count": int(active.sum().item()),
+        "mass_first_order": [float(v) for v in n1.tolist()],
+        "mass_second_order": [float(v) for v in s2.tolist()],
+        "kish_ess": [float(v) for v in kish.tolist()],
+        "sharpness": [float(v) for v in sharp.tolist()],
+        "mean_mass_first_order": float(n1.mean().item()),
+        "mean_effective_support": float(s2.mean().item()),
+        "mean_kish_ess": float(kish.mean().item()),
+        "mean_sharpness": float(sharp.mean().item()),
+    }
+

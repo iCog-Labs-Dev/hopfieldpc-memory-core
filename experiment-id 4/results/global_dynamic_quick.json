@@ -1,0 +1,556 @@
+{
+  "config": {
+    "ablations": [
+      "fixed_capacity",
+      "dynamic_adaptive"
+    ],
+    "seeds": [
+      0
+    ],
+    "device": "auto",
+    "data_dir": "data",
+    "epochs": 3,
+    "batch_size": 128,
+    "eval_batch_size": 256,
+    "learning_rate": 0.001,
+    "val_size": 500,
+    "train_subset": 2000,
+    "test_subset": 1000,
+    "num_threads": 4,
+    "output_path": "experiment-id 4\\results\\global_dynamic_quick.json",
+    "memory": {
+      "dim": 64,
+      "max_memories": 80,
+      "initial_memories": 10,
+      "min_active_memories": 2,
+      "warmup_epochs": 1,
+      "beta_read": null,
+      "beta_write": null,
+      "num_updates": 1,
+      "gamma_mom": 0.9,
+      "gamma_john": 1.0,
+      "initial_uncertainty": null,
+      "uncertainty_min": null,
+      "uncertainty_max": null,
+      "process_noise": 0.01,
+      "observation_noise": 0.05,
+      "tau_sim": null,
+      "lambda_sim": null,
+      "tau_coal": 0.95,
+      "coalescence_patience": 2,
+      "tau_support": null,
+      "tau_eff": null,
+      "alpha_n": null,
+      "alpha_s": null,
+      "prune_patience": 2,
+      "tau_uncert": null,
+      "n_kish_min": null,
+      "split_scale": null,
+      "lambda_disp": 2.0,
+      "lambda_sharp": 0.5,
+      "structural_base_noise": null,
+      "eps_stab": 1e-08,
+      "eps_norm": 1e-08,
+      "online_update_mode": "batch",
+      "stat_chunk_size": 2048,
+      "auto_calibrate": true
+    },
+    "corruptions": {
+      "gaussian": [
+        0.0,
+        0.5,
+        1.0
+      ],
+      "salt_pepper": [
+        0.0,
+        0.2
+      ],
+      "occlusion": [
+        0,
+        7
+      ]
+    }
+  },
+  "seeds": [
+    {
+      "seed": 0,
+      "ablations": {
+        "fixed_capacity": {
+          "train_accuracy": 0.819,
+          "validation_accuracy": 0.79,
+          "test_accuracy": 0.806,
+          "direct_train_accuracy": 0.928,
+          "direct_validation_accuracy": 0.89,
+          "direct_test_accuracy": 0.893,
+          "retrieval_delta_test": -0.08699999999999997,
+          "test_entropy": 0.5126977005004882,
+          "test_top1_mass": 0.807381851196289,
+          "final_active_prototypes": 10,
+          "buffer_utilization": 0.125,
+          "total_pruned": 0,
+          "total_pruned_low_mass": 0,
+          "total_pruned_diffuse": 0,
+          "total_coalesced": 0,
+          "total_spawned": 0,
+          "total_turnover": 0,
+          "average_prototype_lifetime": 2.0,
+          "spawned_subsequently_removed_fraction": 0.0,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.585,
+              "direct_val_accuracy": 0.742,
+              "memory_val_accuracy": 0.654,
+              "retrieval_delta_val": -0.08799999999999997,
+              "mean_online_sim_loss": 0.0,
+              "mean_online_gain": 0.0,
+              "active_total": 10,
+              "buffer_utilization": 0.125,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 0,
+              "spawned": 0,
+              "mean_uncertainty": 4.324946403503418,
+              "mean_dispersion": 0.0,
+              "gram_after": {
+                "mean_off_diag": 0.0,
+                "max_off_diag": 0.0
+              },
+              "mean_kish_ess": 0.0,
+              "mean_sharpness": 0.0
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.827,
+              "direct_val_accuracy": 0.884,
+              "memory_val_accuracy": 0.74,
+              "retrieval_delta_val": -0.14400000000000002,
+              "mean_online_sim_loss": 0.0,
+              "mean_online_gain": 0.3559927400201559,
+              "active_total": 10,
+              "buffer_utilization": 0.125,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 0,
+              "spawned": 0,
+              "spawn_events": [],
+              "mean_uncertainty": 0.1149735301733017,
+              "mean_dispersion": 0.1295449435710907,
+              "resolved_thresholds": {
+                "beta_read": 10.302585092994047,
+                "beta_write": 14.302585092994047,
+                "initial_uncertainty": 4.32494592666626,
+                "uncertainty_min": 0.000432494592666626,
+                "uncertainty_max": 43.2494592666626,
+                "alpha_n": 0.5,
+                "alpha_s": 0.5,
+                "tau_sim": 0.85,
+                "tau_support": 10.0,
+                "tau_eff": 2.0,
+                "n_kish_min": 16.0,
+                "tau_uncert": 0.1908921466320361,
+                "riccati_p_inf": 0.12072169006102662
+              },
+              "gram_before": {
+                "mean_off_diag": 0.019697558134794235,
+                "max_off_diag": 0.8196456432342529,
+                "active_count": 10
+              },
+              "gram_after": {
+                "mean_off_diag": 0.019697558134794235,
+                "max_off_diag": 0.8196456432342529,
+                "active_count": 10
+              },
+              "mean_kish_ess": 255.07925415039062,
+              "mean_sharpness": 0.7796863913536072
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.91,
+              "direct_val_accuracy": 0.89,
+              "memory_val_accuracy": 0.79,
+              "retrieval_delta_val": -0.09999999999999998,
+              "mean_online_sim_loss": 0.0,
+              "mean_online_gain": 0.29040700383484364,
+              "active_total": 10,
+              "buffer_utilization": 0.125,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 0,
+              "spawned": 0,
+              "spawn_events": [],
+              "mean_uncertainty": 0.11498475074768066,
+              "mean_dispersion": 0.13116759061813354,
+              "resolved_thresholds": {
+                "beta_read": 10.302585092994047,
+                "beta_write": 14.302585092994047,
+                "initial_uncertainty": 4.32494592666626,
+                "uncertainty_min": 0.000432494592666626,
+                "uncertainty_max": 43.2494592666626,
+                "alpha_n": 0.5,
+                "alpha_s": 0.5,
+                "tau_sim": 0.85,
+                "tau_support": 10.0,
+                "tau_eff": 2.0,
+                "n_kish_min": 16.0,
+                "tau_uncert": 0.1908921466320361,
+                "riccati_p_inf": 0.12072169006102662
+              },
+              "gram_before": {
+                "mean_off_diag": 0.020008129999041557,
+                "max_off_diag": 0.8090421557426453,
+                "active_count": 10
+              },
+              "gram_after": {
+                "mean_off_diag": 0.020008129999041557,
+                "max_off_diag": 0.8090421557426453,
+                "active_count": 10
+              },
+              "mean_kish_ess": 252.5085906982422,
+              "mean_sharpness": 0.7887858152389526
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.806,
+              "0.5": 0.223,
+              "1.0": 0.131
+            },
+            "salt_pepper": {
+              "0.0": 0.806,
+              "0.2": 0.332
+            },
+            "occlusion": {
+              "0": 0.806,
+              "7": 0.768
+            }
+          },
+          "direct_test_corruptions": {
+            "gaussian": {
+              "0.0": 0.893,
+              "0.5": 0.456,
+              "1.0": 0.246
+            },
+            "salt_pepper": {
+              "0.0": 0.893,
+              "0.2": 0.559
+            },
+            "occlusion": {
+              "0": 0.893,
+              "7": 0.843
+            }
+          }
+        },
+        "dynamic_adaptive": {
+          "train_accuracy": 0.8585,
+          "validation_accuracy": 0.832,
+          "test_accuracy": 0.83,
+          "direct_train_accuracy": 0.928,
+          "direct_validation_accuracy": 0.89,
+          "direct_test_accuracy": 0.893,
+          "retrieval_delta_test": -0.06300000000000006,
+          "test_entropy": 1.0802019500732423,
+          "test_top1_mass": 0.5316424865722656,
+          "final_active_prototypes": 20,
+          "buffer_utilization": 0.25,
+          "total_pruned": 0,
+          "total_pruned_low_mass": 0,
+          "total_pruned_diffuse": 0,
+          "total_coalesced": 0,
+          "total_spawned": 10,
+          "total_turnover": 10,
+          "average_prototype_lifetime": 1.0,
+          "spawned_subsequently_removed_fraction": 0.0,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.585,
+              "direct_val_accuracy": 0.742,
+              "memory_val_accuracy": 0.654,
+              "retrieval_delta_val": -0.08799999999999997,
+              "mean_online_sim_loss": 0.0,
+              "mean_online_gain": 0.0,
+              "active_total": 10,
+              "buffer_utilization": 0.125,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 0,
+              "spawned": 0,
+              "mean_uncertainty": 4.324946403503418,
+              "mean_dispersion": 0.0,
+              "gram_after": {
+                "mean_off_diag": 0.0,
+                "max_off_diag": 0.0
+              },
+              "mean_kish_ess": 0.0,
+              "mean_sharpness": 0.0
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.827,
+              "direct_val_accuracy": 0.884,
+              "memory_val_accuracy": 0.776,
+              "retrieval_delta_val": -0.10799999999999998,
+              "mean_online_sim_loss": 0.0,
+              "mean_online_gain": 0.3559927400201559,
+              "active_total": 20,
+              "buffer_utilization": 0.25,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 0,
+              "spawned": 10,
+              "spawn_events": [
+                {
+                  "epoch": 2,
+                  "parent_slot": 6,
+                  "child_slot": 10,
+                  "uncertainty": 0.32533445954322815,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 43.89217758178711,
+                  "lambda2": 31.245275497436523,
+                  "anisotropy": 0.3134050515804557,
+                  "kish_ess": 218.09417724609375,
+                  "split_scale": 0.7514219188154766,
+                  "displacement_norm": 4.978259086608887
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 0,
+                  "child_slot": 11,
+                  "uncertainty": 0.31473785638809204,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 19.671865463256836,
+                  "lambda2": 18.412660598754883,
+                  "anisotropy": 0.27487706952382823,
+                  "kish_ess": 329.6856994628906,
+                  "split_scale": 1.0359930482244848,
+                  "displacement_norm": 4.594935894012451
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 3,
+                  "child_slot": 12,
+                  "uncertainty": 0.3087701201438904,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 57.77091979980469,
+                  "lambda2": 38.97810363769531,
+                  "anisotropy": 0.382316543925841,
+                  "kish_ess": 284.4049987792969,
+                  "split_scale": 0.7242971961684176,
+                  "displacement_norm": 5.505178928375244
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 8,
+                  "child_slot": 13,
+                  "uncertainty": 0.30195510387420654,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 54.001888275146484,
+                  "lambda2": 39.7639274597168,
+                  "anisotropy": 0.30204341386009237,
+                  "kish_ess": 263.2075500488281,
+                  "split_scale": 0.816386028186797,
+                  "displacement_norm": 5.999290943145752
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 4,
+                  "child_slot": 14,
+                  "uncertainty": 0.29841405153274536,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 46.71684265136719,
+                  "lambda2": 32.81358337402344,
+                  "anisotropy": 0.29321975377980475,
+                  "kish_ess": 221.2923126220703,
+                  "split_scale": 0.704290511808221,
+                  "displacement_norm": 4.813803672790527
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 9,
+                  "child_slot": 15,
+                  "uncertainty": 0.2806781232357025,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 97.01300048828125,
+                  "lambda2": 55.85881423950195,
+                  "anisotropy": 0.38093426929648083,
+                  "kish_ess": 227.7362060546875,
+                  "split_scale": 0.7312886738860003,
+                  "displacement_norm": 7.202838897705078
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 5,
+                  "child_slot": 16,
+                  "uncertainty": 0.2736424207687378,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 39.19464111328125,
+                  "lambda2": 21.654272079467773,
+                  "anisotropy": 0.32214198469351907,
+                  "kish_ess": 175.4373779296875,
+                  "split_scale": 0.5827641225360115,
+                  "displacement_norm": 3.648430824279785
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 2,
+                  "child_slot": 17,
+                  "uncertainty": 0.2700297236442566,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 79.39502716064453,
+                  "lambda2": 42.61075210571289,
+                  "anisotropy": 0.38721315282249147,
+                  "kish_ess": 243.03359985351562,
+                  "split_scale": 0.8057692496873157,
+                  "displacement_norm": 7.179717540740967
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 7,
+                  "child_slot": 18,
+                  "uncertainty": 0.2602584958076477,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 42.040443420410156,
+                  "lambda2": 26.200105667114258,
+                  "anisotropy": 0.3475784357864588,
+                  "kish_ess": 360.6759338378906,
+                  "split_scale": 0.826514433645689,
+                  "displacement_norm": 5.359004497528076
+                },
+                {
+                  "epoch": 2,
+                  "parent_slot": 1,
+                  "child_slot": 19,
+                  "uncertainty": 0.25722724199295044,
+                  "child_uncertainty": 0.12072169035673141,
+                  "lambda1": 49.19561004638672,
+                  "lambda2": 35.64207458496094,
+                  "anisotropy": 0.2807244226374373,
+                  "kish_ess": 227.22442626953125,
+                  "split_scale": 0.7855608588933123,
+                  "displacement_norm": 5.509889125823975
+                }
+              ],
+              "mean_uncertainty": 0.12072168290615082,
+              "mean_dispersion": 0.0,
+              "resolved_thresholds": {
+                "beta_read": 10.99573227355399,
+                "beta_write": 14.99573227355399,
+                "initial_uncertainty": 4.32494592666626,
+                "uncertainty_min": 0.000432494592666626,
+                "uncertainty_max": 43.2494592666626,
+                "alpha_n": 0.5,
+                "alpha_s": 0.5,
+                "tau_sim": 0.85,
+                "tau_support": 10.0,
+                "tau_eff": 2.0,
+                "n_kish_min": 16.0,
+                "tau_uncert": 0.1908921466320361,
+                "riccati_p_inf": 0.12072169006102662
+              },
+              "gram_before": {
+                "mean_off_diag": 0.019697558134794235,
+                "max_off_diag": 0.8196456432342529,
+                "active_count": 10
+              },
+              "gram_after": {
+                "mean_off_diag": 0.03205914422869682,
+                "max_off_diag": 0.9903079867362976,
+                "active_count": 20
+              },
+              "mean_kish_ess": 0.0,
+              "mean_sharpness": 0.0
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.91,
+              "direct_val_accuracy": 0.89,
+              "memory_val_accuracy": 0.832,
+              "retrieval_delta_val": -0.05800000000000005,
+              "mean_online_sim_loss": 0.10237704729661345,
+              "mean_online_gain": 0.1918479334563017,
+              "active_total": 20,
+              "buffer_utilization": 0.25,
+              "pruned": 0,
+              "pruned_low_mass": 0,
+              "pruned_diffuse": 0,
+              "coalesced": 0,
+              "coalesce_candidates": 7,
+              "spawned": 0,
+              "spawn_events": [],
+              "mean_uncertainty": 0.2466111183166504,
+              "mean_dispersion": 0.11782161891460419,
+              "resolved_thresholds": {
+                "beta_read": 10.99573227355399,
+                "beta_write": 14.99573227355399,
+                "initial_uncertainty": 4.32494592666626,
+                "uncertainty_min": 0.000432494592666626,
+                "uncertainty_max": 43.2494592666626,
+                "alpha_n": 0.5,
+                "alpha_s": 0.5,
+                "tau_sim": 0.85,
+                "tau_support": 5.0,
+                "tau_eff": 0.5,
+                "n_kish_min": 10.0,
+                "tau_uncert": 0.1908921466320361,
+                "riccati_p_inf": 0.12072169006102662
+              },
+              "gram_before": {
+                "mean_off_diag": 0.037371646612882614,
+                "max_off_diag": 0.99627286195755,
+                "active_count": 20
+              },
+              "gram_after": {
+                "mean_off_diag": 0.037371646612882614,
+                "max_off_diag": 0.99627286195755,
+                "active_count": 20
+              },
+              "mean_kish_ess": 208.96530151367188,
+              "mean_sharpness": 0.4817431569099426
+            }
+          ],
+          "test": {
+            "gaussian": {
+              "0.0": 0.83,
+              "0.5": 0.277,
+              "1.0": 0.132
+            },
+            "salt_pepper": {
+              "0.0": 0.83,
+              "0.2": 0.387
+            },
+            "occlusion": {
+              "0": 0.83,
+              "7": 0.779
+            }
+          },
+          "direct_test_corruptions": {
+            "gaussian": {
+              "0.0": 0.893,
+              "0.5": 0.456,
+              "1.0": 0.246
+            },
+            "salt_pepper": {
+              "0.0": 0.893,
+              "0.2": 0.559
+            },
+            "occlusion": {
+              "0": 0.893,
+              "7": 0.843
+            }
+          }
+        }
+      }
+    }
+  ]
+}
