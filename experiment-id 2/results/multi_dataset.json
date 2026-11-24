@@ -1,0 +1,2830 @@
+{
+  "experiment_id": "exp_002_multi_dataset_hopfield",
+  "quick": false,
+  "seeds": [
+    0
+  ],
+  "environment": {
+    "device": "cpu",
+    "gpu_model": null,
+    "cpu_model": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz",
+    "num_threads": 4,
+    "torch_version": "2.15.0+cu132",
+    "python_version": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39"
+  },
+  "datasets": {
+    "fashion_mnist": {
+      "display_name": "Fashion-MNIST",
+      "in_channels": 1,
+      "image_size": 28,
+      "num_classes": 10,
+      "horizontal_flip": true,
+      "config": {
+        "methods": [
+          "ema",
+          "hybrid",
+          "momentum_only",
+          "kalman_only"
+        ],
+        "embed_dim": 64,
+        "rgb_channels": [
+          32,
+          64,
+          128
+        ],
+        "epochs": 10,
+        "warmup_epochs": 1,
+        "batch_size": 128,
+        "eval_batch_size": 256,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001,
+        "augment": true,
+        "val_size": 5000,
+        "train_subset": null,
+        "test_subset": null,
+        "prototypes_per_class": 8,
+        "hopfield_beta": 5.0,
+        "hopfield_num_updates": 1,
+        "merge_distance_threshold": 0.2,
+        "normalization_epsilon": 1e-08,
+        "min_accuracy": 0.8,
+        "max_train_val_gap": 0.07,
+        "update": {
+          "alpha": 0.1,
+          "gamma": 0.9,
+          "epsilon": 1e-08,
+          "process_noise": 0.01,
+          "initial_uncertainty": 1.0
+        },
+        "corruptions": {
+          "gaussian": [
+            0.0,
+            0.1,
+            0.2,
+            0.3,
+            0.5,
+            0.7,
+            1.0
+          ],
+          "salt_pepper": [
+            0.0,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4
+          ],
+          "occlusion": [
+            0,
+            7,
+            10,
+            14
+          ]
+        }
+      },
+      "seeds": [
+        {
+          "dataset": "fashion_mnist",
+          "seed": 0,
+          "elapsed_sec": 1672.02,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.8092363636363636,
+              "mean_loss": 0.5345726868195967,
+              "lr": 0.0009755282581475768,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.8661636363636364,
+              "mean_loss": 0.3640188414617018,
+              "lr": 0.0009045084971874736,
+              "active_memories": {
+                "ema": 75,
+                "hybrid": 77,
+                "momentum_only": 76,
+                "kalman_only": 77
+              },
+              "writes": {
+                "ema": 2180,
+                "hybrid": 2333,
+                "momentum_only": 2196,
+                "kalman_only": 2163
+              }
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.8812363636363636,
+              "mean_loss": 0.3236727254672484,
+              "lr": 0.0007938926261462366,
+              "active_memories": {
+                "ema": 76,
+                "hybrid": 78,
+                "momentum_only": 77,
+                "kalman_only": 78
+              },
+              "writes": {
+                "ema": 2298,
+                "hybrid": 2009,
+                "momentum_only": 1997,
+                "kalman_only": 1849
+              }
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.8919636363636364,
+              "mean_loss": 0.2957019904353402,
+              "lr": 0.0006545084971874737,
+              "active_memories": {
+                "ema": 78,
+                "hybrid": 79,
+                "momentum_only": 80,
+                "kalman_only": 78
+              },
+              "writes": {
+                "ema": 2087,
+                "hybrid": 2119,
+                "momentum_only": 1886,
+                "kalman_only": 1894
+              }
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.8998363636363637,
+              "mean_loss": 0.2742005972667174,
+              "lr": 0.0005,
+              "active_memories": {
+                "ema": 79,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 79
+              },
+              "writes": {
+                "ema": 2203,
+                "hybrid": 1704,
+                "momentum_only": 2145,
+                "kalman_only": 2019
+              }
+            },
+            {
+              "epoch": 6,
+              "direct_train_accuracy": 0.9070909090909091,
+              "mean_loss": 0.254801819096912,
+              "lr": 0.00034549150281252633,
+              "active_memories": {
+                "ema": 79,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 79
+              },
+              "writes": {
+                "ema": 2397,
+                "hybrid": 1699,
+                "momentum_only": 2301,
+                "kalman_only": 2109
+              }
+            },
+            {
+              "epoch": 7,
+              "direct_train_accuracy": 0.9112181818181818,
+              "mean_loss": 0.24107458413730967,
+              "lr": 0.0002061073738537635,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2041,
+                "hybrid": 1813,
+                "momentum_only": 2122,
+                "kalman_only": 1989
+              }
+            },
+            {
+              "epoch": 8,
+              "direct_train_accuracy": 0.9168363636363637,
+              "mean_loss": 0.22647827830748124,
+              "lr": 9.549150281252634e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2125,
+                "hybrid": 2095,
+                "momentum_only": 2201,
+                "kalman_only": 1892
+              }
+            },
+            {
+              "epoch": 9,
+              "direct_train_accuracy": 0.9191636363636364,
+              "mean_loss": 0.21866640306602825,
+              "lr": 2.4471741852423235e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2120,
+                "hybrid": 1755,
+                "momentum_only": 2428,
+                "kalman_only": 1944
+              }
+            },
+            {
+              "epoch": 10,
+              "direct_train_accuracy": 0.9214,
+              "mean_loss": 0.21538561936075037,
+              "lr": 0.0,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 1934,
+                "hybrid": 1827,
+                "momentum_only": 2342,
+                "kalman_only": 2065
+              }
+            }
+          ],
+          "methods": {
+            "direct": {
+              "train_accuracy": 0.9432,
+              "validation_accuracy": 0.933,
+              "test_accuracy": 0.9292,
+              "constraints": {
+                "train_val_gap": 0.010199999999999987,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9292,
+                  "0.1": 0.5832,
+                  "0.2": 0.2819,
+                  "0.3": 0.1857,
+                  "0.5": 0.1178,
+                  "0.7": 0.1041,
+                  "1.0": 0.1017
+                },
+                "salt_pepper": {
+                  "0.0": 0.9292,
+                  "0.05": 0.7237,
+                  "0.1": 0.45,
+                  "0.2": 0.2159,
+                  "0.3": 0.1509,
+                  "0.4": 0.124
+                },
+                "occlusion": {
+                  "0": 0.9292,
+                  "7": 0.8871,
+                  "10": 0.8448,
+                  "14": 0.7352
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.225665,
+                "salt_pepper": 0.3401125,
+                "occlusion": 0.8653500000000001
+              }
+            },
+            "ema": {
+              "train_accuracy": 0.9219090909090909,
+              "validation_accuracy": 0.9136,
+              "test_accuracy": 0.9065,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.0665850830078125,
+              "val_top1_mass_mean": 0.1360378246307373,
+              "test_entropy_mean": 3.0711328159332276,
+              "test_top1_mass_mean": 0.13593980801105499,
+              "test_paired": {
+                "helped": 122,
+                "harmed": 349,
+                "both_correct": 8943,
+                "both_wrong": 586,
+                "net_gain": -227
+              },
+              "constraints": {
+                "train_val_gap": 0.008309090909090933,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9065,
+                  "0.1": 0.5343,
+                  "0.2": 0.2359,
+                  "0.3": 0.1516,
+                  "0.5": 0.1097,
+                  "0.7": 0.102,
+                  "1.0": 0.1008
+                },
+                "salt_pepper": {
+                  "0.0": 0.9065,
+                  "0.05": 0.68,
+                  "0.1": 0.4105,
+                  "0.2": 0.1816,
+                  "0.3": 0.1314,
+                  "0.4": 0.1134
+                },
+                "occlusion": {
+                  "0": 0.9065,
+                  "7": 0.8629,
+                  "10": 0.8153,
+                  "14": 0.6912
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.207645,
+                "salt_pepper": 0.31105,
+                "occlusion": 0.8373714285714284
+              }
+            },
+            "hybrid": {
+              "train_accuracy": 0.9217454545454545,
+              "validation_accuracy": 0.9124,
+              "test_accuracy": 0.9099,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.05512861328125,
+              "val_top1_mass_mean": 0.1369385787963867,
+              "test_entropy_mean": 3.0598214946746825,
+              "test_top1_mass_mean": 0.13648906791210175,
+              "test_paired": {
+                "helped": 118,
+                "harmed": 311,
+                "both_correct": 8981,
+                "both_wrong": 590,
+                "net_gain": -193
+              },
+              "constraints": {
+                "train_val_gap": 0.009345454545454546,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9099,
+                  "0.1": 0.5612,
+                  "0.2": 0.2324,
+                  "0.3": 0.1473,
+                  "0.5": 0.108,
+                  "0.7": 0.1017,
+                  "1.0": 0.1006
+                },
+                "salt_pepper": {
+                  "0.0": 0.9099,
+                  "0.05": 0.7107,
+                  "0.1": 0.4273,
+                  "0.2": 0.1788,
+                  "0.3": 0.1282,
+                  "0.4": 0.1113
+                },
+                "occlusion": {
+                  "0": 0.9099,
+                  "7": 0.8672,
+                  "10": 0.8225,
+                  "14": 0.7039
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.209065,
+                "salt_pepper": 0.31648750000000003,
+                "occlusion": 0.8433714285714284
+              }
+            },
+            "momentum_only": {
+              "train_accuracy": 0.9052363636363636,
+              "validation_accuracy": 0.8966,
+              "test_accuracy": 0.89,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.1192119995117187,
+              "val_top1_mass_mean": 0.1431437339782715,
+              "test_entropy_mean": 3.1197133277893068,
+              "test_top1_mass_mean": 0.14322257027626037,
+              "test_paired": {
+                "helped": 143,
+                "harmed": 535,
+                "both_correct": 8757,
+                "both_wrong": 565,
+                "net_gain": -392
+              },
+              "constraints": {
+                "train_val_gap": 0.008636363636363664,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.89,
+                  "0.1": 0.5937,
+                  "0.2": 0.2534,
+                  "0.3": 0.1489,
+                  "0.5": 0.1069,
+                  "0.7": 0.102,
+                  "1.0": 0.1002
+                },
+                "salt_pepper": {
+                  "0.0": 0.89,
+                  "0.05": 0.7251,
+                  "0.1": 0.467,
+                  "0.2": 0.1857,
+                  "0.3": 0.1289,
+                  "0.4": 0.1124
+                },
+                "occlusion": {
+                  "0": 0.89,
+                  "7": 0.8622,
+                  "10": 0.8253,
+                  "14": 0.7284
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.213455,
+                "salt_pepper": 0.326525,
+                "occlusion": 0.8408107142857143
+              }
+            },
+            "kalman_only": {
+              "train_accuracy": 0.9210727272727273,
+              "validation_accuracy": 0.9132,
+              "test_accuracy": 0.9076,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.0513997802734374,
+              "val_top1_mass_mean": 0.13782174758911134,
+              "test_entropy_mean": 3.055279824447632,
+              "test_top1_mass_mean": 0.1373006428718567,
+              "test_paired": {
+                "helped": 121,
+                "harmed": 337,
+                "both_correct": 8955,
+                "both_wrong": 587,
+                "net_gain": -216
+              },
+              "constraints": {
+                "train_val_gap": 0.007872727272727253,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9076,
+                  "0.1": 0.5243,
+                  "0.2": 0.2352,
+                  "0.3": 0.1545,
+                  "0.5": 0.1134,
+                  "0.7": 0.1036,
+                  "1.0": 0.1023
+                },
+                "salt_pepper": {
+                  "0.0": 0.9076,
+                  "0.05": 0.6627,
+                  "0.1": 0.4027,
+                  "0.2": 0.1859,
+                  "0.3": 0.1345,
+                  "0.4": 0.1153
+                },
+                "occlusion": {
+                  "0": 0.9076,
+                  "7": 0.8554,
+                  "10": 0.8034,
+                  "14": 0.6648
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.20843,
+                "salt_pepper": 0.30958125,
+                "occlusion": 0.8282214285714284
+              }
+            }
+          }
+        }
+      ],
+      "summary": {
+        "direct": {
+          "train_mean": 0.9432,
+          "train_sd": 0.0,
+          "val_mean": 0.933,
+          "val_sd": 0.0,
+          "test_mean": 0.9292,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.010199999999999987,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.010199999999999987,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.225665,
+            "salt_pepper": 0.3401125,
+            "occlusion": 0.8653500000000001
+          }
+        },
+        "ema": {
+          "train_mean": 0.9219090909090909,
+          "train_sd": 0.0,
+          "val_mean": 0.9136,
+          "val_sd": 0.0,
+          "test_mean": 0.9065,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.008309090909090933,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.008309090909090933,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.207645,
+            "salt_pepper": 0.31105,
+            "occlusion": 0.8373714285714284
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.0711328159332276,
+          "test_top1_mass_mean": 0.13593980801105499,
+          "helped_mean": 122.0,
+          "harmed_mean": 349.0
+        },
+        "hybrid": {
+          "train_mean": 0.9217454545454545,
+          "train_sd": 0.0,
+          "val_mean": 0.9124,
+          "val_sd": 0.0,
+          "test_mean": 0.9099,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.009345454545454546,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.009345454545454546,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.209065,
+            "salt_pepper": 0.31648750000000003,
+            "occlusion": 0.8433714285714284
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.0598214946746825,
+          "test_top1_mass_mean": 0.13648906791210175,
+          "helped_mean": 118.0,
+          "harmed_mean": 311.0
+        },
+        "momentum_only": {
+          "train_mean": 0.9052363636363636,
+          "train_sd": 0.0,
+          "val_mean": 0.8966,
+          "val_sd": 0.0,
+          "test_mean": 0.89,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.008636363636363664,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.008636363636363664,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.213455,
+            "salt_pepper": 0.326525,
+            "occlusion": 0.8408107142857143
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.1197133277893068,
+          "test_top1_mass_mean": 0.14322257027626037,
+          "helped_mean": 143.0,
+          "harmed_mean": 535.0
+        },
+        "kalman_only": {
+          "train_mean": 0.9210727272727273,
+          "train_sd": 0.0,
+          "val_mean": 0.9132,
+          "val_sd": 0.0,
+          "test_mean": 0.9076,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.007872727272727253,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.007872727272727253,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.20843,
+            "salt_pepper": 0.30958125,
+            "occlusion": 0.8282214285714284
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.055279824447632,
+          "test_top1_mass_mean": 0.1373006428718567,
+          "helped_mean": 121.0,
+          "harmed_mean": 337.0
+        }
+      }
+    },
+    "kmnist": {
+      "display_name": "KMNIST",
+      "in_channels": 1,
+      "image_size": 28,
+      "num_classes": 10,
+      "horizontal_flip": false,
+      "config": {
+        "methods": [
+          "ema",
+          "hybrid",
+          "momentum_only",
+          "kalman_only"
+        ],
+        "embed_dim": 64,
+        "rgb_channels": [
+          32,
+          64,
+          128
+        ],
+        "epochs": 8,
+        "warmup_epochs": 1,
+        "batch_size": 128,
+        "eval_batch_size": 256,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001,
+        "augment": true,
+        "val_size": 5000,
+        "train_subset": null,
+        "test_subset": null,
+        "prototypes_per_class": 8,
+        "hopfield_beta": 5.0,
+        "hopfield_num_updates": 1,
+        "merge_distance_threshold": 0.2,
+        "normalization_epsilon": 1e-08,
+        "min_accuracy": 0.8,
+        "max_train_val_gap": 0.07,
+        "update": {
+          "alpha": 0.1,
+          "gamma": 0.9,
+          "epsilon": 1e-08,
+          "process_noise": 0.01,
+          "initial_uncertainty": 1.0
+        },
+        "corruptions": {
+          "gaussian": [
+            0.0,
+            0.1,
+            0.2,
+            0.3,
+            0.5,
+            0.7,
+            1.0
+          ],
+          "salt_pepper": [
+            0.0,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4
+          ],
+          "occlusion": [
+            0,
+            7,
+            10,
+            14
+          ]
+        }
+      },
+      "seeds": [
+        {
+          "dataset": "kmnist",
+          "seed": 0,
+          "elapsed_sec": 1144.88,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.8998,
+              "mean_loss": 0.3464493778239597,
+              "lr": 0.0009619397662556434,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.9620181818181818,
+              "mean_loss": 0.12416829750862989,
+              "lr": 0.0008535533905932738,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 397,
+                "hybrid": 421,
+                "momentum_only": 402,
+                "kalman_only": 495
+              }
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9720727272727273,
+              "mean_loss": 0.09156530114629052,
+              "lr": 0.0006913417161825451,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 403,
+                "hybrid": 379,
+                "momentum_only": 307,
+                "kalman_only": 479
+              }
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9769454545454546,
+              "mean_loss": 0.07296579730619084,
+              "lr": 0.0005000000000000001,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 397,
+                "hybrid": 359,
+                "momentum_only": 309,
+                "kalman_only": 425
+              }
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9816909090909091,
+              "mean_loss": 0.059246555467085404,
+              "lr": 0.0003086582838174552,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 391,
+                "hybrid": 362,
+                "momentum_only": 294,
+                "kalman_only": 413
+              }
+            },
+            {
+              "epoch": 6,
+              "direct_train_accuracy": 0.9858363636363636,
+              "mean_loss": 0.046286698133837095,
+              "lr": 0.0001464466094067263,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 326,
+                "hybrid": 263,
+                "momentum_only": 213,
+                "kalman_only": 286
+              }
+            },
+            {
+              "epoch": 7,
+              "direct_train_accuracy": 0.987909090909091,
+              "mean_loss": 0.03905216725577008,
+              "lr": 3.8060233744356646e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 331,
+                "hybrid": 311,
+                "momentum_only": 258,
+                "kalman_only": 341
+              }
+            },
+            {
+              "epoch": 8,
+              "direct_train_accuracy": 0.9887636363636364,
+              "mean_loss": 0.035731454140760684,
+              "lr": 0.0,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 304,
+                "hybrid": 282,
+                "momentum_only": 239,
+                "kalman_only": 272
+              }
+            }
+          ],
+          "methods": {
+            "direct": {
+              "train_accuracy": 0.9979636363636364,
+              "validation_accuracy": 0.9934,
+              "test_accuracy": 0.9785,
+              "constraints": {
+                "train_val_gap": 0.004563636363636436,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9785,
+                  "0.1": 0.9031,
+                  "0.2": 0.6574,
+                  "0.3": 0.4765,
+                  "0.5": 0.2387,
+                  "0.7": 0.1664,
+                  "1.0": 0.1319
+                },
+                "salt_pepper": {
+                  "0.0": 0.9785,
+                  "0.05": 0.7962,
+                  "0.1": 0.5987,
+                  "0.2": 0.3774,
+                  "0.3": 0.2563,
+                  "0.4": 0.1895
+                },
+                "occlusion": {
+                  "0": 0.9785,
+                  "7": 0.9624,
+                  "10": 0.9218,
+                  "14": 0.7745
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.385575,
+                "salt_pepper": 0.45505,
+                "occlusion": 0.9294321428571429
+              }
+            },
+            "ema": {
+              "train_accuracy": 0.9952363636363636,
+              "validation_accuracy": 0.992,
+              "test_accuracy": 0.9709,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.0992285217285156,
+              "val_top1_mass_mean": 0.1752339828491211,
+              "test_entropy_mean": 3.124972692489624,
+              "test_top1_mass_mean": 0.16986008729934693,
+              "test_paired": {
+                "helped": 27,
+                "harmed": 103,
+                "both_correct": 9682,
+                "both_wrong": 188,
+                "net_gain": -76
+              },
+              "constraints": {
+                "train_val_gap": 0.003236363636363593,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9709,
+                  "0.1": 0.8752,
+                  "0.2": 0.5736,
+                  "0.3": 0.3593,
+                  "0.5": 0.1545,
+                  "0.7": 0.1159,
+                  "1.0": 0.1078
+                },
+                "salt_pepper": {
+                  "0.0": 0.9709,
+                  "0.05": 0.7326,
+                  "0.1": 0.5061,
+                  "0.2": 0.2743,
+                  "0.3": 0.1709,
+                  "0.4": 0.13
+                },
+                "occlusion": {
+                  "0": 0.9709,
+                  "7": 0.9477,
+                  "10": 0.8975,
+                  "14": 0.7424
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.323365,
+                "salt_pepper": 0.37470000000000003,
+                "occlusion": 0.9116214285714286
+              }
+            },
+            "hybrid": {
+              "train_accuracy": 0.9959636363636364,
+              "validation_accuracy": 0.992,
+              "test_accuracy": 0.9701,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.123540655517578,
+              "val_top1_mass_mean": 0.1781925765991211,
+              "test_entropy_mean": 3.145726439666748,
+              "test_top1_mass_mean": 0.17202940232753752,
+              "test_paired": {
+                "helped": 28,
+                "harmed": 112,
+                "both_correct": 9673,
+                "both_wrong": 187,
+                "net_gain": -84
+              },
+              "constraints": {
+                "train_val_gap": 0.003963636363636391,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9701,
+                  "0.1": 0.883,
+                  "0.2": 0.5988,
+                  "0.3": 0.3798,
+                  "0.5": 0.1787,
+                  "0.7": 0.1377,
+                  "1.0": 0.1212
+                },
+                "salt_pepper": {
+                  "0.0": 0.9701,
+                  "0.05": 0.7508,
+                  "0.1": 0.5204,
+                  "0.2": 0.2958,
+                  "0.3": 0.1927,
+                  "0.4": 0.1529
+                },
+                "occlusion": {
+                  "0": 0.9701,
+                  "7": 0.9476,
+                  "10": 0.8966,
+                  "14": 0.7427
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.34199999999999997,
+                "salt_pepper": 0.39329375,
+                "occlusion": 0.9112035714285714
+              }
+            },
+            "momentum_only": {
+              "train_accuracy": 0.9957090909090909,
+              "validation_accuracy": 0.992,
+              "test_accuracy": 0.9694,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.1147959716796874,
+              "val_top1_mass_mean": 0.18556853942871093,
+              "test_entropy_mean": 3.1439088424682615,
+              "test_top1_mass_mean": 0.17586118366718292,
+              "test_paired": {
+                "helped": 34,
+                "harmed": 125,
+                "both_correct": 9660,
+                "both_wrong": 181,
+                "net_gain": -91
+              },
+              "constraints": {
+                "train_val_gap": 0.003709090909090884,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9694,
+                  "0.1": 0.8813,
+                  "0.2": 0.591,
+                  "0.3": 0.3812,
+                  "0.5": 0.1837,
+                  "0.7": 0.1363,
+                  "1.0": 0.1199
+                },
+                "salt_pepper": {
+                  "0.0": 0.9694,
+                  "0.05": 0.753,
+                  "0.1": 0.5248,
+                  "0.2": 0.3023,
+                  "0.3": 0.2004,
+                  "0.4": 0.1533
+                },
+                "occlusion": {
+                  "0": 0.9694,
+                  "7": 0.9456,
+                  "10": 0.8961,
+                  "14": 0.7407
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.34168,
+                "salt_pepper": 0.39795,
+                "occlusion": 0.9099035714285714
+              }
+            },
+            "kalman_only": {
+              "train_accuracy": 0.9954181818181819,
+              "validation_accuracy": 0.9926,
+              "test_accuracy": 0.9701,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.1226023681640624,
+              "val_top1_mass_mean": 0.1759105682373047,
+              "test_entropy_mean": 3.1515971519470214,
+              "test_top1_mass_mean": 0.16985348675251008,
+              "test_paired": {
+                "helped": 17,
+                "harmed": 101,
+                "both_correct": 9684,
+                "both_wrong": 198,
+                "net_gain": -84
+              },
+              "constraints": {
+                "train_val_gap": 0.0028181818181818308,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9701,
+                  "0.1": 0.8807,
+                  "0.2": 0.6053,
+                  "0.3": 0.413,
+                  "0.5": 0.2007,
+                  "0.7": 0.1443,
+                  "1.0": 0.1245
+                },
+                "salt_pepper": {
+                  "0.0": 0.9701,
+                  "0.05": 0.7568,
+                  "0.1": 0.5566,
+                  "0.2": 0.3338,
+                  "0.3": 0.2224,
+                  "0.4": 0.1646
+                },
+                "occlusion": {
+                  "0": 0.9701,
+                  "7": 0.9464,
+                  "10": 0.8979,
+                  "14": 0.7301
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.353945,
+                "salt_pepper": 0.41921875000000003,
+                "occlusion": 0.9093
+              }
+            }
+          }
+        }
+      ],
+      "summary": {
+        "direct": {
+          "train_mean": 0.9979636363636364,
+          "train_sd": 0.0,
+          "val_mean": 0.9934,
+          "val_sd": 0.0,
+          "test_mean": 0.9785,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.004563636363636436,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.004563636363636436,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.385575,
+            "salt_pepper": 0.45505,
+            "occlusion": 0.9294321428571429
+          }
+        },
+        "ema": {
+          "train_mean": 0.9952363636363636,
+          "train_sd": 0.0,
+          "val_mean": 0.992,
+          "val_sd": 0.0,
+          "test_mean": 0.9709,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.003236363636363593,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.003236363636363593,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.323365,
+            "salt_pepper": 0.37470000000000003,
+            "occlusion": 0.9116214285714286
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.124972692489624,
+          "test_top1_mass_mean": 0.16986008729934693,
+          "helped_mean": 27.0,
+          "harmed_mean": 103.0
+        },
+        "hybrid": {
+          "train_mean": 0.9959636363636364,
+          "train_sd": 0.0,
+          "val_mean": 0.992,
+          "val_sd": 0.0,
+          "test_mean": 0.9701,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.003963636363636391,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.003963636363636391,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.34199999999999997,
+            "salt_pepper": 0.39329375,
+            "occlusion": 0.9112035714285714
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.145726439666748,
+          "test_top1_mass_mean": 0.17202940232753752,
+          "helped_mean": 28.0,
+          "harmed_mean": 112.0
+        },
+        "momentum_only": {
+          "train_mean": 0.9957090909090909,
+          "train_sd": 0.0,
+          "val_mean": 0.992,
+          "val_sd": 0.0,
+          "test_mean": 0.9694,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.003709090909090884,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.003709090909090884,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.34168,
+            "salt_pepper": 0.39795,
+            "occlusion": 0.9099035714285714
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.1439088424682615,
+          "test_top1_mass_mean": 0.17586118366718292,
+          "helped_mean": 34.0,
+          "harmed_mean": 125.0
+        },
+        "kalman_only": {
+          "train_mean": 0.9954181818181819,
+          "train_sd": 0.0,
+          "val_mean": 0.9926,
+          "val_sd": 0.0,
+          "test_mean": 0.9701,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.0028181818181818308,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.0028181818181818308,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.353945,
+            "salt_pepper": 0.41921875000000003,
+            "occlusion": 0.9093
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.1515971519470214,
+          "test_top1_mass_mean": 0.16985348675251008,
+          "helped_mean": 17.0,
+          "harmed_mean": 101.0
+        }
+      }
+    },
+    "svhn": {
+      "display_name": "SVHN",
+      "in_channels": 3,
+      "image_size": 32,
+      "num_classes": 10,
+      "horizontal_flip": false,
+      "config": {
+        "methods": [
+          "ema",
+          "hybrid",
+          "momentum_only",
+          "kalman_only"
+        ],
+        "embed_dim": 64,
+        "rgb_channels": [
+          32,
+          64,
+          128
+        ],
+        "epochs": 8,
+        "warmup_epochs": 2,
+        "batch_size": 128,
+        "eval_batch_size": 256,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0002,
+        "augment": true,
+        "val_size": 5000,
+        "train_subset": null,
+        "test_subset": null,
+        "prototypes_per_class": 8,
+        "hopfield_beta": 5.0,
+        "hopfield_num_updates": 1,
+        "merge_distance_threshold": 0.2,
+        "normalization_epsilon": 1e-08,
+        "min_accuracy": 0.8,
+        "max_train_val_gap": 0.07,
+        "update": {
+          "alpha": 0.1,
+          "gamma": 0.9,
+          "epsilon": 1e-08,
+          "process_noise": 0.01,
+          "initial_uncertainty": 1.0
+        },
+        "corruptions": {
+          "gaussian": [
+            0.0,
+            0.1,
+            0.2,
+            0.3,
+            0.5,
+            0.7,
+            1.0
+          ],
+          "salt_pepper": [
+            0.0,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4
+          ],
+          "occlusion": [
+            0,
+            8,
+            12,
+            16
+          ]
+        }
+      },
+      "seeds": [
+        {
+          "dataset": "svhn",
+          "seed": 0,
+          "elapsed_sec": 2845.76,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.7257863662334999,
+              "mean_loss": 0.8283487228638718,
+              "lr": 0.0009619397662556434,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.891132045064975,
+              "mean_loss": 0.35842655414012536,
+              "lr": 0.0008535533905932738,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.9137084841115197,
+              "mean_loss": 0.28951178425993807,
+              "lr": 0.0006913417161825451,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 992,
+                "hybrid": 912,
+                "momentum_only": 944,
+                "kalman_only": 1104
+              }
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.9261028172934644,
+              "mean_loss": 0.2529474948209713,
+              "lr": 0.0005000000000000001,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 1045,
+                "hybrid": 1034,
+                "momentum_only": 915,
+                "kalman_only": 1177
+              }
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.9355230965322238,
+              "mean_loss": 0.2235721772115871,
+              "lr": 0.0003086582838174552,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 984,
+                "hybrid": 940,
+                "momentum_only": 808,
+                "kalman_only": 974
+              }
+            },
+            {
+              "epoch": 6,
+              "direct_train_accuracy": 0.9449580262830186,
+              "mean_loss": 0.1941940376099612,
+              "lr": 0.0001464466094067263,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 865,
+                "hybrid": 801,
+                "momentum_only": 516,
+                "kalman_only": 812
+              }
+            },
+            {
+              "epoch": 7,
+              "direct_train_accuracy": 0.9511112413378847,
+              "mean_loss": 0.17369652822399118,
+              "lr": 3.8060233744356646e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 934,
+                "hybrid": 968,
+                "momentum_only": 743,
+                "kalman_only": 898
+              }
+            },
+            {
+              "epoch": 8,
+              "direct_train_accuracy": 0.9549496754911584,
+              "mean_loss": 0.15906064031256217,
+              "lr": 0.0,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 897,
+                "hybrid": 908,
+                "momentum_only": 758,
+                "kalman_only": 848
+              }
+            }
+          ],
+          "methods": {
+            "direct": {
+              "train_accuracy": 0.9708894325856688,
+              "validation_accuracy": 0.9576,
+              "test_accuracy": 0.9594345421020283,
+              "constraints": {
+                "train_val_gap": 0.013289432585668837,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9594345421020283,
+                  "0.1": 0.6279194837123541,
+                  "0.2": 0.24477566072526122,
+                  "0.3": 0.15331130915795943,
+                  "0.5": 0.11770129071911493,
+                  "0.7": 0.11781653349723417,
+                  "1.0": 0.11370620774431468
+                },
+                "salt_pepper": {
+                  "0.0": 0.9594345421020283,
+                  "0.05": 0.5872387830362631,
+                  "0.1": 0.3078134603564843,
+                  "0.2": 0.15550092194222495,
+                  "0.3": 0.12803472649047326,
+                  "0.4": 0.12127381684081132
+                },
+                "occlusion": {
+                  "0": 0.9594345421020283,
+                  "8": 0.8141133988936693,
+                  "12": 0.6359096496619545,
+                  "16": 0.4018515673017824
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.2282882606023356,
+                "salt_pepper": 0.27712766979102643,
+                "occlusion": 0.7543600184388445
+              }
+            },
+            "ema": {
+              "train_accuracy": 0.9636227786161127,
+              "validation_accuracy": 0.9504,
+              "test_accuracy": 0.9546711739397664,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.194751708984375,
+              "val_top1_mass_mean": 0.16200447578430177,
+              "test_entropy_mean": 3.2141780724317366,
+              "test_top1_mass_mean": 0.1558279397667883,
+              "test_paired": {
+                "helped": 178,
+                "harmed": 302,
+                "both_correct": 24674,
+                "both_wrong": 878,
+                "net_gain": -124
+              },
+              "constraints": {
+                "train_val_gap": 0.013222778616112651,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9546711739397664,
+                  "0.1": 0.6098263675476336,
+                  "0.2": 0.21999846342962506,
+                  "0.3": 0.14697295636140134,
+                  "0.5": 0.12914874001229257,
+                  "0.7": 0.12918715427166563,
+                  "1.0": 0.12749692685925015
+                },
+                "salt_pepper": {
+                  "0.0": 0.9546711739397664,
+                  "0.05": 0.5485172095881992,
+                  "0.1": 0.2770820528580209,
+                  "0.2": 0.14635832821143208,
+                  "0.3": 0.13249078057775046,
+                  "0.4": 0.1292639827904118
+                },
+                "occlusion": {
+                  "0": 0.9546711739397664,
+                  "8": 0.7975568531038721,
+                  "12": 0.6165104486785494,
+                  "16": 0.39078826060233557
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.23001306084818685,
+                "salt_pepper": 0.26605475952673635,
+                "occlusion": 0.740727758143823
+              }
+            },
+            "hybrid": {
+              "train_accuracy": 0.9640769444892099,
+              "validation_accuracy": 0.9514,
+              "test_accuracy": 0.9552089735709896,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.192629217529297,
+              "val_top1_mass_mean": 0.16703083152770995,
+              "test_entropy_mean": 3.21528130070007,
+              "test_top1_mass_mean": 0.15962197242811843,
+              "test_paired": {
+                "helped": 176,
+                "harmed": 286,
+                "both_correct": 24690,
+                "both_wrong": 880,
+                "net_gain": -110
+              },
+              "constraints": {
+                "train_val_gap": 0.012676944489209863,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9552089735709896,
+                  "0.1": 0.5996465888137676,
+                  "0.2": 0.2037876459741856,
+                  "0.3": 0.13525660725261218,
+                  "0.5": 0.1183159188690842,
+                  "0.7": 0.1188921327596804,
+                  "1.0": 0.11700983405039951
+                },
+                "salt_pepper": {
+                  "0.0": 0.9552089735709896,
+                  "0.05": 0.5350722188076213,
+                  "0.1": 0.2568377381684081,
+                  "0.2": 0.13452673632452367,
+                  "0.3": 0.12292562999385372,
+                  "0.4": 0.11931468961278427
+                },
+                "occlusion": {
+                  "0": 0.9552089735709896,
+                  "8": 0.7963660110633067,
+                  "12": 0.6149738783036263,
+                  "16": 0.3871773202212661
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.2193300553165335,
+                "salt_pepper": 0.2540190918869084,
+                "occlusion": 0.7395801321450522
+              }
+            },
+            "momentum_only": {
+              "train_accuracy": 0.9626704953338119,
+              "validation_accuracy": 0.9484,
+              "test_accuracy": 0.9512523048555623,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.2106148864746094,
+              "val_top1_mass_mean": 0.17421768112182617,
+              "test_entropy_mean": 3.2315368347543107,
+              "test_top1_mass_mean": 0.167925207982711,
+              "test_paired": {
+                "helped": 158,
+                "harmed": 371,
+                "both_correct": 24605,
+                "both_wrong": 898,
+                "net_gain": -213
+              },
+              "constraints": {
+                "train_val_gap": 0.014270495333811861,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9512523048555623,
+                  "0.1": 0.605139827904118,
+                  "0.2": 0.21704056545789796,
+                  "0.3": 0.13848340503995082,
+                  "0.5": 0.11620313460356484,
+                  "0.7": 0.11766287645974186,
+                  "1.0": 0.11627996312231101
+                },
+                "salt_pepper": {
+                  "0.0": 0.9512523048555623,
+                  "0.05": 0.5537031346035648,
+                  "0.1": 0.274239397664413,
+                  "0.2": 0.13859864781807008,
+                  "0.3": 0.12227258758451137,
+                  "0.4": 0.11700983405039951
+                },
+                "occlusion": {
+                  "0": 0.9512523048555623,
+                  "8": 0.7929087277197295,
+                  "12": 0.6218116164720344,
+                  "16": 0.4018515673017824
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.22065150583896742,
+                "salt_pepper": 0.259930086047941,
+                "occlusion": 0.7408381991395205
+              }
+            },
+            "kalman_only": {
+              "train_accuracy": 0.9643846052419532,
+              "validation_accuracy": 0.952,
+              "test_accuracy": 0.9555547019053473,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.231748468017578,
+              "val_top1_mass_mean": 0.16044525413513183,
+              "test_entropy_mean": 3.2540164752906278,
+              "test_top1_mass_mean": 0.15360810050366477,
+              "test_paired": {
+                "helped": 179,
+                "harmed": 280,
+                "both_correct": 24696,
+                "both_wrong": 877,
+                "net_gain": -101
+              },
+              "constraints": {
+                "train_val_gap": 0.012384605241953284,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.9555547019053473,
+                  "0.1": 0.5943070067609096,
+                  "0.2": 0.2156960663798402,
+                  "0.3": 0.14389981561155502,
+                  "0.5": 0.12788106945298094,
+                  "0.7": 0.12968653964351567,
+                  "1.0": 0.12657498463429626
+                },
+                "salt_pepper": {
+                  "0.0": 0.9555547019053473,
+                  "0.05": 0.53779963122311,
+                  "0.1": 0.27012907191149355,
+                  "0.2": 0.14397664413030117,
+                  "0.3": 0.13199139520590042,
+                  "0.4": 0.1279963122311002
+                },
+                "occlusion": {
+                  "0": 0.9555547019053473,
+                  "8": 0.7992470805162877,
+                  "12": 0.6140135218192994,
+                  "16": 0.38414259373079285
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.22734711124769513,
+                "salt_pepper": 0.2625878726183159,
+                "occlusion": 0.7401275353411186
+              }
+            }
+          }
+        }
+      ],
+      "summary": {
+        "direct": {
+          "train_mean": 0.9708894325856688,
+          "train_sd": 0.0,
+          "val_mean": 0.9576,
+          "val_sd": 0.0,
+          "test_mean": 0.9594345421020283,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.013289432585668837,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.013289432585668837,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.2282882606023356,
+            "salt_pepper": 0.27712766979102643,
+            "occlusion": 0.7543600184388445
+          }
+        },
+        "ema": {
+          "train_mean": 0.9636227786161127,
+          "train_sd": 0.0,
+          "val_mean": 0.9504,
+          "val_sd": 0.0,
+          "test_mean": 0.9546711739397664,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.013222778616112651,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.013222778616112651,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.23001306084818685,
+            "salt_pepper": 0.26605475952673635,
+            "occlusion": 0.740727758143823
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.2141780724317366,
+          "test_top1_mass_mean": 0.1558279397667883,
+          "helped_mean": 178.0,
+          "harmed_mean": 302.0
+        },
+        "hybrid": {
+          "train_mean": 0.9640769444892099,
+          "train_sd": 0.0,
+          "val_mean": 0.9514,
+          "val_sd": 0.0,
+          "test_mean": 0.9552089735709896,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.012676944489209863,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.012676944489209863,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.2193300553165335,
+            "salt_pepper": 0.2540190918869084,
+            "occlusion": 0.7395801321450522
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.21528130070007,
+          "test_top1_mass_mean": 0.15962197242811843,
+          "helped_mean": 176.0,
+          "harmed_mean": 286.0
+        },
+        "momentum_only": {
+          "train_mean": 0.9626704953338119,
+          "train_sd": 0.0,
+          "val_mean": 0.9484,
+          "val_sd": 0.0,
+          "test_mean": 0.9512523048555623,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.014270495333811861,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.014270495333811861,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.22065150583896742,
+            "salt_pepper": 0.259930086047941,
+            "occlusion": 0.7408381991395205
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.2315368347543107,
+          "test_top1_mass_mean": 0.167925207982711,
+          "helped_mean": 158.0,
+          "harmed_mean": 371.0
+        },
+        "kalman_only": {
+          "train_mean": 0.9643846052419532,
+          "train_sd": 0.0,
+          "val_mean": 0.952,
+          "val_sd": 0.0,
+          "test_mean": 0.9555547019053473,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.012384605241953284,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.012384605241953284,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.22734711124769513,
+            "salt_pepper": 0.2625878726183159,
+            "occlusion": 0.7401275353411186
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.2540164752906278,
+          "test_top1_mass_mean": 0.15360810050366477,
+          "helped_mean": 179.0,
+          "harmed_mean": 280.0
+        }
+      }
+    },
+    "cifar10": {
+      "display_name": "CIFAR-10",
+      "in_channels": 3,
+      "image_size": 32,
+      "num_classes": 10,
+      "horizontal_flip": true,
+      "config": {
+        "methods": [
+          "ema",
+          "hybrid",
+          "momentum_only",
+          "kalman_only"
+        ],
+        "embed_dim": 64,
+        "rgb_channels": [
+          32,
+          64,
+          128
+        ],
+        "epochs": 16,
+        "warmup_epochs": 2,
+        "batch_size": 128,
+        "eval_batch_size": 256,
+        "learning_rate": 0.0015,
+        "weight_decay": 0.0005,
+        "augment": true,
+        "val_size": 5000,
+        "train_subset": null,
+        "test_subset": null,
+        "prototypes_per_class": 8,
+        "hopfield_beta": 5.0,
+        "hopfield_num_updates": 1,
+        "merge_distance_threshold": 0.2,
+        "normalization_epsilon": 1e-08,
+        "min_accuracy": 0.8,
+        "max_train_val_gap": 0.07,
+        "update": {
+          "alpha": 0.1,
+          "gamma": 0.9,
+          "epsilon": 1e-08,
+          "process_noise": 0.01,
+          "initial_uncertainty": 1.0
+        },
+        "corruptions": {
+          "gaussian": [
+            0.0,
+            0.1,
+            0.2,
+            0.3,
+            0.5,
+            0.7,
+            1.0
+          ],
+          "salt_pepper": [
+            0.0,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4
+          ],
+          "occlusion": [
+            0,
+            8,
+            12,
+            16
+          ]
+        }
+      },
+      "seeds": [
+        {
+          "dataset": "cifar10",
+          "seed": 0,
+          "elapsed_sec": 2947.72,
+          "epochs": [
+            {
+              "epoch": 1,
+              "direct_train_accuracy": 0.5006,
+              "mean_loss": 1.37195777859158,
+              "lr": 0.0014855889603024228,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 2,
+              "direct_train_accuracy": 0.6312666666666666,
+              "mean_loss": 1.0339519551171197,
+              "lr": 0.001442909649383465,
+              "active_memories": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              },
+              "writes": {
+                "ema": 0,
+                "hybrid": 0,
+                "momentum_only": 0,
+                "kalman_only": 0
+              }
+            },
+            {
+              "epoch": 3,
+              "direct_train_accuracy": 0.6857555555555556,
+              "mean_loss": 0.8884205178578695,
+              "lr": 0.001373602209226909,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2857,
+                "hybrid": 2785,
+                "momentum_only": 2505,
+                "kalman_only": 2895
+              }
+            },
+            {
+              "epoch": 4,
+              "direct_train_accuracy": 0.7259333333333333,
+              "mean_loss": 0.7875637088669671,
+              "lr": 0.0012803300858899105,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 3207,
+                "hybrid": 3130,
+                "momentum_only": 2635,
+                "kalman_only": 3389
+              }
+            },
+            {
+              "epoch": 5,
+              "direct_train_accuracy": 0.7543555555555556,
+              "mean_loss": 0.7114234280692207,
+              "lr": 0.0011666776747647014,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 3221,
+                "hybrid": 3111,
+                "momentum_only": 2443,
+                "kalman_only": 3347
+              }
+            },
+            {
+              "epoch": 6,
+              "direct_train_accuracy": 0.7753111111111111,
+              "mean_loss": 0.651035683939192,
+              "lr": 0.0010370125742738172,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2942,
+                "hybrid": 3005,
+                "momentum_only": 2512,
+                "kalman_only": 3071
+              }
+            },
+            {
+              "epoch": 7,
+              "direct_train_accuracy": 0.7923111111111111,
+              "mean_loss": 0.5985442823410034,
+              "lr": 0.0008963177415120962,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2977,
+                "hybrid": 3131,
+                "momentum_only": 2312,
+                "kalman_only": 3238
+              }
+            },
+            {
+              "epoch": 8,
+              "direct_train_accuracy": 0.8082888888888888,
+              "mean_loss": 0.5565539865811666,
+              "lr": 0.0007499999999999999,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2946,
+                "hybrid": 3106,
+                "momentum_only": 1719,
+                "kalman_only": 3183
+              }
+            },
+            {
+              "epoch": 9,
+              "direct_train_accuracy": 0.8209333333333333,
+              "mean_loss": 0.5190252746793959,
+              "lr": 0.0006036822584879037,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2949,
+                "hybrid": 2682,
+                "momentum_only": 1787,
+                "kalman_only": 2998
+              }
+            },
+            {
+              "epoch": 10,
+              "direct_train_accuracy": 0.8307111111111111,
+              "mean_loss": 0.48558839592403835,
+              "lr": 0.00046298742572618265,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2907,
+                "hybrid": 2794,
+                "momentum_only": 1870,
+                "kalman_only": 3031
+              }
+            },
+            {
+              "epoch": 11,
+              "direct_train_accuracy": 0.8422444444444445,
+              "mean_loss": 0.4544329215579563,
+              "lr": 0.0003333223252352985,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2802,
+                "hybrid": 2849,
+                "momentum_only": 1993,
+                "kalman_only": 3017
+              }
+            },
+            {
+              "epoch": 12,
+              "direct_train_accuracy": 0.8498888888888889,
+              "mean_loss": 0.4338366997983721,
+              "lr": 0.00021966991411008935,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2734,
+                "hybrid": 2801,
+                "momentum_only": 1771,
+                "kalman_only": 2840
+              }
+            },
+            {
+              "epoch": 13,
+              "direct_train_accuracy": 0.8580666666666666,
+              "mean_loss": 0.41107285216649375,
+              "lr": 0.00012639779077309096,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2800,
+                "hybrid": 2923,
+                "momentum_only": 1914,
+                "kalman_only": 2858
+              }
+            },
+            {
+              "epoch": 14,
+              "direct_train_accuracy": 0.8648222222222223,
+              "mean_loss": 0.394113381295734,
+              "lr": 5.7090350616534935e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2792,
+                "hybrid": 2926,
+                "momentum_only": 1831,
+                "kalman_only": 3025
+              }
+            },
+            {
+              "epoch": 15,
+              "direct_train_accuracy": 0.8684222222222222,
+              "mean_loss": 0.3810986996968587,
+              "lr": 1.4411039697577173e-05,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2718,
+                "hybrid": 2940,
+                "momentum_only": 1415,
+                "kalman_only": 2887
+              }
+            },
+            {
+              "epoch": 16,
+              "direct_train_accuracy": 0.8700222222222223,
+              "mean_loss": 0.37840707075860763,
+              "lr": 0.0,
+              "active_memories": {
+                "ema": 80,
+                "hybrid": 80,
+                "momentum_only": 80,
+                "kalman_only": 80
+              },
+              "writes": {
+                "ema": 2746,
+                "hybrid": 2817,
+                "momentum_only": 1982,
+                "kalman_only": 2721
+              }
+            }
+          ],
+          "methods": {
+            "direct": {
+              "train_accuracy": 0.9083333333333333,
+              "validation_accuracy": 0.8692,
+              "test_accuracy": 0.8694,
+              "constraints": {
+                "train_val_gap": 0.03913333333333335,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.8694,
+                  "0.1": 0.2887,
+                  "0.2": 0.195,
+                  "0.3": 0.152,
+                  "0.5": 0.1137,
+                  "0.7": 0.1067,
+                  "1.0": 0.1045
+                },
+                "salt_pepper": {
+                  "0.0": 0.8694,
+                  "0.05": 0.4136,
+                  "0.1": 0.2175,
+                  "0.2": 0.148,
+                  "0.3": 0.1268,
+                  "0.4": 0.118
+                },
+                "occlusion": {
+                  "0": 0.8694,
+                  "8": 0.7558,
+                  "12": 0.6323,
+                  "16": 0.4743
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.17973,
+                "salt_pepper": 0.23026874999999997,
+                "occlusion": 0.7181375
+              }
+            },
+            "ema": {
+              "train_accuracy": 0.8662444444444445,
+              "validation_accuracy": 0.8384,
+              "test_accuracy": 0.8271,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.2765529418945314,
+              "val_top1_mass_mean": 0.12077154159545898,
+              "test_entropy_mean": 3.28116432723999,
+              "test_top1_mass_mean": 0.12041267862319946,
+              "test_paired": {
+                "helped": 223,
+                "harmed": 646,
+                "both_correct": 8048,
+                "both_wrong": 1083,
+                "net_gain": -423
+              },
+              "constraints": {
+                "train_val_gap": 0.02784444444444445,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.8271,
+                  "0.1": 0.2596,
+                  "0.2": 0.2007,
+                  "0.3": 0.1384,
+                  "0.5": 0.1066,
+                  "0.7": 0.1032,
+                  "1.0": 0.1007
+                },
+                "salt_pepper": {
+                  "0.0": 0.8271,
+                  "0.05": 0.3729,
+                  "0.1": 0.2205,
+                  "0.2": 0.1358,
+                  "0.3": 0.1129,
+                  "0.4": 0.1051
+                },
+                "occlusion": {
+                  "0": 0.8271,
+                  "8": 0.6912,
+                  "12": 0.5614,
+                  "16": 0.4259
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.17037,
+                "salt_pepper": 0.2149625,
+                "occlusion": 0.6595625
+              }
+            },
+            "hybrid": {
+              "train_accuracy": 0.863,
+              "validation_accuracy": 0.8328,
+              "test_accuracy": 0.8224,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.2706736572265624,
+              "val_top1_mass_mean": 0.12173366317749024,
+              "test_entropy_mean": 3.2756591827392576,
+              "test_top1_mass_mean": 0.1212508382320404,
+              "test_paired": {
+                "helped": 230,
+                "harmed": 700,
+                "both_correct": 7994,
+                "both_wrong": 1076,
+                "net_gain": -470
+              },
+              "constraints": {
+                "train_val_gap": 0.030200000000000005,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.8224,
+                  "0.1": 0.245,
+                  "0.2": 0.1872,
+                  "0.3": 0.1243,
+                  "0.5": 0.1075,
+                  "0.7": 0.1023,
+                  "1.0": 0.0991
+                },
+                "salt_pepper": {
+                  "0.0": 0.8224,
+                  "0.05": 0.3666,
+                  "0.1": 0.2061,
+                  "0.2": 0.1248,
+                  "0.3": 0.1092,
+                  "0.4": 0.1077
+                },
+                "occlusion": {
+                  "0": 0.8224,
+                  "8": 0.6896,
+                  "12": 0.5653,
+                  "16": 0.4273
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.16492500000000002,
+                "salt_pepper": 0.20783125,
+                "occlusion": 0.6589375000000001
+              }
+            },
+            "momentum_only": {
+              "train_accuracy": 0.8639333333333333,
+              "validation_accuracy": 0.8332,
+              "test_accuracy": 0.8232,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.294687091064453,
+              "val_top1_mass_mean": 0.13821516952514648,
+              "test_entropy_mean": 3.3002948432922365,
+              "test_top1_mass_mean": 0.1373663764476776,
+              "test_paired": {
+                "helped": 234,
+                "harmed": 696,
+                "both_correct": 7998,
+                "both_wrong": 1072,
+                "net_gain": -462
+              },
+              "constraints": {
+                "train_val_gap": 0.03073333333333328,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.8232,
+                  "0.1": 0.2418,
+                  "0.2": 0.1776,
+                  "0.3": 0.1335,
+                  "0.5": 0.1089,
+                  "0.7": 0.1044,
+                  "1.0": 0.102
+                },
+                "salt_pepper": {
+                  "0.0": 0.8232,
+                  "0.05": 0.3803,
+                  "0.1": 0.2017,
+                  "0.2": 0.1369,
+                  "0.3": 0.1176,
+                  "0.4": 0.1098
+                },
+                "occlusion": {
+                  "0": 0.8232,
+                  "8": 0.6973,
+                  "12": 0.5792,
+                  "16": 0.4284
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.166305,
+                "salt_pepper": 0.21415625,
+                "occlusion": 0.6656375000000001
+              }
+            },
+            "kalman_only": {
+              "train_accuracy": 0.8628444444444444,
+              "validation_accuracy": 0.8346,
+              "test_accuracy": 0.8251,
+              "active_memories": 80,
+              "occupancy": [
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8,
+                8
+              ],
+              "val_entropy_mean": 3.2805799560546873,
+              "val_top1_mass_mean": 0.11944566173553467,
+              "test_entropy_mean": 3.2841283626556397,
+              "test_top1_mass_mean": 0.1187079229593277,
+              "test_paired": {
+                "helped": 248,
+                "harmed": 691,
+                "both_correct": 8003,
+                "both_wrong": 1058,
+                "net_gain": -443
+              },
+              "constraints": {
+                "train_val_gap": 0.028244444444444405,
+                "min_accuracy_ok": true,
+                "generalization_gap_ok": true,
+                "all_passed": true
+              },
+              "corruptions": {
+                "gaussian": {
+                  "0.0": 0.8251,
+                  "0.1": 0.2376,
+                  "0.2": 0.1783,
+                  "0.3": 0.1147,
+                  "0.5": 0.1009,
+                  "0.7": 0.0994,
+                  "1.0": 0.101
+                },
+                "salt_pepper": {
+                  "0.0": 0.8251,
+                  "0.05": 0.3565,
+                  "0.1": 0.1885,
+                  "0.2": 0.118,
+                  "0.3": 0.1038,
+                  "0.4": 0.1019
+                },
+                "occlusion": {
+                  "0": 0.8251,
+                  "8": 0.6851,
+                  "12": 0.5579,
+                  "16": 0.4262
+                }
+              },
+              "robust_auc": {
+                "gaussian": 0.16023,
+                "salt_pepper": 0.19966249999999997,
+                "occlusion": 0.6559375
+              }
+            }
+          }
+        }
+      ],
+      "summary": {
+        "direct": {
+          "train_mean": 0.9083333333333333,
+          "train_sd": 0.0,
+          "val_mean": 0.8692,
+          "val_sd": 0.0,
+          "test_mean": 0.8694,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.03913333333333335,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.03913333333333335,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.17973,
+            "salt_pepper": 0.23026874999999997,
+            "occlusion": 0.7181375
+          }
+        },
+        "ema": {
+          "train_mean": 0.8662444444444445,
+          "train_sd": 0.0,
+          "val_mean": 0.8384,
+          "val_sd": 0.0,
+          "test_mean": 0.8271,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.02784444444444445,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.02784444444444445,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.17037,
+            "salt_pepper": 0.2149625,
+            "occlusion": 0.6595625
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.28116432723999,
+          "test_top1_mass_mean": 0.12041267862319946,
+          "helped_mean": 223.0,
+          "harmed_mean": 646.0
+        },
+        "hybrid": {
+          "train_mean": 0.863,
+          "train_sd": 0.0,
+          "val_mean": 0.8328,
+          "val_sd": 0.0,
+          "test_mean": 0.8224,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.030200000000000005,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.030200000000000005,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.16492500000000002,
+            "salt_pepper": 0.20783125,
+            "occlusion": 0.6589375000000001
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.2756591827392576,
+          "test_top1_mass_mean": 0.1212508382320404,
+          "helped_mean": 230.0,
+          "harmed_mean": 700.0
+        },
+        "momentum_only": {
+          "train_mean": 0.8639333333333333,
+          "train_sd": 0.0,
+          "val_mean": 0.8332,
+          "val_sd": 0.0,
+          "test_mean": 0.8232,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.03073333333333328,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.03073333333333328,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.166305,
+            "salt_pepper": 0.21415625,
+            "occlusion": 0.6656375000000001
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.3002948432922365,
+          "test_top1_mass_mean": 0.1373663764476776,
+          "helped_mean": 234.0,
+          "harmed_mean": 696.0
+        },
+        "kalman_only": {
+          "train_mean": 0.8628444444444444,
+          "train_sd": 0.0,
+          "val_mean": 0.8346,
+          "val_sd": 0.0,
+          "test_mean": 0.8251,
+          "test_sd": 0.0,
+          "train_val_gap_mean": 0.028244444444444405,
+          "train_val_gap_sd": 0.0,
+          "constraints": {
+            "train_val_gap": 0.028244444444444405,
+            "min_accuracy_ok": true,
+            "generalization_gap_ok": true,
+            "all_passed": true,
+            "all_seeds_passed": true
+          },
+          "robust_auc_mean": {
+            "gaussian": 0.16023,
+            "salt_pepper": 0.19966249999999997,
+            "occlusion": 0.6559375
+          },
+          "active_memories_mean": 80.0,
+          "test_entropy_mean": 3.2841283626556397,
+          "test_top1_mass_mean": 0.1187079229593277,
+          "helped_mean": 248.0,
+          "harmed_mean": 691.0
+        }
+      }
+    }
+  }
+}
