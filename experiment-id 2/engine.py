@@ -39,9 +39,9 @@ from hopfieldpc import (
 
 
 @torch.no_grad()
-def evaluate_split(
-    net: BackboneNet,
-    images: torch.Tensor,
+def evaluate_embeddings(
+    head: torch.nn.Module,
+    embeddings: torch.Tensor,
     labels: torch.Tensor,
     *,
     device: torch.device,
@@ -49,8 +49,8 @@ def evaluate_split(
     bank: HybridOnlineBank | None = None,
     return_predictions: bool = False,
 ) -> dict[str, Any]:
-    """Evaluate Direct CNN (bank=None) or pre-last-layer Hopfield retrieval."""
-    net.eval()
+    """Evaluate Direct head or Hopfield retrieval from precomputed encoder embeddings."""
+    head.eval()
     snapshot = None
     if bank is not None:
         snapshot = bank.snapshot()
@@ -65,17 +65,16 @@ def evaluate_split(
     top1_sum = 0.0
     preds_list: list[torch.Tensor] = []
 
-    for start in range(0, len(images), batch_size):
-        batch_x = images[start : start + batch_size].to(device)
+    for start in range(0, len(embeddings), batch_size):
+        z = embeddings[start : start + batch_size].to(device)
         batch_y = labels[start : start + batch_size]
-        z = net.encoder(batch_x)
         if bank is not None and snapshot is not None:
             retrieved, weights = bank.retrieve(z, snapshot=snapshot)
-            logits = net.head(retrieved)
+            logits = head(retrieved)
             entropy_sum += float(attention_entropy(weights).sum().item())
             top1_sum += float(weights.max(dim=-1).values.sum().item())
         else:
-            logits = net.head(z)
+            logits = head(z)
         preds = logits.argmax(dim=-1).cpu()
         correct += int((preds == batch_y).sum().item())
         total += len(batch_y)
@@ -92,6 +91,30 @@ def evaluate_split(
     if return_predictions:
         out["predictions"] = torch.cat(preds_list) if preds_list else torch.empty(0, dtype=torch.long)
     return out
+
+
+@torch.no_grad()
+def evaluate_split(
+    net: BackboneNet,
+    images: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    device: torch.device,
+    batch_size: int,
+    bank: HybridOnlineBank | None = None,
+    return_predictions: bool = False,
+) -> dict[str, Any]:
+    """Evaluate Direct CNN (bank=None) or pre-last-layer Hopfield retrieval."""
+    z = encode(net.encoder, images, batch_size=batch_size, device=device)
+    return evaluate_embeddings(
+        net.head,
+        z,
+        labels,
+        device=device,
+        batch_size=batch_size,
+        bank=bank,
+        return_predictions=return_predictions,
+    )
 
 
 def paired_comparison(
@@ -380,17 +403,21 @@ def train_and_evaluate_seed(
         epoch=epochs,
     )
 
-    # Evaluate clean train, validation, and test splits for Direct CNN and every memory method.
-    direct_train = evaluate_split(
-        net, split.train_images, split.train_labels,
+    # Encode clean splits once, then evaluate Direct CNN and every memory method identically.
+    z_train = encode(net.encoder, split.train_images, batch_size=cfg["eval_batch_size"], device=device)
+    z_val = encode(net.encoder, split.val_images, batch_size=cfg["eval_batch_size"], device=device)
+    z_test = encode(net.encoder, split.test_images, batch_size=cfg["eval_batch_size"], device=device)
+
+    direct_train = evaluate_embeddings(
+        net.head, z_train, split.train_labels,
         device=device, batch_size=cfg["eval_batch_size"],
     )
-    direct_val = evaluate_split(
-        net, split.val_images, split.val_labels,
+    direct_val = evaluate_embeddings(
+        net.head, z_val, split.val_labels,
         device=device, batch_size=cfg["eval_batch_size"],
     )
-    direct_test = evaluate_split(
-        net, split.test_images, split.test_labels,
+    direct_test = evaluate_embeddings(
+        net.head, z_test, split.test_labels,
         device=device, batch_size=cfg["eval_batch_size"], return_predictions=True,
     )
 
@@ -412,16 +439,16 @@ def train_and_evaluate_seed(
     }
 
     for method, bank in banks.items():
-        m_train = evaluate_split(
-            net, split.train_images, split.train_labels,
+        m_train = evaluate_embeddings(
+            net.head, z_train, split.train_labels,
             device=device, batch_size=cfg["eval_batch_size"], bank=bank,
         )
-        m_val = evaluate_split(
-            net, split.val_images, split.val_labels,
+        m_val = evaluate_embeddings(
+            net.head, z_val, split.val_labels,
             device=device, batch_size=cfg["eval_batch_size"], bank=bank,
         )
-        m_test = evaluate_split(
-            net, split.test_images, split.test_labels,
+        m_test = evaluate_embeddings(
+            net.head, z_test, split.test_labels,
             device=device, batch_size=cfg["eval_batch_size"], bank=bank, return_predictions=True,
         )
         methods_out[method] = {
@@ -458,14 +485,17 @@ def train_and_evaluate_seed(
             corrupted_x = make_corrupted_test_set(
                 split.test_images, seed=seed, kind=kind, level=level
             )
-            d_res = evaluate_split(
-                net, corrupted_x, split.test_labels,
+            z_corr = encode(
+                net.encoder, corrupted_x, batch_size=cfg["eval_batch_size"], device=device
+            )
+            d_res = evaluate_embeddings(
+                net.head, z_corr, split.test_labels,
                 device=device, batch_size=cfg["eval_batch_size"], return_predictions=True,
             )
             methods_out["direct"]["corruptions"][kind][str(level)] = d_res["accuracy"]
             for method, bank in banks.items():
-                m_res = evaluate_split(
-                    net, corrupted_x, split.test_labels,
+                m_res = evaluate_embeddings(
+                    net.head, z_corr, split.test_labels,
                     device=device, batch_size=cfg["eval_batch_size"], bank=bank, return_predictions=True,
                 )
                 methods_out[method]["corruptions"][kind][str(level)] = m_res["accuracy"]

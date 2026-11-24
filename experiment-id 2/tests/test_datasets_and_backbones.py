@@ -108,6 +108,44 @@ def test_load_dataset_tensors_mocked_for_all_four_datasets(monkeypatch: pytest.M
         assert train_y.dtype == torch.long and test_y.dtype == torch.long
 
 
+def test_kmnist_csv_fallback_parses_and_caches(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """When torchvision.datasets.KMNIST hits HTTP 403, fallback parses CSV and caches .pt."""
+    import io
+    import urllib.request
+
+    import torchvision
+
+    def failing_kmnist(*args, **kwargs):
+        raise RuntimeError("HTTP Error 403: Forbidden")
+
+    header = "label," + ",".join(f"pixel{i}" for i in range(1, 785))
+    row0 = "3," + ",".join(["255"] * 784)
+    row1 = "7," + ",".join(["0"] * 784)
+    csv_bytes = f"{header}\n{row0}\n{row1}\n".encode()
+
+    def fake_urlopen(req, timeout=120):
+        class _Resp(io.BytesIO):
+            def __enter__(self):
+                return self
+            def __exit__(self, *exc):
+                self.close()
+        return _Resp(csv_bytes)
+
+    monkeypatch.setattr(torchvision.datasets, "KMNIST", failing_kmnist)
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    tr_x, tr_y, te_x, te_y = load_dataset_tensors("kmnist", tmp_path, download=True)
+    assert tr_x.shape == (2, 1, 28, 28)
+    assert tr_y.tolist() == [3, 7]
+    assert te_x.shape == (2, 1, 28, 28)
+    assert te_y.tolist() == [3, 7]
+    assert float(tr_x[0].mean()) == pytest.approx(1.0)
+    assert float(tr_x[1].mean()) == pytest.approx(0.0)
+    assert (tmp_path / "KMNIST" / "csv_mirror" / "kmnist_tensors.pt").exists()
+
+
 @pytest.mark.parametrize("dataset_name", DEFAULT_MULTI_DATASETS)
 def test_backbones_plug_into_pre_last_layer_hopfield(dataset_name: str) -> None:
     """Every dataset backbone outputs [B, 64] z compatible with HybridOnlineBank -> head."""

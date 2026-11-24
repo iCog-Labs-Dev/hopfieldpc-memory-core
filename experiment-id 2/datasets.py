@@ -1,11 +1,13 @@
 """Dataset specifications, loaders, splits, and augmentation for Experiment 2."""
 from __future__ import annotations
 
+import urllib.request
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import torch
 import torch.nn.functional as F
 
@@ -75,7 +77,7 @@ DATASET_SPECS: dict[str, DatasetSpec] = {
         val_size=5000,
         horizontal_flip=True,
         crop_padding=4,
-        recommended_epochs=20,
+        recommended_epochs=16,
         recommended_lr=1.5e-3,
         recommended_weight_decay=5e-4,
         occlusion_sizes=(0, 8, 12, 16),
@@ -92,7 +94,7 @@ DATASET_SPECS: dict[str, DatasetSpec] = {
         # Street digits (e.g., 6, 9, 2, 5) are not flip-invariant.
         horizontal_flip=False,
         crop_padding=2,
-        recommended_epochs=12,
+        recommended_epochs=8,
         recommended_lr=1e-3,
         recommended_weight_decay=2e-4,
         occlusion_sizes=(0, 8, 12, 16),
@@ -180,6 +182,42 @@ def _to_nchw_float_and_labels(
     return images.contiguous(), labels.contiguous()
 
 
+KMNIST_CSV_MIRROR = "https://huggingface.co/datasets/vincent-espitalier/K-MNIST-CSV/resolve/main"
+
+
+def _load_kmnist_from_csv_mirror(data_dir: Path) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Fallback KMNIST loader when codh.rois.ac.jp returns HTTP 403 Forbidden."""
+    cache_dir = data_dir / "KMNIST" / "csv_mirror"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_pt = cache_dir / "kmnist_tensors.pt"
+    if cache_pt.exists():
+        cached = torch.load(cache_pt, map_location="cpu", weights_only=True)
+        return tuple(cached)  # type: ignore[return-value]
+
+    def _fetch_and_parse(filename: str) -> tuple[torch.Tensor, torch.Tensor]:
+        dest = cache_dir / filename
+        if not dest.exists():
+            req = urllib.request.Request(
+                f"{KMNIST_CSV_MIRROR}/{filename}",
+                headers={"User-Agent": "Mozilla/5.0"},
+            )
+            with urllib.request.urlopen(req, timeout=120) as resp, dest.open("wb") as fout:
+                while True:
+                    chunk = resp.read(1 << 16)
+                    if not chunk:
+                        break
+                    fout.write(chunk)
+        arr = np.loadtxt(dest, delimiter=",", skiprows=1, dtype=np.uint8)
+        labels = torch.from_numpy(arr[:, 0].astype(np.int64)).contiguous()
+        images = torch.from_numpy(arr[:, 1:].reshape(-1, 1, 28, 28)).float().div(255.0).contiguous()
+        return images, labels
+
+    train_x, train_y = _fetch_and_parse("kmnist_train.csv")
+    test_x, test_y = _fetch_and_parse("kmnist_test.csv")
+    torch.save((train_x, train_y, test_x, test_y), cache_pt)
+    return train_x, train_y, test_x, test_y
+
+
 def load_dataset_tensors(
     name: str,
     data_dir: str | Path,
@@ -198,8 +236,13 @@ def load_dataset_tensors(
             "mnist": torchvision.datasets.MNIST,
         }
         cls = cls_map[spec.name]
-        train_ds = cls(root=root, train=True, download=download)
-        test_ds = cls(root=root, train=False, download=download)
+        try:
+            train_ds = cls(root=root, train=True, download=download)
+            test_ds = cls(root=root, train=False, download=download)
+        except RuntimeError:
+            if spec.name == "kmnist" and download:
+                return _load_kmnist_from_csv_mirror(Path(data_dir))
+            raise
         train_x, train_y = _to_nchw_float_and_labels(
             train_ds.data, train_ds.targets,
             in_channels=spec.in_channels, image_size=spec.image_size,

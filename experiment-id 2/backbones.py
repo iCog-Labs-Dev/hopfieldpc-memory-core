@@ -168,19 +168,17 @@ class RgbResNetEncoder(nn.Module):
             nn.Conv2d(3, c1, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(c1),
             nn.ReLU(inplace=True),
+            nn.MaxPool2d(2),
         )
         self.stage1 = nn.Sequential(
-            ResidualBlock(c1, c1, stride=1, dropout=block_dropout),
-            ResidualBlock(c1, c1, stride=1, dropout=0.0),
+            ResidualBlock(c1, c2, stride=1, dropout=block_dropout),
+            nn.MaxPool2d(2),
         )
         self.stage2 = nn.Sequential(
-            ResidualBlock(c1, c2, stride=2, dropout=block_dropout),
-            ResidualBlock(c2, c2, stride=1, dropout=0.0),
+            ResidualBlock(c2, c3, stride=1, dropout=block_dropout),
+            nn.MaxPool2d(2),
         )
-        self.stage3 = nn.Sequential(
-            ResidualBlock(c2, c3, stride=2, dropout=block_dropout),
-            ResidualBlock(c3, c3, stride=1, dropout=0.0),
-        )
+        self.stage3 = ResidualBlock(c3, c3, stride=1, dropout=block_dropout)
         self.pool = nn.AdaptiveAvgPool2d((1, 1))
         self.proj = nn.Sequential(
             nn.Flatten(),
