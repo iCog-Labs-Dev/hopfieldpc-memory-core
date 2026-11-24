@@ -121,7 +121,7 @@ class GlobalDynamicConfig:
     uncertainty_min: float | None = 1e-4
     uncertainty_max: float | None = 10.0
     process_noise: float = 0.01
-    observation_noise: float = 0.05  # Relative fallback when the caller omits task_score.
+    observation_noise: float = 0.05
     tau_sim: float | None = 0.85
     lambda_sim: float | None = 0.05
     tau_coal: float = 0.95
