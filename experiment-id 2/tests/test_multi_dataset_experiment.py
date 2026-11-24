@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 
 import pytest
-import torch
 
 EXPERIMENT_2 = Path(__file__).resolve().parents[1]
 REPO_ROOT = EXPERIMENT_2.parent
@@ -16,6 +15,7 @@ for path in (str(EXPERIMENT_2), str(REPO_ROOT), str(REPO_ROOT / "src")):
 
 import multi_dataset_experiment as mde
 from datasets import get_dataset_spec
+from synthetic_helpers import synthetic_block_dataset
 
 from hopfieldpc import METHODS
 
@@ -40,27 +40,13 @@ def test_run_multi_dataset_end_to_end_offline(
 
     def fake_load(name: str, data_dir: str | Path, *, download: bool = True):
         spec = get_dataset_spec(name)
-
-        def _make(n: int, seed: int) -> tuple[torch.Tensor, torch.Tensor]:
-            gen = torch.Generator().manual_seed(seed)
-            labels = torch.arange(n) % spec.num_classes
-            x = torch.rand(n, spec.in_channels, spec.image_size, spec.image_size, generator=gen) * 0.15
-            for cls_id in range(spec.num_classes):
-                r = (cls_id // 4) * 8 + 2
-                col = (cls_id % 4) * 6 + 2
-                if spec.in_channels == 1:
-                    x[labels == cls_id, :, r : r + 6, col : col + 6] += 0.75
-                else:
-                    r_val = 0.2 + 0.7 * ((cls_id * 3 % 10) / 9.0)
-                    g_val = 0.2 + 0.7 * (((cls_id * 7 + 2) % 10) / 9.0)
-                    b_val = 0.2 + 0.7 * (((cls_id * 5 + 4) % 10) / 9.0)
-                    color = torch.tensor([r_val, g_val, b_val], dtype=torch.float32).view(1, 3, 1, 1)
-                    x[labels == cls_id] = 0.85 * color + 0.10 * x[labels == cls_id]
-            return x.clamp(0.0, 1.0), labels
-
-        train_x, train_y = _make(160, 0)
-        test_x, test_y = _make(40, 1)
-        return train_x, train_y, test_x, test_y
+        return synthetic_block_dataset(
+            n_train=160,
+            n_test=40,
+            channels=spec.in_channels,
+            image_size=spec.image_size,
+            num_classes=spec.num_classes,
+        )
 
     monkeypatch.setattr(mde, "load_dataset_tensors", fake_load)
 
@@ -117,4 +103,4 @@ def test_run_multi_dataset_end_to_end_offline(
     assert "SVHN" in md_text
     assert "Direct CNN (Baseline)" in md_text
     assert "Hybrid" in md_text
-    assert "Ema" in md_text
+    assert "EMA" in md_text

@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 
@@ -207,6 +206,8 @@ def _load_kmnist_from_csv_mirror(data_dir: Path) -> tuple[torch.Tensor, torch.Te
                     if not chunk:
                         break
                     fout.write(chunk)
+        import numpy as np  # lazy: only needed for CSV fallback
+
         arr = np.loadtxt(dest, delimiter=",", skiprows=1, dtype=np.uint8)
         labels = torch.from_numpy(arr[:, 0].astype(np.int64)).contiguous()
         images = torch.from_numpy(arr[:, 1:].reshape(-1, 1, 28, 28)).float().div(255.0).contiguous()

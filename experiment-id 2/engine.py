@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import sys
 import time
+import warnings
 from pathlib import Path
 from typing import Any
 
@@ -231,6 +232,7 @@ def _ensure_banks_ready(
     if all(bank.ready for bank in banks.values()):
         return
     net.eval()
+    filled = 0
     for start in range(0, len(split.train_images), batch_size):
         batch_x = split.train_images[start : start + batch_size].to(device)
         batch_y = split.train_labels[start : start + batch_size].to(device)
@@ -247,8 +249,15 @@ def _ensure_banks_ready(
                     if prop.is_write:
                         bank.commit(prop, example_id=start + i, step=0, epoch=epoch)
                         occ[cls_id] += 1
+                        filled += 1
         if all(bank.ready for bank in banks.values()):
             break
+    if filled > 0:
+        warnings.warn(
+            f"_ensure_banks_ready filled {filled} missing prototype slot(s) "
+            f"post-training — training loop may have insufficient class coverage.",
+            stacklevel=2,
+        )
 
 
 def evaluate_constraints(

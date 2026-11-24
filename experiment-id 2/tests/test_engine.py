@@ -21,6 +21,7 @@ from engine import (
     paired_comparison,
     train_and_evaluate_seed,
 )
+from synthetic_helpers import synthetic_block_dataset
 
 from hopfieldpc import METHODS, HybridOnlineBank
 
@@ -82,42 +83,11 @@ def test_paired_comparison_counts_helped_and_harmed() -> None:
     }
 
 
-def _synthetic_block_dataset(
-    n_train: int,
-    n_test: int,
-    channels: int,
-    image_size: int,
-    num_classes: int,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-    """10-class synthetic images with distinct spatial block locations in [0, 1]."""
-    def _make(n: int, seed: int) -> tuple[torch.Tensor, torch.Tensor]:
-        gen = torch.Generator().manual_seed(seed)
-        labels = torch.arange(n) % num_classes
-        x = torch.rand(n, channels, image_size, image_size, generator=gen) * 0.15
-        for cls_id in range(num_classes):
-            r = (cls_id // 4) * 8 + 2
-            col = (cls_id % 4) * 6 + 2
-            if channels == 1:
-                x[labels == cls_id, :, r : r + 6, col : col + 6] += 0.75
-            else:
-                # Distinct 10-class RGB color & stripe signature so global pooling separates all classes.
-                r_val = 0.2 + 0.7 * ((cls_id * 3 % 10) / 9.0)
-                g_val = 0.2 + 0.7 * (((cls_id * 7 + 2) % 10) / 9.0)
-                b_val = 0.2 + 0.7 * (((cls_id * 5 + 4) % 10) / 9.0)
-                color = torch.tensor([r_val, g_val, b_val], dtype=torch.float32).view(1, 3, 1, 1)
-                x[labels == cls_id] = 0.85 * color + 0.10 * x[labels == cls_id]
-        return x.clamp(0.0, 1.0), labels
-
-    train_x, train_y = _make(n_train, 0)
-    test_x, test_y = _make(n_test, 1)
-    return train_x, train_y, test_x, test_y
-
-
 @pytest.mark.parametrize("dataset_name", ("fashion_mnist", "cifar10"))
 def test_train_and_evaluate_seed_produces_distinct_memory_train_evals(dataset_name: str) -> None:
     """Verify full engine run on learnable synthetic data with true memory train evals."""
     spec = get_dataset_spec(dataset_name)
-    train_x, train_y, test_x, test_y = _synthetic_block_dataset(
+    train_x, train_y, test_x, test_y = synthetic_block_dataset(
         n_train=160,
         n_test=40,
         channels=spec.in_channels,

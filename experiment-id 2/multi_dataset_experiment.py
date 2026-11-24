@@ -173,9 +173,16 @@ def aggregate_dataset_summary(
     return summary
 
 
+_ACRONYM_LABELS: dict[str, str] = {
+    "ema": "EMA",
+}
+
+
 def _method_label(key: str) -> str:
     if key == "direct":
         return "Direct CNN (Baseline)"
+    if key in _ACRONYM_LABELS:
+        return _ACRONYM_LABELS[key]
     return key.replace("_", " ").title()
 
 
