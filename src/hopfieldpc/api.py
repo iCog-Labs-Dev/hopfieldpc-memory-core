@@ -156,6 +156,10 @@ class GlobalDynamicConfig:
             raise ValueError("initial_memories must be <= max_memories.")
         if self.min_active_memories > self.max_memories:
             raise ValueError("min_active_memories must be <= max_memories.")
+        if self.initial_memories < self.min_active_memories:
+            raise ValueError("initial_memories must be >= min_active_memories.")
+        if not self.resolved_tau_sim < self.tau_coal:
+            raise ValueError("tau_coal must be strictly greater than the resolved tau_sim.")
         if self.warmup_epochs < 0:
             raise ValueError("warmup_epochs must be >= 0.")
         if self.beta_read is not None:
@@ -227,6 +231,13 @@ class GlobalDynamicConfig:
             self.split_scale is not None and self.split_scale <= 0.0
         ):
             raise ValueError("tau_uncert and split_scale must be positive.")
+
+    @property
+    def resolved_tau_sim(self) -> float:
+        """Overlap threshold used for validation and online updates."""
+        if self.tau_sim is None:
+            return max(0.0, float(self.tau_coal) - 0.10)
+        return float(self.tau_sim)
 
     @classmethod
     def auto(cls, dim: int, **overrides: Any) -> GlobalDynamicConfig:

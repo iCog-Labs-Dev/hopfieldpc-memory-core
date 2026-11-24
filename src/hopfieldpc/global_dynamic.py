@@ -210,9 +210,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
     def resolve_tau_sim(self) -> float:
         """Resolve online similarity threshold tau_sim (defaults to tau_coal - 0.10 when None)."""
 
-        if self.cfg.tau_sim is not None:
-            return float(self.cfg.tau_sim)
-        return max(0.0, float(self.cfg.tau_coal) - 0.10)
+        return self.cfg.resolved_tau_sim
 
     def resolve_structural_base_noise(self, task_score: float | torch.Tensor | None = None) -> float:
         """Return relative R_0, defaulting to R_n / s for the supplied epoch score."""

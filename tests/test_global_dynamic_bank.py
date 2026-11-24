@@ -31,6 +31,23 @@ from hopfieldpc import (
 )
 
 
+def test_initial_memory_count_must_reach_active_floor() -> None:
+    with pytest.raises(ValueError, match="initial_memories must be >= min_active_memories"):
+        GlobalDynamicConfig(dim=2, initial_memories=1, min_active_memories=2)
+    GlobalDynamicConfig(dim=2, initial_memories=2, min_active_memories=2, max_memories=2)
+
+
+@pytest.mark.parametrize("tau_sim,tau_coal", [(0.85, 0.85), (0.9, 0.85), (None, 0.0), (None, -0.1)])
+def test_merge_threshold_must_exceed_resolved_overlap_threshold(tau_sim, tau_coal) -> None:
+    with pytest.raises(ValueError, match="tau_coal must be strictly greater"):
+        GlobalDynamicConfig.auto(dim=2, tau_sim=tau_sim, tau_coal=tau_coal)
+
+
+def test_automatic_overlap_threshold_can_reach_zero() -> None:
+    bank = GlobalDynamicHopfieldBank(GlobalDynamicConfig.auto(dim=2, tau_coal=0.05))
+    assert bank.resolve_tau_sim() == 0.0
+
+
 @pytest.mark.parametrize("score", [0.0, torch.tensor(0.75), 1.0, None])
 @pytest.mark.parametrize("single_observation", [True, False])
 def test_write_gain_uses_current_task_score(score, single_observation) -> None:
