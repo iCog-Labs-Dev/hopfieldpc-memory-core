@@ -1,57 +1,49 @@
-# Experiment 2 Extension: Multi-Dataset Evaluation (Fashion-MNIST, KMNIST, SVHN, CIFAR-10)
+# Experiment 2 Results: Multi-Dataset Evaluation
 
-## 1. Objective & Architectural Constraints
+## 1. Summary
 
-This study extends Experiment 2 (`HybridOnlineBank`: Direct CNN baseline vs. **EMA**, **Hybrid Kalman-Momentum**, **Momentum-only**, and **Kalman-only**) beyond MNIST to four progressively harder image datasets:
+This study evaluates `HybridOnlineBank` prototype updates across four image
+benchmarks beyond MNIST:
 
-1. **Fashion-MNIST** (`28x28` grayscale, 10 classes) — fine-grained intra-class shape/texture ambiguity.
-2. **KMNIST** (`28x28` grayscale, 10 classes) — cursive Japanese Hiragana with high structural diversity across strokes (orientation-sensitive: no horizontal flip).
-3. **SVHN** (`32x32` RGB, 10 classes) — real-world Street View house numbers with natural blur, lighting shifts, and background clutter (orientation-sensitive: no horizontal flip).
-4. **CIFAR-10** (`32x32` RGB, 10 classes) — natural scenes and objects with diverse backgrounds.
+1. **Fashion-MNIST** (`28x28` grayscale, 10 classes) — intra-class shape and texture variation.
+2. **KMNIST** (`28x28` grayscale, 10 classes) — cursive Hiragana characters (orientation-sensitive; horizontal flip disabled).
+3. **SVHN** (`32x32` RGB, 10 classes) — Street View house numbers with natural blur and clutter (orientation-sensitive; horizontal flip disabled).
+4. **CIFAR-10** (`32x32` RGB, 10 classes) — natural objects across varied backgrounds.
 
-### Non-Negotiable Design Rules
-
-- **Untouched Hopfield Behavior**: Zero changes to `src/hopfieldpc/`. Retrieval uses centered cosine scoring (`beta = 5.0`, `num_updates = 1`, 8 prototypes per class = 80 active slots), accuracy-guided online admission, and detached CNN gradients (`z.detach()`).
-- **Pre-Last-Layer Placement**: Only the dataset encoder (`GrayscaleCnnEncoder` for 28x28 grayscale; `RgbResNetEncoder` for 32x32 RGB) scales to dataset complexity. Every model preserves the identical slot:
-  `Image -> Encoder -> z [B, 64] -> Hopfield Retrieval (pre-last layer) -> Linear Head -> Logits`.
-- **Constraint Gates**:
-  1. `Train accuracy >= 80%` and `Test accuracy >= 80%`
-  2. Generalization gap `|Train accuracy - Validation accuracy| <= 7%`
-- **Honest Evaluation Fix**: Unlike `hybrid_kalman_experiment.py` (which omitted `memory=bank` when computing `train_accuracy`), every memory method here evaluates **actual Hopfield retrieval** on train, validation, and test splits, sharing one deterministic CNN backbone per `(dataset, seed)` so all methods compare on identical embeddings.
+All datasets use the same pre-last-layer memory interface (`Image -> Encoder -> z [B, 64] -> Hopfield Retrieval -> Linear Head -> Logits`) with `HybridOnlineBank` (`beta = 5.0`, `num_updates = 1`, 8 prototypes per class, accuracy-guided admission, detached encoder gradients). Only the CNN encoder scales to dataset dimensionality (`GrayscaleCnnEncoder` for `28x28` grayscale; `RgbResNetEncoder` for `32x32` RGB). Within each `(dataset, seed)` run, all five methods share the same trained encoder and linear head and are evaluated with active retrieval on the train, validation, and test splits against target thresholds (`Train >= 80%`, `Test >= 80%`, `|Train - Val| <= 7%`).
 
 ---
 
-## 2. Clean Accuracy & Constraint Gates (Train / Validation / Test)
+## 2. Clean Accuracy & Generalization (Train / Validation / Test)
 
 Results on seed `0` (`--threads 4`, CPU):
 
-| Dataset           | Method                |  Train | Validation |       Test | \|Train - Val\| | Gate (>=80% & <=7%) |
-| ----------------- | --------------------- | -----: | ---------: | ---------: | --------------: | :-----------------: |
-| **Fashion-MNIST** | Direct CNN (Baseline) | 94.32% |     93.30% |     92.92% |         1.02 pp |      **PASS**       |
-| Fashion-MNIST     | EMA                   | 92.19% |     91.36% |     90.65% |         0.83 pp |      **PASS**       |
-| Fashion-MNIST     | **Hybrid**            | 92.17% |     91.24% | **90.99%** |         0.93 pp |      **PASS**       |
-| Fashion-MNIST     | Momentum Only         | 90.52% |     89.66% |     89.00% |         0.86 pp |      **PASS**       |
-| Fashion-MNIST     | Kalman Only           | 92.11% |     91.32% |     90.76% |         0.79 pp |      **PASS**       |
-| **KMNIST**        | Direct CNN (Baseline) | 99.80% |     99.34% |     97.85% |         0.46 pp |      **PASS**       |
-| KMNIST            | EMA                   | 99.52% |     99.20% |     97.09% |         0.32 pp |      **PASS**       |
-| KMNIST            | Hybrid                | 99.60% |     99.20% |     97.01% |         0.40 pp |      **PASS**       |
-| KMNIST            | Momentum Only         | 99.57% |     99.20% |     96.94% |         0.37 pp |      **PASS**       |
-| KMNIST            | Kalman Only           | 99.54% |     99.26% |     97.01% |         0.28 pp |      **PASS**       |
-| **SVHN**          | Direct CNN (Baseline) | 97.09% |     95.76% |     95.94% |         1.33 pp |      **PASS**       |
-| SVHN              | EMA                   | 96.36% |     95.04% |     95.47% |         1.32 pp |      **PASS**       |
-| SVHN              | Hybrid                | 96.41% |     95.14% |     95.52% |         1.27 pp |      **PASS**       |
-| SVHN              | Momentum Only         | 96.27% |     94.84% |     95.13% |         1.43 pp |      **PASS**       |
-| SVHN              | Kalman Only           | 96.44% |     95.20% | **95.56%** |         1.24 pp |      **PASS**       |
-| **CIFAR-10**      | Direct CNN (Baseline) | 90.83% |     86.92% |     86.94% |         3.91 pp |      **PASS**       |
-| CIFAR-10          | EMA                   | 86.62% |     83.84% | **82.71%** |         2.78 pp |      **PASS**       |
-| CIFAR-10          | Hybrid                | 86.30% |     83.28% |     82.24% |         3.02 pp |      **PASS**       |
-| CIFAR-10          | Momentum Only         | 86.39% |     83.32% |     82.32% |         3.07 pp |      **PASS**       |
-| CIFAR-10          | Kalman Only           | 86.28% |     83.46% |     82.51% |         2.82 pp |      **PASS**       |
+| Dataset           | Method                |  Train | Validation |       Test | \|Train - Val\| | Status |
+| ----------------- | --------------------- | -----: | ---------: | ---------: | --------------: | :----: |
+| **Fashion-MNIST** | Direct CNN (Baseline) | 94.32% |     93.30% |     92.92% |         1.02 pp |  PASS  |
+| Fashion-MNIST     | EMA                   | 92.19% |     91.36% |     90.65% |         0.83 pp |  PASS  |
+| Fashion-MNIST     | **Hybrid**            | 92.17% |     91.24% | **90.99%** |         0.93 pp |  PASS  |
+| Fashion-MNIST     | Momentum Only         | 90.52% |     89.66% |     89.00% |         0.86 pp |  PASS  |
+| Fashion-MNIST     | Kalman Only           | 92.11% |     91.32% |     90.76% |         0.79 pp |  PASS  |
+| **KMNIST**        | Direct CNN (Baseline) | 99.80% |     99.34% |     97.85% |         0.46 pp |  PASS  |
+| KMNIST            | EMA                   | 99.52% |     99.20% |     97.09% |         0.32 pp |  PASS  |
+| KMNIST            | Hybrid                | 99.60% |     99.20% |     97.01% |         0.40 pp |  PASS  |
+| KMNIST            | Momentum Only         | 99.57% |     99.20% |     96.94% |         0.37 pp |  PASS  |
+| KMNIST            | Kalman Only           | 99.54% |     99.26% |     97.01% |         0.28 pp |  PASS  |
+| **SVHN**          | Direct CNN (Baseline) | 97.09% |     95.76% |     95.94% |         1.33 pp |  PASS  |
+| SVHN              | EMA                   | 96.36% |     95.04% |     95.47% |         1.32 pp |  PASS  |
+| SVHN              | Hybrid                | 96.41% |     95.14% |     95.52% |         1.27 pp |  PASS  |
+| SVHN              | Momentum Only         | 96.27% |     94.84% |     95.13% |         1.43 pp |  PASS  |
+| SVHN              | Kalman Only           | 96.44% |     95.20% | **95.56%** |         1.24 pp |  PASS  |
+| **CIFAR-10**      | Direct CNN (Baseline) | 90.83% |     86.92% |     86.94% |         3.91 pp |  PASS  |
+| CIFAR-10          | EMA                   | 86.62% |     83.84% | **82.71%** |         2.78 pp |  PASS  |
+| CIFAR-10          | Hybrid                | 86.30% |     83.28% |     82.24% |         3.02 pp |  PASS  |
+| CIFAR-10          | Momentum Only         | 86.39% |     83.32% |     82.32% |         3.07 pp |  PASS  |
+| CIFAR-10          | Kalman Only           | 86.28% |     83.46% |     82.51% |         2.82 pp |  PASS  |
 
-**Every dataset and every method (20/20 combinations) passes both gates**:
-
-- Minimum Train/Test accuracy across all memory runs is **82.24%** (CIFAR-10 Hybrid test) — comfortably above 80%.
-- Maximum `|Train - Val|` generalization gap across all runs is **3.91 pp** (Direct) and **3.07 pp** (Memory) — less than half of the 7 pp ceiling.
+All 20 dataset-method combinations satisfy the accuracy and generalization bounds:
+minimum clean test accuracy across memory runs is **82.24%** (CIFAR-10 Hybrid) and
+maximum `|Train - Val|` gap is **3.91 pp** (Direct) / **3.07 pp** (Memory).
 
 ---
 
@@ -82,31 +74,28 @@ Results on seed `0` (`--threads 4`, CPU):
 
 ---
 
-## 4. Key Insights & Observations
+## 4. Observations
 
-1. **Backbone Scaling & Generalization Gap**:
-   - Pairing a compact 3-stage `RgbResNetEncoder` (BatchNorm + residual skips + Global Average Pooling) with `AdamW`, cosine LR decay, and orientation-safe crop/flip augmentation pushed **CIFAR-10** to **86.94%** (Direct) and **82.24–82.71%** (Hopfield) with only a **2.78–3.91 pp** train-val gap.
-2. **Prototype Bottleneck as Regularizer**:
-   - On every dataset, Hopfield retrieval exhibits an equal or **smaller** `|Train - Val|` gap than the Direct CNN (e.g., CIFAR-10: `2.78–3.07 pp` vs. `3.91 pp`; KMNIST: `0.28–0.40 pp` vs. `0.46 pp`), because routing embeddings through 80 discrete prototypes prevents memorization of training noise.
-3. **Method Comparison Across Regimes**:
-   - **Grayscale & Real-World Street Digits (Fashion-MNIST, SVHN)**: **Hybrid** (`90.99%` Fashion-MNIST) and **Kalman-only** (`95.56%` SVHN) edge out EMA on clean test accuracy and reduce harmed samples (`-311` vs. `-349` on Fashion-MNIST; `-280` vs. `-302` on SVHN). On KMNIST, **Kalman-only** achieves the strongest memory robustness AUC (`0.3539` Gaussian, `0.4192` S&P).
-   - **Natural Objects (CIFAR-10)**: **EMA** (`82.71%`) leads the memory methods slightly over Kalman-only (`82.51%`) and Hybrid (`82.24%`), likely because natural-image representations continue shifting later into training, favoring a constant `alpha = 0.1` tracking rate once Kalman uncertainty `P` decays.
-4. **Effect of Fixed `beta = 5.0` & Accuracy-Guided Admission**:
-   - Because Hopfield behavior was kept strictly unchanged (`beta = 5.0`, `accuracy_guided` writes), soft attention at `beta = 5.0` yields relatively broad retrieval entropy (`3.06–3.30` nats out of `ln(80) = 4.38`), rescuing `+118` to `+248` Direct CNN errors on clean test sets while trailing Direct CNN by `0.4–4.7 pp` overall.
+1. **RGB Backbone Scaling**: Pairing `RgbResNetEncoder` (BatchNorm, residual skips, Global Average Pooling) with `AdamW`, cosine LR decay, and crop/flip augmentation brings CIFAR-10 to **86.94%** (Direct) and **82.24–82.71%** (Hopfield) with a **2.78–3.91 pp** train-validation gap.
+2. **Prototype Bottleneck Regularization**: Across all four datasets, Hopfield retrieval exhibits an equal or smaller `|Train - Val|` gap than Direct CNN (e.g., CIFAR-10: `2.78–3.07 pp` vs. `3.91 pp`; KMNIST: `0.28–0.40 pp` vs. `0.46 pp`), trading `0.4–4.7 pp` in clean test accuracy for reduced overfitting.
+3. **Update Rule Tradeoffs**:
+   - **Fashion-MNIST & SVHN**: **Hybrid** (`90.99%` Fashion-MNIST) and **Kalman-only** (`95.56%` SVHN) lead EMA slightly on clean test accuracy and reduce harmed predictions (`-311` vs. `-349` on Fashion-MNIST; `-280` vs. `-302` on SVHN). On KMNIST, **Kalman-only** records the highest memory corruption AUC (`0.3539` Gaussian, `0.4192` S&P).
+   - **CIFAR-10**: **EMA** (`82.71%`) leads Kalman-only (`82.51%`) and Hybrid (`82.24%`), likely because natural-image embeddings keep shifting late in training, favoring a fixed `alpha = 0.1` tracking rate once Kalman uncertainty `P` decays.
+4. **Attention Entropy at `beta = 5.0`**: Soft attention across 80 prototypes produces retrieval entropy of `3.06–3.30` nats (out of `ln(80) = 4.38`), correcting `+118` to `+248` Direct CNN test errors per dataset while trailing Direct CNN overall.
 
 ---
 
 ## 5. Reproduction
 
 ```bash
-# Full multi-dataset run across all 4 datasets (consolidated JSON + summary)
+# Single-seed benchmark across all four datasets
 .venv/bin/python "experiment-id 2/multi_dataset_experiment.py" \
   --datasets fashion_mnist kmnist svhn cifar10 \
   --seeds 0 \
   --threads 4 \
   --output "experiment-id 2/results/multi_dataset.json"
 
-# Multi-seed run (e.g., seeds 0, 1, 2)
+# Multi-seed run (seeds 0, 1, 2)
 .venv/bin/python "experiment-id 2/multi_dataset_experiment.py" --seeds 0 1 2 --threads 4
 ```
 

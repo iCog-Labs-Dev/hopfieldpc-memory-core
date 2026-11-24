@@ -1,4 +1,4 @@
-"""Offline unit tests for the Milestone 2A shared-backbone engine."""
+"""Offline unit tests for the shared-backbone training and evaluation engine."""
 from __future__ import annotations
 
 import sys
@@ -85,7 +85,7 @@ def test_paired_comparison_counts_helped_and_harmed() -> None:
 
 @pytest.mark.parametrize("dataset_name", ("fashion_mnist", "cifar10"))
 def test_train_and_evaluate_seed_produces_distinct_memory_train_evals(dataset_name: str) -> None:
-    """Verify full engine run on learnable synthetic data with true memory train evals."""
+    """Verify full engine run and populated memory banks on synthetic data."""
     spec = get_dataset_spec(dataset_name)
     train_x, train_y, test_x, test_y = synthetic_block_dataset(
         n_train=160,

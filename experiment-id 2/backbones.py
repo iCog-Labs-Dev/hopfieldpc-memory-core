@@ -1,6 +1,6 @@
-"""Dataset-adaptive CNN backbones keeping Hopfield at the pre-last layer.
+"""Dataset-adaptive CNN backbones placing Hopfield retrieval at the pre-last layer.
 
-All architectures preserve the exact Experiment 1/2 interface:
+All encoders produce embeddings compatible with the pre-last-layer bridge interface:
     images [B, C, H, W] -> encoder -> z [B, embed_dim]
     -> bridge (Identity for direct CNN, Hopfield retrieval for memory methods)
     -> ClassifierHead(embed_dim, num_classes) -> logits [B, num_classes]
@@ -25,11 +25,7 @@ from benchmarks.mnist_baseline import ClassifierHead
 
 
 class GrayscaleCnnEncoder(nn.Module):
-    """Regularized 2-stage double-conv encoder for 28x28 grayscale datasets.
-
-    Uses BatchNorm2d and spatial/dense dropout so Fashion-MNIST and KMNIST
-    surpass 80% test accuracy with a tight train-validation generalization gap.
-    """
+    """Two-stage double-conv encoder with BatchNorm and dropout for 28x28 grayscale inputs."""
 
     def __init__(
         self,
@@ -135,11 +131,10 @@ class ResidualBlock(nn.Module):
 
 
 class RgbResNetEncoder(nn.Module):
-    """Compact 3-stage residual CNN with Global Average Pooling for 32x32 RGB.
+    """Compact 3-stage residual CNN with Global Average Pooling for 32x32 RGB inputs.
 
-    Designed for CIFAR-10 and SVHN: residual BatchNorm blocks capture rich
-    natural-image features while Global Average Pooling avoids large dense layers
-    that cause train-validation overfitting gaps.
+    Residual BatchNorm blocks capture multi-scale features across CIFAR-10 and
+    SVHN while Global Average Pooling limits dense-layer parameter count.
     """
 
     def __init__(

@@ -1,10 +1,8 @@
 """Shared-backbone training and evaluation engine for multi-dataset Experiment 2.
 
-Keeps Hopfield behavior identical to Experiment 1/2 (centered cosine retrieval
-via ``HybridOnlineBank.retrieve`` at the pre-last layer, detached from CNN
-gradients, with accuracy-guided online admission) while allowing one shared CNN
-forward/backward pass per seed so Direct CNN and all prototype update rules
-(EMA, Momentum-only, Kalman-only, Hybrid) are compared on identical embeddings.
+Trains one CNN encoder and linear classifier per seed while updating all
+Hopfield prototype memory banks (EMA, Momentum-only, Kalman-only, Hybrid) in
+lockstep on detached pre-last-layer embeddings.
 """
 from __future__ import annotations
 
@@ -197,7 +195,7 @@ def build_banks(
     cfg: dict[str, Any],
     device: torch.device,
 ) -> dict[str, HybridOnlineBank]:
-    """Instantiate one untouched HybridOnlineBank per prototype update method."""
+    """Instantiate one HybridOnlineBank per prototype update method."""
     update_cfg = cfg["update"]
     banks: dict[str, HybridOnlineBank] = {}
     for method in cfg["methods"]:
@@ -268,7 +266,7 @@ def evaluate_constraints(
     min_accuracy: float = 0.80,
     max_gap: float = 0.07,
 ) -> dict[str, Any]:
-    """Check >=80% train/test accuracy and <=7% |train - val| generalization gap."""
+    """Verify minimum accuracy and train-validation generalization gap bounds."""
     gap = abs(train_acc - val_acc)
     min_ok = train_acc >= min_accuracy and test_acc >= min_accuracy
     gap_ok = gap <= max_gap
@@ -412,7 +410,7 @@ def train_and_evaluate_seed(
         epoch=epochs,
     )
 
-    # Encode clean splits once, then evaluate Direct CNN and every memory method identically.
+    # Encode clean splits once and evaluate all methods on the same embeddings.
     z_train = encode(net.encoder, split.train_images, batch_size=cfg["eval_batch_size"], device=device)
     z_val = encode(net.encoder, split.val_images, batch_size=cfg["eval_batch_size"], device=device)
     z_test = encode(net.encoder, split.test_images, batch_size=cfg["eval_batch_size"], device=device)

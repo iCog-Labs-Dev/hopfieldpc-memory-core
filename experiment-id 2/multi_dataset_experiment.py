@@ -1,9 +1,8 @@
-"""Milestone 2B: Multi-dataset Experiment 2 CLI runner and summary reporter.
+"""Multi-dataset Experiment 2 runner and summary reporter.
 
-Evaluates Direct CNN (baseline) alongside EMA, Momentum-only, Kalman-only,
-and Hybrid Kalman-Momentum Hopfield memory across multiple image datasets
-(Fashion-MNIST, KMNIST, SVHN, CIFAR-10) while keeping Hopfield retrieval
-untouched at the pre-last layer.
+Evaluates Direct CNN alongside EMA, Momentum-only, Kalman-only, and Hybrid
+Kalman-Momentum Hopfield memory across Fashion-MNIST, KMNIST, SVHN, and
+CIFAR-10 at the pre-last layer.
 """
 from __future__ import annotations
 
@@ -46,7 +45,7 @@ def build_dataset_config(
     epochs_override: int | None = None,
     rgb_channels: tuple[int, int, int] = (32, 64, 128),
 ) -> dict[str, Any]:
-    """Build validated Experiment 2 training and evaluation config for a dataset."""
+    """Build training and evaluation configuration for a dataset."""
     epochs = epochs_override if epochs_override is not None else (3 if quick else spec.recommended_epochs)
     if epochs < 2:
         raise ValueError(f"epochs must be >= 2 so warmup precedes active memory, got {epochs}.")
@@ -109,7 +108,7 @@ def aggregate_dataset_summary(
     seed_runs: list[dict[str, Any]],
     cfg: dict[str, Any],
 ) -> dict[str, Any]:
-    """Compute cross-seed means, SDs, robustness AUCs, and constraint verdicts."""
+    """Aggregate cross-seed metrics, robustness AUCs, and threshold checks."""
     if not seed_runs:
         raise ValueError("seed_runs must not be empty.")
 
@@ -187,19 +186,19 @@ def _method_label(key: str) -> str:
 
 
 def write_multi_dataset_report(path: Path, payload: dict[str, Any]) -> None:
-    """Write a comprehensive Markdown summary with Train/Val/Test and constraint gates."""
+    """Write a Markdown summary with Train/Val/Test accuracy and robustness AUCs."""
     lines = [
         "# Experiment 2: Multi-Dataset Prototype Learning Summary",
         "",
         (
             f"Seeds: {', '.join(str(s) for s in payload['seeds'])} | "
             f"Device: `{payload['environment']['device']}` | "
-            "Constraint Gate: `Train >= 80%`, `Test >= 80%`, `|Train - Val| <= 7%`"
+            "Thresholds: `Train >= 80%`, `Test >= 80%`, `|Train - Val| <= 7%`"
         ),
         "",
-        "## 1. Accuracy & Generalization Gate Across Datasets",
+        "## 1. Clean Accuracy & Generalization",
         "",
-        "| Dataset | Method | Train | Validation | Test | |Train - Val| | Gate (>=80% & <=7%) |",
+        "| Dataset | Method | Train | Validation | Test | |Train - Val| | Status |",
         "|---|---|---:|---:|---:|---:|:---:|",
     ]
 

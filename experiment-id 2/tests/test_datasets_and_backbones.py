@@ -1,4 +1,4 @@
-"""Offline tests for Milestone 1: multi-dataset loaders, augmentation, and backbones."""
+"""Offline unit tests for multi-dataset loaders, augmentation, and backbones."""
 from __future__ import annotations
 
 import sys
@@ -160,7 +160,7 @@ def test_backbones_plug_into_pre_last_layer_hopfield(dataset_name: str) -> None:
     assert torch.equal(z, h)
     assert aux == {}
 
-    # Verify compatibility with untouched HybridOnlineBank at the pre-last layer.
+    # Verify retrieval compatibility with HybridOnlineBank at the pre-last layer.
     bank = HybridOnlineBank(64, spec.num_classes, 8, method="hybrid")
     bank.initialize_center(torch.zeros(64))
     for c in range(spec.num_classes):

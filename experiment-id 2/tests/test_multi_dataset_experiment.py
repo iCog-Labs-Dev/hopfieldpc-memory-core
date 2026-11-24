@@ -1,4 +1,4 @@
-"""Offline end-to-end tests for Milestone 2B multi-dataset runner and reporting."""
+"""Offline end-to-end tests for the multi-dataset runner and reporting."""
 from __future__ import annotations
 
 import json
