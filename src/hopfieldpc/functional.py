@@ -16,6 +16,7 @@ be tested directly and reused by HopfieldMemory.
 from __future__ import annotations
 
 import math
+from collections.abc import Callable
 from typing import Any, Literal, overload
 
 import torch
@@ -280,11 +281,13 @@ def masked_centered_retrieve(
     beta: float = 5.0,
     num_updates: int = 1,
     normalization_epsilon: float = 1e-8,
+    similarity: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Retrieve raw prototypes using masked softmax over centered cosine scores.
+    """Retrieve raw prototypes using centered cosine or a domain-specific score.
 
-    Implements Equation (4) from Prototype Selection.pdf:
-        w_j = softmax(beta * q_tilde @ M_tilde_j^T * m_j + (-inf) * (1 - m_j))
+    similarity(query, active_values) returns [batch_size, active_count] scores,
+    with larger scores indicating better matches. Each read applies beta and
+    softmax to those scores and mixes the original active values.
     """
 
     validate_query_memory(query, values)
@@ -295,16 +298,11 @@ def masked_centered_retrieve(
     if not active_mask.any():
         raise ValueError("At least one prototype must be active for retrieval.")
 
-    q = query - center
-    m = values - center
-    if not torch.isfinite(q).all() or not torch.isfinite(m[active_mask]).all():
-        raise FloatingPointError(
-            "Nonfinite centered query or active memory."
-        )
-
-    views = torch.zeros_like(m)
-    views[active_mask] = F.normalize(m[active_mask], dim=-1, eps=eps)
-    mask_float = active_mask.to(query.dtype)
+    active_values = values[active_mask]
+    if not torch.isfinite(query).all() or not torch.isfinite(active_values).all():
+        raise FloatingPointError("Nonfinite query or active memory.")
+    if similarity is None:
+        views = F.normalize(active_values - center, dim=-1, eps=eps)
 
     raw = query
     weights = torch.zeros(
@@ -314,11 +312,18 @@ def masked_centered_retrieve(
         device=query.device,
     )
     for _ in range(num_updates):
-        query_view = F.normalize(raw - center, dim=-1, eps=eps)
-        scores = beta * (query_view @ views.T) * mask_float
-        scores = scores.masked_fill(~active_mask.unsqueeze(0), float("-inf"))
-        weights = torch.softmax(scores, dim=-1)
-        raw = weights @ values
+        if similarity is None:
+            scores = F.normalize(raw - center, dim=-1, eps=eps) @ views.T
+        else:
+            scores = similarity(raw, active_values)
+            if not isinstance(scores, torch.Tensor) or not scores.is_floating_point():
+                raise TypeError("similarity must return a floating-point tensor.")
+            if scores.shape != (query.shape[0], active_values.shape[0]):
+                raise ValueError("similarity must return scores of shape [batch_size, active_count].")
+            scores = scores.to(query)
+        active_weights = torch.softmax(beta * scores, dim=-1)
+        raw = active_weights @ active_values
+        weights[:, active_mask] = active_weights
     if not torch.isfinite(raw).all() or not torch.isfinite(weights).all():
         raise FloatingPointError("Nonfinite masked retrieval output.")
     return raw, weights

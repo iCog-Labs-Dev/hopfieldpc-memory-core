@@ -31,6 +31,101 @@ from hopfieldpc import (
 )
 
 
+@pytest.mark.parametrize("score", [0.0, torch.tensor(0.75), 1.0, None])
+@pytest.mark.parametrize("single_observation", [True, False])
+def test_write_gain_uses_current_task_score(score, single_observation) -> None:
+    points = torch.tensor([[-6., 0.], [-4., 1.], [4., 0.], [6., 1.]])
+    cfg = GlobalDynamicConfig.auto(dim=2, initial_memories=2, max_memories=2, beta_write=1.0)
+    bank = GlobalDynamicHopfieldBank(cfg)
+    bank.initialize_from_embeddings(points)
+    batch = points[:1] if single_observation else points[:3]
+    responsibilities, _ = bank.compute_responsibilities(batch)
+    r = responsibilities[0] if single_observation else (
+        responsibilities.square().sum(0) / (responsibilities.sum(0) + cfg.eps_stab)
+    )
+    p = bank.uncertainty.clone()
+    scale = bank.resolve_variance_scale()
+    assert scale > 2
+    rn = scale * cfg.observation_noise if score is None else 1 - float(score) + cfg.eps_stab
+    effective_noise = rn / (r + cfg.eps_stab) ** cfg.gamma_john
+    gain = p / (p + effective_noise + cfg.eps_stab)
+    if single_observation:
+        metrics = bank.step_observation(batch[0], task_score=score)
+    else:
+        metrics = bank.online_update(batch, task_score=score)
+    assert metrics["observation_noise"] == pytest.approx(rn)
+    assert metrics["mean_gain"] == pytest.approx(gain.mean().item())
+    assert metrics["mean_effective_noise"] == pytest.approx(effective_noise.mean().item())
+    expected_p = (1 - gain) * p + r ** cfg.gamma_john * scale * cfg.process_noise
+    torch.testing.assert_close(bank.uncertainty, expected_p.clamp(*bank.resolve_uncertainty_bounds()))
+
+
+@pytest.mark.parametrize("base_noise", [None, 0.17])
+def test_epoch_score_drives_structural_uncertainty_and_split_calibration(base_noise) -> None:
+    points = torch.tensor([[-6., 0.], [-4., 1.], [4., 0.], [6., 1.]])
+    cfg = GlobalDynamicConfig.auto(
+        dim=2, initial_memories=2, max_memories=2, structural_base_noise=base_noise,
+    )
+    bank = GlobalDynamicHopfieldBank(cfg)
+    bank.initialize_from_embeddings(points)
+    bank.online_update(points, task_score=1.0)
+    p = bank.uncertainty.clone()
+    scale = bank.resolve_variance_scale()
+    rn = 1 - 0.25 + cfg.eps_stab
+    r0 = rn / scale if base_noise is None else base_noise
+    metrics = bank.adapt_structure(points, epoch=1, task_score=0.25)
+    expected_p, _, _ = structural_uncertainty_update(
+        p, bank.sharpness, bank.last_dispersion, structural_base_noise=r0,
+        process_noise=cfg.process_noise, variance_scale=scale, lambda_disp=cfg.lambda_disp,
+        lambda_sharp=cfg.lambda_sharp, uncertainty_min=bank.resolve_uncertainty_bounds()[0],
+        uncertainty_max=bank.resolve_uncertainty_bounds()[1], eps=cfg.eps_stab,
+    )
+    torch.testing.assert_close(bank.uncertainty, expected_p)
+    threshold = auto_spawning_uncertainty_threshold(
+        cfg.process_noise, rn / scale, structural_base_noise=r0, variance_scale=scale,
+        lambda_disp=cfg.lambda_disp, tau_coal=cfg.tau_coal,
+    )
+    assert metrics["observation_noise"] == pytest.approx(rn)
+    assert metrics["resolved_thresholds"]["tau_uncert"] == pytest.approx(threshold)
+    assert metrics["resolved_thresholds"]["riccati_p_inf"] == pytest.approx(
+        riccati_steady_state_uncertainty(scale * cfg.process_noise, rn)
+    )
+
+
+@pytest.mark.parametrize("score", [-0.01, 1.01, math.nan, math.inf, torch.tensor([0.5, 0.5])])
+def test_invalid_task_score_rejected_before_updates(score) -> None:
+    bank = GlobalDynamicHopfieldBank(GlobalDynamicConfig(dim=2))
+    points = torch.ones(2, 2)
+    with pytest.raises(ValueError, match="task_score"):
+        bank.online_update(points, task_score=score)
+    with pytest.raises(ValueError, match="task_score"):
+        bank.adapt_structure(points, epoch=1, task_score=score)
+
+
+def test_domain_read_similarity_scores_only_active_slots_on_every_read() -> None:
+    bank = GlobalDynamicHopfieldBank(GlobalDynamicConfig(
+        dim=2, initial_memories=2, max_memories=3, num_updates=2, beta_read=1.5,
+    ))
+    bank.initialize_from_embeddings(torch.tensor([[-2., 1.], [-1., 0.], [3., 2.]]))
+    bank.mask[:] = torch.tensor([True, False, True])
+    bank.values[:] = torch.tensor([[-1., 0.], [80., 80.], [1., 0.]])
+    query = torch.tensor([[0.3, 2.], [-0.2, -1.]])
+    active = bank.values[bank.mask]
+    expected = query
+    for _ in range(2):
+        scores = -(expected[:, None] - active).square().sum(-1)
+        weights = torch.softmax(1.5 * scores, dim=1)
+        expected = weights @ active
+    write_weights, _ = bank.compute_responsibilities(query)
+    result, actual_weights = bank.retrieve(query, similarity=lambda q, m: -torch.cdist(q, m).square())
+    torch.testing.assert_close(result, expected)
+    torch.testing.assert_close(actual_weights[:, bank.mask], weights)
+    assert actual_weights[:, ~bank.mask].count_nonzero() == 0
+    torch.testing.assert_close(bank.compute_responsibilities(query)[0], write_weights)
+    with pytest.raises(ValueError, match="active_count"):
+        bank.retrieve(query, similarity=lambda q, m: q.sum(1))
+
+
 def test_john_factor_limiting_behavior() -> None:
     p = torch.tensor([0.8, 0.8])
     r = torch.tensor([1.0, 0.0])

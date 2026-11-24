@@ -121,7 +121,7 @@ class GlobalDynamicConfig:
     uncertainty_min: float | None = 1e-4
     uncertainty_max: float | None = 10.0
     process_noise: float = 0.01
-    observation_noise: float = 0.05
+    observation_noise: float = 0.05  # Relative fallback when the caller omits task_score.
     tau_sim: float | None = 0.85
     lambda_sim: float | None = 0.05
     tau_coal: float = 0.95
@@ -136,7 +136,7 @@ class GlobalDynamicConfig:
     split_scale: float | None = 0.25
     lambda_disp: float = 2.0
     lambda_sharp: float = 0.5
-    structural_base_noise: float | None = 0.05
+    structural_base_noise: float | None = None  # Defaults to the epoch's R_n / s.
     eps_stab: float = 1e-8
     eps_norm: float = 1e-8
     ablation_mode: str = "dynamic_adaptive"

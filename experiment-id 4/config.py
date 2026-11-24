@@ -38,7 +38,7 @@ INITIAL_UNCERTAINTY: float | None = None
 UNCERTAINTY_MIN: float | None = None
 UNCERTAINTY_MAX: float | None = None
 PROCESS_NOISE: float = 0.01  # Q (relative to P_0)
-OBSERVATION_NOISE: float = 0.05  # R_n (relative to P_0)
+OBSERVATION_NOISE: float = 0.05  # Relative fallback for callers that omit task_score.
 
 # Similarity repulsion & Gram coalescence
 # None tau_sim -> tau_coal - 0.10; None lambda_sim -> 2e-4 * mean(||M - mu||^2)
@@ -61,7 +61,7 @@ PRUNE_PATIENCE: int = 2  # T_prune
 # None tau_uncert -> DARE steady-state P_inf + single-mode dispersion equilibrium from tau_coal
 # None n_kish_min -> min(2*sqrt(D), 0.10 * M / K_active)
 # None split_scale -> places newborn children at cosine similarity ~ tau_sim
-# None structural_base_noise -> couples R_0 = R_n
+# None structural_base_noise -> couples R_0 = R_n / s to the epoch score
 TAU_UNCERT: float | None = None
 N_KISH_MIN: float | None = None
 SPLIT_SCALE: float | None = None

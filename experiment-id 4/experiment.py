@@ -136,12 +136,13 @@ def run_ablation_for_seed(
             loss.backward()
             optimizer.step()
 
-            direct_correct += int((logits.detach().argmax(dim=-1) == lbls).sum().item())
+            batch_correct = int((logits.detach().argmax(dim=-1) == lbls).sum().item())
+            direct_correct += batch_correct
             seen += len(lbls)
 
             # Sec. 7.4 Gradient Isolation: Phase 1 memory updates use sg[f_theta(x)].
             if bank.ready:
-                up = bank.online_update(z.detach())
+                up = bank.online_update(z.detach(), task_score=batch_correct / len(lbls))
                 sim_losses.append(up["sim_loss"])
                 gains.append(up["mean_gain"])
 
@@ -173,6 +174,7 @@ def run_ablation_for_seed(
             adaptation = bank.adapt_structure(
                 features,
                 epoch=epoch,
+                task_score=direct_train_acc,
                 allow_spawn=(epoch < cfg.epochs),
             )
 

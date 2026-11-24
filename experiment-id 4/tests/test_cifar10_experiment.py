@@ -140,6 +140,9 @@ def test_cifar10_experiment4_end_to_end_synthetic_smoke(tmp_path: Path) -> None:
     assert fc["direct_test_accuracy"] == da["direct_test_accuracy"]
     assert fc["final_active_prototypes"] == 6
     assert da["final_active_prototypes"] >= cfg.memory.min_active_memories
+    for metrics in (fc, da):
+        last_epoch = metrics["epochs"][-1]
+        assert last_epoch["observation_noise"] == 1 - last_epoch["direct_train_accuracy"] + cfg.memory.eps_stab
 
     # Verify single-variant wrapper matches lockstep run exactly for fixed_capacity.
     single_fc = run_ablation_for_seed(cfg, seed=0, ablation_mode="fixed_capacity", data=data)

@@ -115,7 +115,8 @@ def run_seed(
             loss.backward()
             optimizer.step()
 
-            direct_correct += int((logits.detach().argmax(dim=-1) == lbls).sum().item())
+            batch_correct = int((logits.detach().argmax(dim=-1) == lbls).sum().item())
+            direct_correct += batch_correct
             seen += len(lbls)
 
             # Sec. 7.4 Gradient Isolation: Phase 1 memory updates use sg[f_theta(x)]
@@ -130,7 +131,7 @@ def run_seed(
                     z_sg = z.detach()
                 for mode, bank in banks.items():
                     if bank.ready:
-                        up = bank.online_update(z_sg)
+                        up = bank.online_update(z_sg, task_score=batch_correct / len(lbls))
                         sim_losses[mode].append(up["sim_loss"])
                         gains[mode].append(up["mean_gain"])
 
@@ -174,6 +175,7 @@ def run_seed(
                 adaptation = bank.adapt_structure(
                     features,
                     epoch=epoch,
+                    task_score=direct_train_acc,
                     allow_spawn=(epoch < cfg.epochs),
                 )
             else:

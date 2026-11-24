@@ -15,6 +15,8 @@ Implements:
 from __future__ import annotations
 
 import math
+from collections.abc import Callable
+from numbers import Real
 from typing import Any
 
 import torch
@@ -54,7 +56,14 @@ from .kalman import (
 
 
 class GlobalDynamicHopfieldBank(nn.Module):
-    """Class-agnostic global soft-responsibility dynamic Hopfield memory bank."""
+    """Class-agnostic global soft-responsibility dynamic Hopfield memory bank.
+
+    Supply the quality of the system's direct prediction as a scalar in [0, 1],
+    with 1 meaning highest quality. The caller chooses the metric. For example,
+    a regression model with a positive reference error can write a batch using
+    `bank.online_update(z, task_score=1 / (1 + batch_rmse / reference_error))`.
+    Use the RMSE over the whole epoch to compute the score for `adapt_structure`.
+    """
 
     def __init__(
         self,
@@ -151,16 +160,28 @@ class GlobalDynamicHopfieldBank(nn.Module):
         p_max = 10.0 * p0 if self.cfg.uncertainty_max is None else float(self.cfg.uncertainty_max)
         return p_min, p_max
 
-    def resolve_noises(self) -> tuple[float, float, float]:
-        """Resolve (process_noise Q, observation_noise R_n, structural_base_noise R_0) in variance units."""
+    def resolve_noises(self, task_score: float | torch.Tensor | None = None) -> tuple[float, float, float]:
+        """Return (Q, R_n, s*R_0). A supplied score sets absolute R_n = 1 - A_n + eps."""
 
         s = self.resolve_variance_scale()
-        r0_raw = (
-            float(self.cfg.observation_noise)
+        if task_score is None:
+            observation_noise = s * self.cfg.observation_noise
+        else:
+            if isinstance(task_score, torch.Tensor) and task_score.ndim == 0:
+                task_score = task_score.item()
+            if (
+                isinstance(task_score, bool)
+                or not isinstance(task_score, Real)
+                or not 0 <= task_score <= 1
+            ):
+                raise ValueError("task_score must be a finite real scalar in [0, 1].")
+            observation_noise = (1.0 - float(task_score)) + self.cfg.eps_stab
+        structural_noise = (
+            observation_noise
             if self.cfg.structural_base_noise is None
-            else float(self.cfg.structural_base_noise)
+            else s * self.cfg.structural_base_noise
         )
-        return float(self.cfg.process_noise) * s, float(self.cfg.observation_noise) * s, r0_raw * s
+        return s * self.cfg.process_noise, observation_noise, structural_noise
 
     def resolve_alphas(self) -> tuple[float, float]:
         """Resolve (alpha_n, alpha_s), coupling to 1 - 1 / prune_patience when None."""
@@ -193,12 +214,11 @@ class GlobalDynamicHopfieldBank(nn.Module):
             return float(self.cfg.tau_sim)
         return max(0.0, float(self.cfg.tau_coal) - 0.10)
 
-    def resolve_structural_base_noise(self) -> float:
-        """Resolve unscaled R_0 (couples to observation_noise R_n when None)."""
+    def resolve_structural_base_noise(self, task_score: float | torch.Tensor | None = None) -> float:
+        """Return relative R_0, defaulting to R_n / s for the supplied epoch score."""
 
-        if self.cfg.structural_base_noise is not None:
-            return float(self.cfg.structural_base_noise)
-        return float(self.cfg.observation_noise)
+        _, _, structural_noise = self.resolve_noises(task_score)
+        return structural_noise / self.resolve_variance_scale()
 
     def resolve_support_thresholds(self, num_samples: int) -> tuple[float, float, float]:
         """Resolve (tau_support, tau_eff, n_kish_min), scaling with M / K_active when None."""
@@ -211,18 +231,20 @@ class GlobalDynamicHopfieldBank(nn.Module):
         n_kish = auto_kish if self.cfg.n_kish_min is None else float(self.cfg.n_kish_min)
         return t_sup, t_eff, n_kish
 
-    def resolve_tau_uncert(self) -> float:
+    def resolve_tau_uncert(self, task_score: float | torch.Tensor | None = None) -> float:
         """Resolve spawning threshold tau_uncert from DARE P_inf and tau_coal when None."""
 
         if self.cfg.tau_uncert is not None:
             return float(self.cfg.tau_uncert)
+        s = self.resolve_variance_scale()
+        _, observation_noise, structural_noise = self.resolve_noises(task_score)
         return auto_spawning_uncertainty_threshold(
             self.cfg.process_noise,
-            self.cfg.observation_noise,
-            structural_base_noise=self.resolve_structural_base_noise(),
+            observation_noise / s,
+            structural_base_noise=structural_noise / s,
             lambda_disp=self.cfg.lambda_disp,
             tau_coal=self.cfg.tau_coal,
-            variance_scale=self.resolve_variance_scale(),
+            variance_scale=s,
         )
 
     def _reset_slot_state(self, slot: int) -> None:
@@ -320,8 +342,14 @@ class GlobalDynamicHopfieldBank(nn.Module):
     def retrieve(
         self,
         query: torch.Tensor,
+        *,
+        similarity: Callable[[torch.Tensor, torch.Tensor], torch.Tensor] | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        """Masked centered-cosine Hopfield retrieval using beta_read (Sec. 5.1)."""
+        """Read with centered cosine or a domain-specific pairwise similarity.
+
+        The callable receives raw queries and active prototypes and returns one
+        score per pair. Write responsibilities always use centered cosine.
+        """
 
         if not self.ready:
             raise ValueError("Memory bank is not initialized and ready.")
@@ -333,6 +361,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
             self.center,
             self.mask,
             beta=beta_read,
+            similarity=similarity,
             num_updates=self.cfg.num_updates,
             normalization_epsilon=self.cfg.eps_norm,
         )
@@ -362,6 +391,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
         self,
         embedding: torch.Tensor,
         *,
+        task_score: float | torch.Tensor | None = None,
         apply_similarity_penalty: bool = True,
     ) -> dict[str, Any]:
         """Exact single-observation Phase 1 update (Sections 5.2–5.7)."""
@@ -370,6 +400,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
             raise ValueError(f"embedding must have shape [{self.dim}].")
         return self.online_update(
             embedding.unsqueeze(0),
+            task_score=task_score,
             force_sequential=True,
             apply_similarity_penalty=apply_similarity_penalty,
         )
@@ -379,11 +410,17 @@ class GlobalDynamicHopfieldBank(nn.Module):
         self,
         embeddings: torch.Tensor,
         *,
+        task_score: float | torch.Tensor | None = None,
         force_sequential: bool = False,
         apply_similarity_penalty: bool = True,
     ) -> dict[str, Any]:
-        """Phase 1: Intra-epoch global responsibility-weighted memory updates."""
+        """Write a batch using its direct pre-retrieval task score in [0, 1].
 
+        Higher scores give lower observation noise. The score is shared across
+        the batch. Omitting it uses the configured relative observation noise.
+        """
+
+        eff_q, eff_rn, _ = self.resolve_noises(task_score)
         if not self.ready:
             return {"updated": False, "sim_loss": 0.0, "mean_gain": 0.0, "mean_uncertainty": 0.0}
 
@@ -396,7 +433,6 @@ class GlobalDynamicHopfieldBank(nn.Module):
         use_seq = force_sequential or self.online_update_mode == "sequential" or z.shape[0] == 1
         gains_accum = []
         r_eff_accum = []
-        eff_q, eff_rn, _ = self.resolve_noises()
         eff_p_min, eff_p_max = self.resolve_uncertainty_bounds()
 
         if use_seq:
@@ -495,6 +531,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
         self.version += 1
         return {
             "updated": True,
+            "observation_noise": eff_rn,
             "sim_loss": sim_loss,
             "mean_gain": float(torch.stack(gains_accum).mean().item()) if gains_accum else 0.0,
             "mean_effective_noise": float(torch.stack(r_eff_accum).mean().item()) if r_eff_accum else 0.0,
@@ -566,10 +603,16 @@ class GlobalDynamicHopfieldBank(nn.Module):
         features: torch.Tensor,
         *,
         epoch: int,
+        task_score: float | torch.Tensor | None = None,
         allow_spawn: bool = True,
     ) -> dict[str, Any]:
-        """Phase 2: Exact 10-step epoch-end structural adaptation (Sec. 6 & 7.3)."""
+        """Adapt using the caller's score over the epoch's training observations.
 
+        For a mean per-observation metric, weight batch means by batch size.
+        Omitting the score uses the configured relative observation noise.
+        """
+
+        eff_q, eff_rn, structural_noise = self.resolve_noises(task_score)
         if not self.ready:
             return {
                 "active_total": self.active_count,
@@ -617,16 +660,14 @@ class GlobalDynamicHopfieldBank(nn.Module):
         self.sharpness.copy_(torch.where(active, sharp, torch.zeros_like(sharp)))
 
         # Step 4: Structural dispersion and uncertainty update (skipped for fixed_capacity).
-        eff_r0_unscaled = self.resolve_structural_base_noise()
         eff_p_min, eff_p_max = self.resolve_uncertainty_bounds()
         eff_var_scale = self.resolve_variance_scale()
-        eff_q, eff_rn, _ = self.resolve_noises()
         if not self._is_fixed and active.any():
             updated_p, _, _ = structural_uncertainty_update(
                 self.uncertainty[active],
                 self.sharpness[active],
                 self.last_dispersion[active],
-                structural_base_noise=eff_r0_unscaled,
+                structural_base_noise=structural_noise / eff_var_scale,
                 lambda_disp=self.cfg.lambda_disp,
                 lambda_sharp=self.cfg.lambda_sharp,
                 process_noise=self.cfg.process_noise,
@@ -793,7 +834,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
             self.sharpness.copy_(torch.where(self.mask, sharp, torch.zeros_like(sharp)))
 
         # Step 9 & 10: Responsibility-weighted spectral fission (Sec. 6.5).
-        eff_tau_uncert = self.resolve_tau_uncert()
+        eff_tau_uncert = self.resolve_tau_uncert(task_score)
         _, _, eff_n_kish_min = self.resolve_support_thresholds(features.shape[0])
         eff_tau_sim = self.resolve_tau_sim()
 
@@ -890,6 +931,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
         return {
             "epoch": epoch,
             "active_total": self.active_count,
+            "observation_noise": eff_rn,
             "buffer_utilization": self.active_count / self.max_memories,
             "pruned": pruned_count,
             "pruned_low_mass": pruned_low_mass,

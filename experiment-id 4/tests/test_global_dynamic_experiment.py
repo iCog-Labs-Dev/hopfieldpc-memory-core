@@ -71,6 +71,8 @@ def test_experiment4_end_to_end_synthetic_smoke(tmp_path: Path) -> None:
     for mode, metrics in seed_res["ablations"].items():
         assert 0.0 <= metrics["test_accuracy"] <= 1.0
         assert metrics["final_active_prototypes"] >= cfg.memory.min_active_memories
+        last_epoch = metrics["epochs"][-1]
+        assert last_epoch["observation_noise"] == 1 - last_epoch["direct_train_accuracy"] + cfg.memory.eps_stab
 
     report_path = tmp_path / "exp4_smoke_summary.md"
     write_summary_report(report_path, {"config": cfg.to_dict(), "seeds": [seed_res]})
