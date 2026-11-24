@@ -21,6 +21,7 @@ from hopfieldpc import (
     john_sharpness_index,
     kish_effective_sample_size,
     masked_global_responsibilities,
+    masked_gram_matrix,
     online_similarity_penalty_step,
     responsibility_kalman_gain,
     responsibility_kalman_momentum_step,
@@ -482,6 +483,73 @@ def test_large_offset_covariance_precision() -> None:
     st = bank.adapt_structure(pts, epoch=2, allow_spawn=True)
     assert st["spawned"] == 1
     assert st["spawn_events"][0]["lambda1"] == pytest.approx(0.00205, rel=0.1)
+
+
+@pytest.mark.parametrize("threshold,expected_splits", [(100.0, 0), (1e-10, 2)])
+def test_dense_covariance_only_for_eligible_parents(monkeypatch, threshold, expected_splits):
+    points = torch.randn(19, 3, generator=torch.Generator().manual_seed(9))
+    cfg = GlobalDynamicConfig(
+        dim=3, max_memories=7, initial_memories=2, stat_chunk_size=4,
+        tau_uncert=threshold, n_kish_min=0, tau_support=0, tau_eff=0,
+    )
+    bank = GlobalDynamicHopfieldBank(cfg)
+    bank.initialize_from_embeddings(points)
+    # Non-contiguous slots. The first split will reuse a lower-numbered slot.
+    for source, target in ((0, 2), (1, 5)):
+        bank._activate_slot(target, bank.values[source])
+        bank._reset_slot_state(source)
+    responsibilities, _ = bank.compute_responsibilities(points)
+    expected = {}
+    for column, slot in enumerate((2, 5)):
+        weights = responsibilities[:, slot].double()
+        weights /= weights.sum()
+        mean = weights @ points.double()
+        centered = points.double() - mean
+        expected[column] = (centered.T @ (weights[:, None] * centered)).float()
+
+    original = bank._dense_split_covariance
+    evaluated = []
+    def check_covariance(features, values, column, mean, mass):
+        covariance = original(features, values, column, mean, mass)
+        torch.testing.assert_close(covariance, expected[column])
+        evaluated.append(column)
+        return covariance
+    monkeypatch.setattr(bank, "_dense_split_covariance", check_covariance)
+    stats = bank.adapt_structure(points, epoch=1, task_score=0.7)
+    assert stats["spawned"] == expected_splits
+    assert sorted(evaluated) == list(range(expected_splits))
+
+
+def test_sparse_slot_scores_and_overlap_match_dense_equations():
+    rng = torch.Generator().manual_seed(8)
+    values = torch.randn(17, 6, generator=rng, dtype=torch.double)
+    query = torch.randn(7, 6, generator=rng, dtype=torch.double)
+    center = values.mean(0)
+    mask = torch.zeros(17, dtype=torch.bool)
+    mask[[2, 7, 13]] = True
+    keys = torch.nn.functional.normalize(values - center) * mask[:, None]
+    scores = torch.nn.functional.normalize(query - center) @ keys.T
+    weights = (3 * scores).masked_fill(~mask, -torch.inf).softmax(1)
+    actual_weights, actual_scores = masked_global_responsibilities(
+        query, values, center, mask, beta_write=3,
+    )
+    torch.testing.assert_close(actual_scores, scores)
+    torch.testing.assert_close(actual_weights, weights)
+    actual_keys, gram = masked_gram_matrix(values, center, mask)
+    torch.testing.assert_close(actual_keys, keys)
+    torch.testing.assert_close(gram, keys @ keys.T)
+
+    prototypes = values.clone().requires_grad_()
+    keys = torch.nn.functional.normalize(prototypes - center) * mask[:, None]
+    pairs = mask[:, None] & mask[None, :] & ~torch.eye(len(mask), dtype=torch.bool)
+    loss = 0.5 * ((keys @ keys.T + 0.4).relu() * pairs).square().sum()
+    gradient, = torch.autograd.grad(loss, prototypes)
+    scale = 0.03 * (values[mask] - center).square().sum(1).mean()
+    updated, actual_loss = online_similarity_penalty_step(
+        values, center, mask, tau_sim=-0.4, lambda_sim=0.03, scale_by_norm=True,
+    )
+    assert actual_loss == pytest.approx(loss.item())
+    torch.testing.assert_close(updated, values - scale * gradient)
 
 
 def test_analytical_auto_calibration_formulas_and_auto_bank() -> None:

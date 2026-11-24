@@ -376,6 +376,25 @@ def centered_cosine_similarity(
 
 
 @torch.no_grad()
+def _active_write_responsibilities(
+    query: torch.Tensor,
+    active_values: torch.Tensor,
+    center: torch.Tensor,
+    beta_write: float,
+    normalization_epsilon: float,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    q = query - center
+    m = active_values - center
+    if not torch.isfinite(q).all() or not torch.isfinite(m).all():
+        raise FloatingPointError("Nonfinite centered query or active memory.")
+    queries = F.normalize(q, dim=-1, eps=normalization_epsilon)
+    keys = F.normalize(m, dim=-1, eps=normalization_epsilon)
+    similarities = queries @ keys.T
+    logits = beta_write * similarities
+    return torch.softmax(logits - logits.amax(dim=-1, keepdim=True), dim=-1), similarities
+
+
+@torch.no_grad()
 def masked_global_responsibilities(
     query: torch.Tensor,
     values: torch.Tensor,
@@ -395,22 +414,11 @@ def masked_global_responsibilities(
     if not active_mask.any():
         raise ValueError("At least one prototype must be active.")
 
-    q_centered = query - center
-    m_centered = values - center
-    if not torch.isfinite(q_centered).all() or not torch.isfinite(m_centered[active_mask]).all():
-        raise FloatingPointError("Nonfinite centered query or active memory.")
-
-    q_norm = F.normalize(q_centered, dim=-1, eps=eps)
-    m_norm = torch.zeros_like(m_centered)
-    m_norm[active_mask] = F.normalize(m_centered[active_mask], dim=-1, eps=eps)
-    similarities = q_norm @ m_norm.T
-
-    logits = beta * similarities
-    logits = logits.masked_fill(~active_mask.unsqueeze(0), float("-inf"))
-    # Subtract max active logit explicitly for numerical stability (Sec. 7.1).
-    logits = logits - logits.amax(dim=-1, keepdim=True)
-    responsibilities = torch.softmax(logits, dim=-1)
-    responsibilities = responsibilities * active_mask.to(responsibilities.dtype).unsqueeze(0)
+    weights, scores = _active_write_responsibilities(query, values[active_mask], center, beta, eps)
+    similarities = scores.new_zeros((query.shape[0], len(values)))
+    responsibilities = torch.zeros_like(similarities)
+    similarities[:, active_mask] = scores
+    responsibilities[:, active_mask] = weights
     return responsibilities, similarities
 
 
@@ -431,11 +439,12 @@ def masked_gram_matrix(
         raise ValueError("mask must have shape [N].")
     active = mask.bool()
     keys = torch.zeros_like(values)
-    if active.any():
-        keys[active] = F.normalize(values[active] - center, dim=-1, eps=eps)
-    gram = keys @ keys.T
-    active_pair = active.unsqueeze(1) & active.unsqueeze(0)
-    gram = gram * active_pair.to(gram.dtype)
+    slots = active.nonzero().flatten()
+    active_keys = F.normalize(values[slots] - center, dim=-1, eps=eps)
+    keys[slots] = active_keys
+    active_gram = active_keys @ active_keys.T
+    gram = active_gram.new_zeros((len(values), len(values)))
+    gram[slots[:, None], slots] = active_gram
     return keys, gram
 
 
@@ -453,37 +462,45 @@ def online_similarity_penalty_step(
     """Apply Section 5.7 masked online similarity repulsion to detached prototype values."""
 
     eps = validate_normalization_epsilon(normalization_epsilon)
+    active = mask.bool()
+    updated = values.detach().clone()
+    active_updated, loss = _active_similarity_penalty_step(
+        values[active], center, tau_sim, lambda_sim, eps, scale_by_norm,
+    )
+    updated[active] = active_updated
+    return updated, loss
+
+
+@torch.no_grad()
+def _active_similarity_penalty_step(
+    active_values: torch.Tensor,
+    center: torch.Tensor,
+    tau_sim: float,
+    lambda_sim: float,
+    eps: float,
+    scale_by_norm: bool,
+) -> tuple[torch.Tensor, float]:
     if lambda_sim < 0.0 or not math.isfinite(lambda_sim):
         raise ValueError("lambda_sim must be finite and nonnegative.")
-    active = mask.bool()
-    if lambda_sim == 0.0 or int(active.sum().item()) < 2:
-        return values.clone(), 0.0
-
+    if lambda_sim == 0.0 or len(active_values) < 2:
+        return active_values, 0.0
     eff_lambda = float(lambda_sim)
     if scale_by_norm:
         mean_sq_norm = float(
-            (values[active].detach() - center.detach()).pow(2).sum(dim=-1).mean().item()
+            (active_values - center).pow(2).sum(dim=-1).mean().item()
         )
         eff_lambda = eff_lambda * max(mean_sq_norm, eps)
 
-    n = values.shape[0]
-    off_diag = (~torch.eye(n, dtype=torch.bool, device=values.device)) & (
-        active.unsqueeze(1) & active.unsqueeze(0)
-    )
     with torch.enable_grad():
-        m_var = values.detach().clone().requires_grad_(True)
-        centered = m_var[active] - center.detach()
-        normed = F.normalize(centered, dim=-1, eps=eps)
-        keys = torch.zeros_like(m_var)
-        keys[active] = normed
+        m_var = active_values.detach().requires_grad_(True)
+        keys = F.normalize(m_var - center.detach(), dim=-1, eps=eps)
         gram = keys @ keys.T
-        excess = torch.relu(gram - tau_sim) * off_diag.to(gram.dtype)
+        diagonal = torch.eye(len(keys), dtype=torch.bool, device=keys.device)
+        excess = torch.relu(gram - tau_sim).masked_fill(diagonal, 0)
         loss = 0.5 * excess.pow(2).sum()
         (grad,) = torch.autograd.grad(loss, m_var)
 
-    updated = values.detach().clone()
-    updated[active] = updated[active] - eff_lambda * grad[active]
-    return updated, float(loss.detach().item())
+    return active_values - eff_lambda * grad, float(loss.detach().item())
 
 
 @torch.no_grad()
@@ -525,14 +542,55 @@ def weighted_spectral_fission(
     eigvals, eigvecs = torch.linalg.eigh(sym_cov)
     # eigh returns ascending eigenvalues; reverse to descending order.
     eigvals_desc = torch.flip(eigvals, dims=[0]).clamp_min(0.0)
-    eigvecs_desc = torch.flip(eigvecs, dims=[1])
+    result = _spectral_children(mean, eigvals_desc, eigvecs[:, -1], split_scale, center, tau_sim, eps)
+    result["covariance"] = sym_cov
+    return result
 
+
+@torch.no_grad()
+def sample_space_fission(
+    embeddings: torch.Tensor,
+    weights_a: torch.Tensor,
+    *,
+    split_scale: float | None = 0.25,
+    center: torch.Tensor | None = None,
+    tau_sim: float = 0.85,
+    eps: float = 1e-8,
+) -> dict[str, Any]:
+    """Compute the same principal split from the sample Gram matrix for wide vectors."""
+    weights = weights_a.to(embeddings).clamp_min(0)
+    mass = weights.sum()
+    if mass.item() <= eps:
+        mean = embeddings.mean(0)
+        eigenvalues = embeddings.new_zeros(1)
+        direction = torch.zeros_like(mean)
+    else:
+        weights = weights / mass
+        mean = weights @ embeddings
+        centered = weights.sqrt().unsqueeze(1) * (embeddings - mean)
+        eigenvalues, vectors = torch.linalg.eigh(centered @ centered.T)
+        eigenvalues = eigenvalues.flip(0).clamp_min(0)
+        # Lift the leading sample-space eigenvector back into feature space.
+        direction = centered.T @ vectors[:, -1]
+        if eigenvalues[0] > 0:
+            direction = direction / eigenvalues[0].sqrt()
+    return _spectral_children(mean, eigenvalues, direction, split_scale, center, tau_sim, eps)
+
+
+def _spectral_children(
+    mean: torch.Tensor,
+    eigvals_desc: torch.Tensor,
+    u1: torch.Tensor,
+    split_scale: float | None,
+    center: torch.Tensor | None,
+    tau_sim: float,
+    eps: float,
+) -> dict[str, Any]:
     lambda1 = float(eigvals_desc[0].item())
     lambda2 = float(eigvals_desc[1].item()) if eigvals_desc.numel() > 1 else 0.0
     trace_cov = float(eigvals_desc.sum().item())
     anisotropy = lambda1 / (trace_cov + eps)
     sigma1 = math.sqrt(max(lambda1, 0.0))
-    u1 = eigvecs_desc[:, 0]
     if split_scale is None:
         centered_ref = mean - center if center is not None else mean
         eff_split_scale = auto_split_scale(
@@ -549,7 +607,6 @@ def weighted_spectral_fission(
 
     return {
         "mean": mean,
-        "covariance": sym_cov,
         "lambda1": lambda1,
         "lambda2": lambda2,
         "trace": trace_cov,

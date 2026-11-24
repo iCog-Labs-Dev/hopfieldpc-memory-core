@@ -34,6 +34,8 @@ from .diagnostics import (
     support_diagnostics_summary,
 )
 from .functional import (
+    _active_similarity_penalty_step,
+    _active_write_responsibilities,
     auto_hopfield_betas,
     auto_smoothing_alpha,
     auto_support_thresholds,
@@ -41,7 +43,7 @@ from .functional import (
     masked_centered_retrieve,
     masked_global_responsibilities,
     masked_gram_matrix,
-    online_similarity_penalty_step,
+    sample_space_fission,
     weighted_spectral_fission,
 )
 from .kalman import (
@@ -432,18 +434,12 @@ class GlobalDynamicHopfieldBank(nn.Module):
         gains_accum = []
         r_eff_accum = []
         eff_p_min, eff_p_max = self.resolve_uncertainty_bounds()
+        _, beta_write = self.resolve_betas(active_override=len(m_act))
 
         if use_seq:
-            full_active_mask = torch.ones(m_act.shape[0], dtype=torch.bool, device=m_act.device)
-            _, beta_write_seq = self.resolve_betas(active_override=m_act.shape[0])
             for i in range(z.shape[0]):
-                ri_2d, _ = masked_global_responsibilities(
-                    z[i : i + 1],
-                    m_act,
-                    self.center,
-                    full_active_mask,
-                    beta_write=beta_write_seq,
-                    normalization_epsilon=self.cfg.eps_norm,
+                ri_2d, _ = _active_write_responsibilities(
+                    z[i : i + 1], m_act, self.center, beta_write, self.cfg.eps_norm,
                 )
                 ri = ri_2d[0]
                 zi = z[i].unsqueeze(0).expand_as(m_act)
@@ -472,8 +468,9 @@ class GlobalDynamicHopfieldBank(nn.Module):
                     ).mean()
                 )
         else:
-            r_mat, _ = self.compute_responsibilities(z)
-            r_act = r_mat[:, active]
+            r_act, _ = _active_write_responsibilities(
+                z, m_act, self.center, beta_write, self.cfg.eps_norm,
+            )
             r_sum = r_act.sum(dim=0)
             s_sum = r_act.pow(2).sum(dim=0)
             r_batch = (s_sum / (r_sum + self.cfg.eps_stab)).clamp(0.0, 1.0)
@@ -508,24 +505,17 @@ class GlobalDynamicHopfieldBank(nn.Module):
                 ).mean()
             )
 
-        self.values[active] = m_act
-        self.velocity[active] = v_act
-        self.uncertainty[active] = p_act
-
         sim_loss = 0.0
         eff_lambda_sim, scale_sim_by_norm = self.resolve_lambda_sim()
         if apply_similarity_penalty and eff_lambda_sim > 0.0:
-            updated_vals, sim_loss = online_similarity_penalty_step(
-                self.values,
-                self.center,
-                self.mask,
-                tau_sim=self.resolve_tau_sim(),
-                lambda_sim=eff_lambda_sim,
-                normalization_epsilon=self.cfg.eps_norm,
-                scale_by_norm=scale_sim_by_norm,
+            m_act, sim_loss = _active_similarity_penalty_step(
+                m_act, self.center, self.resolve_tau_sim(), eff_lambda_sim,
+                self.cfg.eps_norm, scale_sim_by_norm,
             )
-            self.values.copy_(updated_vals)
 
+        self.values[active] = m_act
+        self.velocity[active] = v_act
+        self.uncertainty[active] = p_act
         self.version += 1
         return {
             "updated": True,
@@ -540,48 +530,60 @@ class GlobalDynamicHopfieldBank(nn.Module):
     def _accumulate_epoch_statistics(
         self,
         features: torch.Tensor,
+        *,
+        collect_split_stats: bool,
     ) -> dict[str, torch.Tensor]:
-        """Chunked Sec. 7.2 float64 accumulation of N_j, S_j, moments, and dispersion."""
+        """Collect support and dispersion, retaining the evidence needed for later splits."""
 
         n_slots = self.max_memories
         d = self.dim
         device = self.values.device
         dtype = self.values.dtype
 
+        slots = self.mask.nonzero().flatten()
+        active_values = self.values[slots]
+        _, beta_write = self.resolve_betas(active_override=len(slots))
         n_mass = torch.zeros(n_slots, dtype=torch.float64, device=device)
-        s_mass = torch.zeros(n_slots, dtype=torch.float64, device=device)
-        sum_rz = torch.zeros(n_slots, d, dtype=torch.float64, device=device)
-        sum_rzz = torch.zeros(n_slots, d, d, dtype=torch.float64, device=device)
+        s_mass = torch.zeros_like(n_mass)
+        split_stats = {}
+        if collect_split_stats:
+            split_stats["slots"] = slots
+            if len(features) < d:
+                split_stats["weights"] = n_mass.new_empty((len(features), len(slots)))
+            else:
+                # Preserve the scoring bank: pruning and earlier splits can change it.
+                split_stats["active_values"] = active_values
+                split_stats["sum_rz64"] = n_mass.new_zeros((len(slots), d))
         sum_rd = torch.zeros(n_slots, dtype=torch.float64, device=device)
         sum_rd2 = torch.zeros(n_slots, dtype=torch.float64, device=device)
 
-        active = self.mask
         chunk = self.cfg.stat_chunk_size
         total = features.shape[0]
 
         for start in range(0, total, chunk):
             zb = features[start : start + chunk].detach().to(device=device, dtype=dtype)
-            rb, sim = self.compute_responsibilities(zb)
+            rb, sim = _active_write_responsibilities(
+                zb, active_values, self.center, beta_write, self.cfg.eps_norm,
+            )
             rb64 = rb.to(torch.float64)
-            zb64 = zb.to(torch.float64)
             sim64 = sim.to(torch.float64)
-            n_mass += rb64.sum(dim=0)
-            s_mass += rb64.pow(2).sum(dim=0)
-            sum_rz += rb64.T @ zb64
-            act_idx = active.nonzero().flatten()
-            if act_idx.numel() > 0:
-                rb_act = rb64[:, act_idx]
-                sum_rzz[act_idx] += torch.einsum("bi,bj,bk->ijk", rb_act, zb64, zb64)
+            n_mass[slots] += rb64.sum(dim=0)
+            s_mass[slots] += rb64.pow(2).sum(dim=0)
+            if "weights" in split_stats:
+                split_stats["weights"][start : start + len(zb)] = rb64
+            elif collect_split_stats:
+                zb64 = zb.to(torch.float64)
+                split_stats["sum_rz64"] += rb64.T @ zb64
             dist = (1.0 - sim64).clamp(0.0, 2.0)
-            sum_rd += (rb64 * dist).sum(dim=0)
-            sum_rd2 += (rb64 * dist.pow(2)).sum(dim=0)
+            sum_rd[slots] += (rb64 * dist).sum(dim=0)
+            sum_rd2[slots] += (rb64 * dist.pow(2)).sum(dim=0)
 
         denom = n_mass.clamp_min(self.cfg.eps_stab)
         mu_d = sum_rd / denom
         var_d = (sum_rd2 / denom - mu_d.pow(2)).clamp_min(0.0)
         dispersion = torch.sqrt(var_d + self.cfg.eps_stab).to(dtype)
         dispersion = torch.where(
-            active & (n_mass > self.cfg.eps_stab),
+            self.mask & (n_mass > self.cfg.eps_stab),
             dispersion,
             torch.zeros_like(dispersion),
         )
@@ -590,10 +592,30 @@ class GlobalDynamicHopfieldBank(nn.Module):
             "n_mass": n_mass.to(dtype),
             "s_mass": s_mass.to(dtype),
             "n_mass64": n_mass,
-            "sum_rz64": sum_rz,
-            "sum_rzz64": sum_rzz,
+            **split_stats,
             "dispersion": dispersion,
         }
+
+    @torch.no_grad()
+    def _dense_split_covariance(
+        self,
+        features: torch.Tensor,
+        scoring_values: torch.Tensor,
+        column: int,
+        mean: torch.Tensor,
+        mass: float,
+    ) -> torch.Tensor:
+        """Stream one eligible parent's centered covariance using its original responsibilities."""
+        _, beta_write = self.resolve_betas(active_override=len(scoring_values))
+        covariance = mean.new_zeros((self.dim, self.dim))
+        for batch in features.split(self.cfg.stat_chunk_size):
+            batch = batch.to(self.values)
+            responsibilities, _ = _active_write_responsibilities(
+                batch, scoring_values, self.center, beta_write, self.cfg.eps_norm,
+            )
+            centered = batch.double() - mean
+            covariance.addmm_(centered.T, centered * responsibilities[:, column, None])
+        return covariance.div_(mass).to(self.values)
 
     @torch.no_grad()
     def adapt_structure(
@@ -622,7 +644,8 @@ class GlobalDynamicHopfieldBank(nn.Module):
         self.age_epochs[self.mask] += 1
 
         # Steps 1 & 2: Recompute global responsibilities & accumulate N_j, S_j, moments.
-        stats = self._accumulate_epoch_statistics(features)
+        can_spawn = allow_spawn and not self._is_fixed
+        stats = self._accumulate_epoch_statistics(features, collect_split_stats=can_spawn)
         n_mass = stats["n_mass"]
         s_mass = stats["s_mass"]
         dispersion = stats["dispersion"]
@@ -816,7 +839,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
 
         # Step 8: Refresh responsibility statistics if any merges occurred (Sec. 6.4.4 & 7.3).
         if coalesced_count > 0:
-            stats = self._accumulate_epoch_statistics(features)
+            stats = self._accumulate_epoch_statistics(features, collect_split_stats=can_spawn)
             self.mass_first_order.copy_(stats["n_mass"])
             self.mass_second_order.copy_(stats["s_mass"])
             self.last_dispersion.copy_(stats["dispersion"])
@@ -836,13 +859,11 @@ class GlobalDynamicHopfieldBank(nn.Module):
         _, _, eff_n_kish_min = self.resolve_support_thresholds(features.shape[0])
         eff_tau_sim = self.resolve_tau_sim()
 
-        if not self._is_fixed and allow_spawn:
+        if can_spawn:
             surviving = self.mask.nonzero().flatten().tolist()
             surviving.sort(key=lambda s: float(self.uncertainty[s].item()), reverse=True)
 
             n_mass64 = stats["n_mass64"]
-            sum_rz64 = stats["sum_rz64"]
-            sum_rzz64 = stats["sum_rzz64"]
 
             for slot in surviving:
                 free_slots = (~self.mask).nonzero().flatten()
@@ -856,19 +877,25 @@ class GlobalDynamicHopfieldBank(nn.Module):
                 if n_j64 <= self.cfg.eps_stab:
                     continue
 
-                mean_j64 = sum_rz64[slot] / n_j64
-                cov_j64 = sum_rzz64[slot] / n_j64 - torch.outer(mean_j64, mean_j64)
-                mean_j = mean_j64.to(self.values.dtype)
-                cov_j = cov_j64.to(self.values.dtype)
-
-                fission = weighted_spectral_fission(
+                split_options = dict(
                     split_scale=self.cfg.split_scale,
                     center=self.center,
                     tau_sim=eff_tau_sim,
                     eps=self.cfg.eps_stab,
-                    weighted_mean=mean_j,
-                    cov_matrix=cov_j,
                 )
+                column = int(torch.searchsorted(stats["slots"], slot).item())
+                if "weights" in stats:
+                    fission = sample_space_fission(
+                        features.to(self.values).double(), stats["weights"][:, column], **split_options,
+                    )
+                else:
+                    mean = stats["sum_rz64"][column] / n_j64
+                    cov = self._dense_split_covariance(
+                        features, stats["active_values"], column, mean, n_j64,
+                    )
+                    fission = weighted_spectral_fission(
+                        weighted_mean=mean.to(self.values), cov_matrix=cov, **split_options,
+                    )
 
                 child_a = fission["child_a"]
                 child_b = fission["child_b"]
