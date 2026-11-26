@@ -824,6 +824,7 @@ def get_or_train_baseline(
     device: torch.device,
     *,
     retrain: bool = False,
+    allow_train: bool = True,
 ) -> tuple[MnistNet, float, bool]:
     """Load ``backbone_seed{seed}.pt`` if it matches the config, else train and cache it.
 
@@ -847,7 +848,21 @@ def get_or_train_baseline(
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 torch.save(payload, target_path)
             return net.to(device).eval(), float(payload["train_time_s"]), True
+        if not allow_train:
+            raise ValueError(
+                f"Cached backbone {load_path} has incompatible settings for seed {seed}. "
+                f"Expected fingerprint {fingerprint}, got {payload.get('fingerprint')}. "
+                f"Training is disabled (allow_train=False)."
+            )
         print(f"  seed {seed}: cached backbone {load_path} has different settings; retraining")
+    elif not allow_train:
+        if not load_path.exists():
+            raise FileNotFoundError(
+                f"Checkpoint {load_path} not found for seed {seed} and training is disabled (allow_train=False)."
+            )
+        raise ValueError(
+            f"Retraining requested for seed {seed} but training is disabled (allow_train=False)."
+        )
 
     print(f"  seed {seed}: training baseline on {splits.train_images.shape[0]} clean images")
     train_time_s = train_baseline(
@@ -1579,6 +1594,7 @@ def prepare_baseline_run(
     device: torch.device,
     *,
     retrain: bool = False,
+    allow_train: bool = True,
 ) -> BaselineRun:
     """Split data, train (or load) the frozen baseline, and build prototypes M."""
     splits = make_splits(
@@ -1589,7 +1605,7 @@ def prepare_baseline_run(
         test_subset=cfg["test_subset"],
     )
     net, train_time_s, from_cache = get_or_train_baseline(
-        cfg, splits, seed, device, retrain=retrain
+        cfg, splits, seed, device, retrain=retrain, allow_train=allow_train
     )
     start = time.perf_counter()
     z_train = encode(net.encoder, splits.train_images, batch_size=cfg["eval_batch_size"], device=device)

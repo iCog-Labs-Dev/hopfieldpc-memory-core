@@ -382,3 +382,108 @@ def test_run_full_analysis_rejects_mismatched_configs(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="Fairness violation"):
         run_full_analysis(str(dir_km), str(dir_kc), output_dir=str(tmp_path / "out"))
+
+
+def test_get_or_train_baseline_strict_loading(tmp_path: Path) -> None:
+    from benchmarks.mnist_baseline import (
+        MnistSplits,
+        checkpoint_fingerprint,
+        get_or_train_baseline,
+    )
+
+    splits = MnistSplits(
+        train_images=torch.zeros((10, 1, 28, 28)),
+        train_labels=torch.zeros(10, dtype=torch.long),
+        val_images=torch.zeros((5, 1, 28, 28)),
+        val_labels=torch.zeros(5, dtype=torch.long),
+        test_images={"clean": {0.0: torch.zeros((5, 1, 28, 28))}},
+        test_labels=torch.zeros(5, dtype=torch.long),
+    )
+    cfg = {
+        "reports_dir": str(tmp_path),
+        "backbone_dir": str(tmp_path),
+        "epochs": 1,
+        "batch_size": 32,
+        "lr": 0.001,
+        "val_size": 5,
+    }
+
+    # 1. Missing checkpoint with allow_train=False raises FileNotFoundError
+    with pytest.raises(FileNotFoundError, match="not found for seed 0 and training is disabled"):
+        get_or_train_baseline(cfg, splits, seed=0, device=torch.device("cpu"), allow_train=False)
+
+    # 2. Incompatible checkpoint with allow_train=False raises ValueError
+    ckpt_path = tmp_path / "backbone_seed0.pt"
+    dummy_payload = {
+        "state_dict": {},
+        "fingerprint": {"seed": 0, "lr": 0.05, "epochs": 99},
+        "train_time_s": 1.0,
+    }
+    torch.save(dummy_payload, ckpt_path)
+
+    with pytest.raises(ValueError, match="incompatible settings for seed 0"):
+        get_or_train_baseline(cfg, splits, seed=0, device=torch.device("cpu"), allow_train=False)
+
+    # 3. Retraining requested with allow_train=False raises ValueError
+    with pytest.raises(ValueError, match="Retraining requested for seed 0 but training is disabled"):
+        get_or_train_baseline(cfg, splits, seed=0, device=torch.device("cpu"), retrain=True, allow_train=False)
+
+
+def test_analysis_strictly_forbids_retraining_when_checkpoint_missing(tmp_path: Path) -> None:
+    import json
+    from benchmarks.kcenter_analysis import run_full_analysis
+
+    dir_km = tmp_path / "km"
+    dir_kc = tmp_path / "kc"
+    dir_km.mkdir()
+    dir_kc.mkdir()
+
+    base_res = {
+        "config": {
+            "seeds": [0],
+            "beta_values": [1.0, 10.0],
+            "num_updates_values": [1],
+            "beta_selection_sets": [["clean", 0.0]],
+            "prototypes_per_class": 8,
+            "center_prototypes": True,
+            "eval_batch_size": 100,
+            "gaussian_sigmas": [0.0, 0.5],
+            "salt_pepper_probs": [0.0, 0.1],
+            "occlusion_sizes": [0, 7],
+            "noisy_sigma": 0.5,
+            "placements": ["embedding"],
+            "val_size": 100,
+            "train_subset": 200,
+            "test_subset": 100,
+            "epochs": 1,
+            "batch_size": 32,
+            "lr": 0.001,
+        },
+        "results": {
+            "E1": [{"value": "clean", "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94, "proto_acc": 0.94}]}],
+            "E3a": [
+                {"value": 0.0, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94, "entropy_norm": 0.1, "true_proto_weight": 0.9}]},
+                {"value": 0.5, "baseline": [{"head_acc": 0.85}], "hopfield": [{"head_acc": 0.84, "entropy_norm": 0.2, "true_proto_weight": 0.8}]},
+            ],
+            "E3b": [
+                {"value": 0.0, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94}]},
+                {"value": 0.1, "baseline": [{"head_acc": 0.85}], "hopfield": [{"head_acc": 0.84}]},
+            ],
+            "E3c": [
+                {"value": 0, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94}]},
+                {"value": 7, "baseline": [{"head_acc": 0.85}], "hopfield": [{"head_acc": 0.84}]},
+            ],
+            "E2": [{"value": 1.0, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94}]}],
+            "E4": [{"value": 1, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94}]}],
+            "E5": [{"value": 1.0, "baseline": [{"head_acc": 0.95}], "hopfield": [{"head_acc": 0.94}]}],
+        },
+        "beta_star": 10.0,
+        "cost": {"e8": {}},
+    }
+
+    (dir_km / "results.json").write_text(json.dumps(base_res), encoding="utf-8")
+    (dir_kc / "results.json").write_text(json.dumps(base_res), encoding="utf-8")
+
+    # Missing backbone checkpoint in dir_km must fail with FileNotFoundError rather than silently retraining
+    with pytest.raises(FileNotFoundError, match="not found for seed 0 and training is disabled"):
+        run_full_analysis(str(dir_km), str(dir_kc), output_dir=str(tmp_path / "out"))

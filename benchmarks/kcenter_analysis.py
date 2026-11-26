@@ -7,6 +7,7 @@ paired statistics (exact McNemar and Wilcoxon), and generates publication-grade 
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import json
 import time
@@ -721,20 +722,15 @@ def run_full_analysis(
     sample_mem_kc: torch.Tensor | None = None
     sample_mem_rnd: torch.Tensor | None = None
 
-    tune_path = p_km / "baseline_tuning.json"
-    if tune_path.exists():
-        try:
-            with open(tune_path, encoding="utf-8") as f:
-                tuning_res = json.load(f)
-            if "best" in tuning_res:
-                cfg_km.update(tuning_res["best"])
-                cfg_kc.update(tuning_res["best"])
-        except Exception:
-            pass
+    # Ensure backbone loading strictly targets the exact checkpoint directory from the kmeans run
+    cfg_km_eval = copy.deepcopy(cfg_km)
+    cfg_km_eval["reports_dir"] = str(p_km)
+    cfg_km_eval["backbone_dir"] = str(p_km)
+    cfg_km_eval["data_dir"] = data_dir
 
     print("Computing memory geometry and outlier diagnostics across seeds...")
     for s in seeds:
-        run = prepare_baseline_run(cfg_km, data, s, device)
+        run = prepare_baseline_run(cfg_km_eval, data, s, device, allow_train=False)
         zt = run.z_train
         lt = run.splits.train_labels
 
