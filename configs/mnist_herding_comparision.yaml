@@ -1,0 +1,86 @@
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+data_dir: "data"
+reports_dir: "reports/mnist_herding_comparison"
+device: "auto"  # auto | cpu | cuda
+
+# Training protocol (baseline only; Hopfield reuses frozen weights).
+val_size: 5000
+train_subset: null
+test_subset: null
+
+epochs: 3
+batch_size: 128
+lr: 0.001
+eval_batch_size: 1000
+
+# Baseline grid search.
+baseline_tuning:
+  seeds: [0, 1]
+  lr_values: [0.0005, 0.001, 0.002]
+  batch_size_values: [64, 128]
+  max_epochs: 6
+
+# Hopfield memory.
+# Herding selects 8 actual training examples per class.
+center_prototypes: true
+prototypes_per_class: 8
+
+# Select beta using the same validation sets as K-means.
+beta_selection_sets:
+  - ["clean", 0]
+  - ["gaussian", 0.4]
+  - ["salt_pepper", 0.15]
+
+# E2 / E5.
+beta_values: [0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+s1_beta: 10000.0
+num_updates_values: [1, 2, 3, 5]
+
+# E3 noise grids.
+# These must match the K-means configuration.
+gaussian_sigmas: [0.0, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+salt_pepper_probs: [0.0, 0.05, 0.1, 0.2, 0.3, 0.4]
+occlusion_sizes: [0, 7, 10, 14]
+
+noisy_sigma: 0.5
+
+placements: ["pixel", "embedding"]
+
+# E4 latency, E7, E8.
+cost:
+  batch_size: 256
+  batch_sizes: [1, 32, 256, 1024]
+  warmup: 10
+  iters: 100
+  repeats: 5
+  num_threads: 4
+
+# Quick mode.
+# Same quick settings as K-means, but separate output directory.
+quick:
+  reports_dir: "reports/mnist_herding_comparison_quick"
+  seeds: [0]
+  epochs: 1
+
+  baseline_tuning:
+    seeds: [0]
+    lr_values: [0.001, 0.002]
+    batch_size_values: [128]
+    max_epochs: 2
+
+  val_size: 500
+  train_subset: 2000
+  test_subset: 1000
+
+  beta_values: [1.0, 5.0, 20.0, 100.0]
+  num_updates_values: [1, 3]
+
+  gaussian_sigmas: [0.0, 0.3, 0.5, 1.0]
+  salt_pepper_probs: [0.0, 0.1, 0.3]
+  occlusion_sizes: [0, 7, 14]
+
+  cost:
+    batch_sizes: [1, 32, 256]
+    warmup: 2
+    iters: 5
+    repeats: 2
