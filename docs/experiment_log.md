@@ -1,0 +1,722 @@
+# Experiment log — `experiment/diversity-memory`
+
+Entries are dated and factual. Observations, inferences and open questions are labelled as such.
+Checkpoints, datasets and generated reports are stored outside the repository and are not committed.
+
+---
+
+## 2026-11-03 — G0: environment and baseline reproduction
+
+### Repository state
+
+| Item | Value |
+|---|---|
+| Branch | `experiment/diversity-memory` |
+| Commit | `1f33022` (same as `upstream/experiment-id1`) |
+| Working tree | Clean |
+
+### Environment
+
+| Item | Value |
+|---|---|
+| Platform | Google Colab |
+| GPU | Tesla T4 |
+| Python | 3.13.16 |
+| torch | 2.11.0+cu130 |
+
+### Commands
+
+Config: `configs/mnist_prototype_retrieval.yaml` (unchanged). `<DATA_DIR>` and `<REPORTS_DIR>` are local paths outside the repository.
+
+```bash
+pip install -r requirements.txt
+pytest -q
+
+# Smoke run (1 seed, small data, 1 epoch)
+python -m benchmarks.mnist_prototype_retrieval --quick \
+    --data-dir <DATA_DIR> --reports-dir <REPORTS_DIR>/quick
+
+# Single full seed
+python -m benchmarks.mnist_prototype_retrieval --seed 0 \
+    --data-dir <DATA_DIR> --reports-dir <REPORTS_DIR>/full
+
+# Full run, all seeds from the config (10)
+python -m benchmarks.mnist_prototype_retrieval \
+    --data-dir <DATA_DIR> --reports-dir <REPORTS_DIR>/full
+```
+
+### Results
+
+- `pytest -q`: 353 passed in 14.22 s.
+- Quick run completed. S4 fails as expected for quick mode (2,000 training images, 1 epoch); S11 fails.
+- Baseline tuning selected lr = 0.001, batch = 128, epochs = 6 (validation clean accuracy 0.9873).
+- Full 10-seed run: 3 min 46 s (tuning results and seed-0 checkpoint cached). Selected β* = 100.
+
+Test split, 10 seeds, Hopfield memory = class-wise K-means, 8 per class:
+
+| Metric | Baseline | Hopfield | Δ | Seeds +/− | Wilcoxon p |
+|---|---|---|---|---|---|
+| Clean accuracy | 0.9898 ± 0.0008 | 0.9902 ± 0.0007 | +0.04 pp | 6/3 | 0.238 |
+| Gaussian AUC | 0.6230 | 0.6512 | +2.82 pp | 8/2 | 0.010 |
+| Salt-and-pepper AUC | 0.7323 | 0.7635 | +3.12 pp | 8/2 | 0.010 |
+| Occlusion AUC | 0.8745 | 0.8808 | +0.62 pp | 8/2 | 0.027 |
+
+Memory-design ablation, Gaussian σ = 0.5, 10-seed mean accuracy:
+
+| Memory | Accuracy |
+|---|---|
+| Baseline (no memory) | 0.6046 |
+| 1 raw mean per class | 0.6354 |
+| 1 centred mean per class | 0.6622 |
+| 8 centred K-means per class | 0.6667 |
+
+- Sanity checks S1–S10 pass. S11 (latency overhead < 10 %) fails at +28.7 % at batch 256.
+
+### Observations
+
+- Seed 0 alone shows the opposite sign (Gaussian −1.44 pp, salt-and-pepper −0.59 pp); it is one of the two negative seeds.
+- Seed-to-seed variance is large (baseline accuracy at σ = 0.5: 0.605 ± 0.092), so only paired per-seed comparisons on the same backbone are meaningful.
+- Going from 10 centred means to 80 K-means patterns adds about +0.45 pp at σ = 0.5. Effects of a different memory at 8 per class are expected to be small.
+- The README reports +7.2 pp (Gaussian) and +7.8 pp (salt-and-pepper). This run measured +2.82 pp and +3.12 pp: same direction, significant, smaller magnitude.
+
+### Open questions
+
+- Reason for the difference from the README figures (to discuss with the project leader).
+
+### Next
+
+- Implement the class-wise facility-location selector (P5) and its unit tests.
+- Test H9 (low budgets, 2–4 per class) on validation data first.
+
+---
+
+## 2026-11-04 — P5: real-embedding selection implemented; seed-0 diagnostic
+
+- Added `benchmarks/memory_selection.py` (class-wise greedy facility location on train-mean-centred
+  cosine; class-wise random control) and `build_memory(method=...)`; default `kmeans` unchanged.
+- `pytest -q`: 17 new tests pass; full suite 370 passed in 17.01 s.
+- Diagnostic, seed 0, training and validation data only (no test data). Coverage = q from each
+  validation embedding to its nearest same-class stored pattern.
+
+| Method | k/class | Build (s) | Head correct on stored | Val mean q | Val min q |
+|---|---|---|---|---|---|
+| kmeans | 2 | 0.45 | 20/20 | 0.9593 | 0.4929 |
+| facility_location | 2 | 12.94 | 20/20 | 0.9552 | 0.4626 |
+| random | 2 | 0.01 | 20/20 | 0.9347 | 0.4438 |
+| kmeans | 4 | 0.52 | 40/40 | 0.9663 | 0.5056 |
+| facility_location | 4 | 17.10 | 40/40 | 0.9638 | 0.5424 |
+| random | 4 | 0.01 | 40/40 | 0.9471 | 0.5236 |
+| kmeans | 8 | 0.64 | 80/80 | 0.9718 | 0.5450 |
+| facility_location | 8 | 25.41 | 80/80 | 0.9697 | 0.5424 |
+| random | 8 | 0.01 | 80/80 | 0.9604 | 0.5236 |
+
+### Observations (single seed; not a result)
+
+- Facility location covers validation data better than random at every budget (+0.009 to +0.021),
+  and slightly worse than k-means (-0.002 to -0.004); the gap to k-means is largest at k=2.
+- The head classifies every stored pattern correctly for all methods: the H5 failure mode was not
+  observed on seed 0, so the head-agreement part of C2 currently has no failure to fix.
+- Facility-location and random selections are nested across budgets, so the worst-case value can
+  repeat between k=4 and k=8; the min is driven by a single point and is descriptive only.
+- Facility location costs 13-25 s per seed versus about 0.5 s for k-means.
+
+### Next
+
+- Comparison script: every method and budget on the same cached backbones, beta selected on
+  validation per method, Gaussian and salt-and-pepper AUC over 10 seeds; head agreement on all seeds.
+
+---
+
+## 2026-11-04 — RQ1 result: memory selection benchmark (10 seeds)
+
+- Command: `python -m benchmarks.memory_selection_benchmark --reports-dir <REPORTS_DIR>`
+  (cached backbones for all 10 seeds; wall time 2 min 16 s). Tests: 382 passed.
+- Protocol frozen before test evaluation (G4): primary = Gaussian and salt-and-pepper AUC vs k-means
+  at equal budget; Holm over six primary tests per method; clean-accuracy non-inferiority 0.005;
+  beta tuned identically per design on validation only.
+- beta*: k-means and facility location 100 at every budget; class means 100; random 10 / 20 / 20.
+
+| k/class | FL − k-means, Gaussian AUC | FL − k-means, S&P AUC | Random − k-means, S&P AUC |
+|---|---|---|---|
+| 2 | −0.45 pp (0/10 seeds +; Holm p 0.012) LOSS | −0.45 pp (1/10; 0.039) LOSS | −2.17 pp (0/10) LOSS |
+| 4 | −0.14 pp (4/10; 0.75) n.s. | −0.35 pp (1/10; 0.029) LOSS | −1.90 pp (0/10) LOSS |
+| 8 | −0.00 pp (5/10; 0.92) n.s. | −0.22 pp (4/10; 0.25) n.s. | −1.18 pp (0/10) LOSS |
+
+- Clean accuracy: facility location non-inferior at every budget; random inferior at k=2.
+- Head correct on stored patterns: facility location 800/800 (k=8, all seeds); random 795/800.
+- Validation coverage (k=8): k-means 0.9715, facility location 0.9696, random 0.9602.
+
+### Conclusions
+
+- RQ1: facility location does not beat k-means at any budget; it loses at low budgets and ties at
+  k=8. Ordering at every budget: k-means >= facility location > random.
+- H9 refuted: the gap to k-means is largest at k=2 and closes by k=8.
+- H5 failure mode not observed for facility location, so C2 is not added (no failure to fix).
+  The construction method stays C1 only.
+- Interpretation (not tested): centroid averaging acts as denoising; random memories selecting a
+  lower beta on validation is consistent with this.
+- Effect sizes are small (< 0.5 pp) relative to the memory's gain over no memory (+2.8 pp).
+
+### Next
+
+- RQ2: bounded maintenance with facility-location marginal-gain replacement.
+- Backlog (needs leader approval, validation-only selection, labelled post hoc): hybrid that selects
+  regions by facility location and stores local averages.
+
+---
+
+## 2026-11-04 — P6b diagnostics (validation only, 10 seeds)
+
+- Command: `python -m benchmarks.memory_diagnostics --reports-dir <REPORTS_DIR>` (1 min 46 s). Tests: 390 passed.
+- Validation split per seed into tuning (beta) and evaluation halves (2,500 each); beta grid extended to 1e4.
+
+### Results
+
+- beta* = 1e4 (nearest pattern) for every averaged and facility-location design (k-means k=8: 1000); random 10-20.
+  Validation curves are flat above beta = 100 (< 0.1 pp), so the original grid ceiling is immaterial.
+- N_eff = 1.00 and blend error = 0.0000 for all non-random designs: retrieval acts as a nearest-pattern classifier
+  and every error is a retrieval error (nearest stored pattern of the wrong class). Hypothesis C ruled out.
+- Audit C (robust acc = mean over Gaussian 0.3/0.5, S&P 0.1/0.2, occlusion 10; paired by seed; p descriptive):
+  - k=2: averaging | FL regions +0.36 pp (8/1, p 0.008); averaging | k-means regions +0.07 (6/4);
+    regions | averages -0.14 (3/7); regions | real points -0.42 (2/8, p 0.02).
+  - k=8: averaging | FL regions +0.22 (8/2, p 0.014); averaging | k-means regions +0.13 (8/2, p 0.047);
+    regions | averages +0.05 (6/4); regions | real points -0.04 (5/5).
+- FL picks lie close to their region means (cosine 0.993-0.995). Centred norm: picks about 34-35, averages about 29.
+- B3: all designs lose coverage at similar rates under noise; cos(noisy, clean) = 0.61 at Gaussian 0.5.
+- B4: boundary/rare robust accuracy about 0.57 vs typical 0.86 for all designs; between-design differences <= 1 pp.
+- All non-random designs lie within 0.5 pp robust accuracy; seed SD 3.4 pp.
+
+### Conclusions
+
+- The facility-location loss is explained by storing real points instead of averages; region choice contributes
+  little (only at k=2 with real points). FL regions + averaging ties k-means (+0.05 pp at k=8).
+- Construction choice has limited downstream impact on MNIST with this encoder, provided patterns are centred
+  averages. M2 (difficulty weighting), M3 (retrieval-aware) and M4 (corruption-aware) are not motivated.
+- G5b (proposed, pending leader): close RQ1 as a negative result with an identified mechanism. For RQ2, consider
+  facility-location gain for admission with running-average pattern updates (deviation from P3, needs approval).
+
+---
+
+## 2026-11-04 — P6b diagnostics v2 (own-cluster medoids, CIs, plateau, margins; validation only)
+
+- Command: `python -m benchmarks.memory_diagnostics --reports-dir <REPORTS_DIR>` (1 min 59 s). Tests: 394 passed.
+- Own-cluster restriction changed 15 % of k-means medoids (k=2: 0.150 ± 0.041; k=8: 0.154 ± 0.045).
+- beta plateau confirmed: best − beta100 = +0.03 to +0.07 pp for all non-random designs; random peaks at beta 10-20.
+
+### Audit C (robust acc, paired by seed, 95 % t-CI, Holm over 8)
+
+| k | Contrast | Δ (pp) | 95 % CI | d_z | +/− | Holm p |
+|---|---|---|---|---|---|---|
+| 2 | averaging, k-means regions | +0.09 | [−0.07, +0.25] | 0.41 | 5/5 | 0.97 |
+| 2 | averaging, FL regions | +0.36 | [+0.17, +0.54] | 1.38 | 8/1 | 0.055 |
+| 2 | regions, averages | −0.14 | [−0.40, +0.13] | −0.37 | 3/7 | 0.77 |
+| 2 | regions, real points | −0.40 | [−0.67, −0.14] | −1.09 | 1/9 | 0.047 |
+| 8 | averaging, k-means regions | +0.22 | [+0.04, +0.40] | 0.88 | 8/1 | 0.098 |
+| 8 | averaging, FL regions | +0.22 | [+0.06, +0.38] | 0.99 | 8/2 | 0.082 |
+| 8 | regions, averages | +0.05 | [−0.21, +0.31] | 0.14 | 6/4 | 0.97 |
+| 8 | regions, real points | +0.05 | [−0.19, +0.29] | 0.14 | 7/3 | 0.97 |
+
+### Margins and flips
+
+- Accuracy from margin > 0 matches measured accuracy within 0.01 pp (non-random designs): nearest-pattern classification.
+- Averaging raises s_true and s_other almost equally (FL k=2: +0.0118 / +0.0121); mean margin unchanged.
+- About 1.6 % of noisy queries flip between pick and mean; flipped queries have small margins (median 0.011-0.018);
+  fixed > broken (FL k=2: 125 vs 80; k=8: 95 vs 68); net +2 to +4 per 1000 queries.
+- Averaged patterns align slightly better with class-mean directions (0.975 vs 0.971 at k=2; 0.946 vs 0.941 at k=8).
+- Flipped queries are mildly enriched for boundary/rare examples (24-26 % vs about 19 % base rate).
+
+### Conclusions
+
+- Averaging is the direction-consistent factor (3 of 4 CIs exclude 0, 0.2-0.4 pp) but does not survive strict Holm;
+  region choice matters only for real points at k=2 (the one contrast surviving Holm).
+- Mechanism: averaging does not widen margins; it shifts nearest-pattern decision boundaries slightly towards
+  class-mean directions, which changes the outcome only for fragile (mostly noisy) queries, with a small net gain.
+- RQ1 closed: construction choices move robust accuracy by < 0.5 pp; k-means already captures the averaging benefit.
+
+---
+
+## 2026-11-05 — RQ2 headroom checks (validation only, 10 seeds)
+
+- Command: `python -m benchmarks.memory_headroom --reports-dir <REPORTS_DIR>` (42 min on CPU). Tests: 397 passed.
+- k-means 8 per class; retrieval centre = clean training mean; beta tuned per design on the validation tuning half.
+- Training noise for check 2 uses stream 2 (validation 1, test 0).
+
+| Memory | Δ robust vs k-means on all data (pp) | 95 % CI | +/− |
+|---|---|---|---|
+| first 10 per class, frozen | −1.36 | [−1.95, −0.77] | 0/10 |
+| first 30 per class, frozen | −1.10 | [−1.76, −0.43] | 1/9 |
+| first 100 per class, frozen | −0.65 | [−1.12, −0.19] | 0/10 |
+| first 300 per class, frozen | −0.29 | [−0.65, +0.07] | 2/8 |
+| clean + matched corrupted training data | +0.42 | [−1.17, +2.01] | 7/3 |
+| clean + mismatched corrupted training data | +1.17 | [−1.02, +3.36] | 7/3 |
+
+- Memory gain over no memory: 3.2 pp robust; a memory frozen after 10 per class keeps about 1.8 pp of it.
+- Mismatched noise: Gaussian 0.5 +4.95 pp, S&P 0.2 +2.87 pp, but Gaussian 0.3 −1.23, occlusion 10 −0.47, clean −0.22.
+- beta*: k-means on all data 1000; small starts 20 (first 300: 1e4); noisy designs 20-50.
+
+### Conclusions
+
+- Stationary maintenance from a small start has measurable headroom (1.1-1.4 pp at 10-30 per class), consistent
+  across seeds and shrinking with the starting pool.
+- Noisy-data adaptation trades heavy-noise gains for light-noise, clean and unseen-occlusion losses; wide spread,
+  CIs include zero: exploratory only.
+- Proposed RQ2 scenario: stationary stream from 10 and 30 per class (100, 300 reported),
+  compared against the same small start kept frozen.
+
+## 2026-11-05 — RQ2 protocol frozen (G6), before any RQ2 test evaluation
+
+- **Code:** `benchmarks/memory_maintenance.py` (policies), `benchmarks/memory_maintenance_benchmark.py` (protocol), `tests/test_memory_maintenance.py`.
+- **Scenario:** k-means start (8 per class) on the first n₀ per class, then 1,000 per class streamed; n₀ ∈ {10, 30} primary, {100, 300} descriptive; 10 seeds × 3 orders, averaged over orders, paired by seed.
+- **Policies:** frozen, fifo, reservoir, fl_swap, ra (ablation), ra_fl (proposed); K = 8 per class fixed. Ceiling: k-means on all seen data.
+- **Constants:** reference set 200 per class, layout check every 50 arrivals, ε = 0; retrieval centre = initial-pool mean; β per (policy, n₀) on validation.
+- **Primary:** ra_fl − frozen, Gaussian and S&P AUC at n₀ = 10, 30 on test; Holm over 4; win = mean > 0, more positive seeds, Holm p < 0.05, clean Δ ≥ −0.005.
+- **Note:** the test split was already read for RQ1, so RQ2 test results are second-stage confirmatory.
+
+## 2026-11-05 — RQ2 results (protocol G6, test split, second-stage)
+
+- **Primary:** ra_fl vs frozen, Gaussian and S&P AUC at n0 = 10, 30. All four "no significant difference": Δ from +0.04 to +0.52 pp, every 95 % CI includes 0, Holm p ≥ 0.64. **No win.**
+- **Why:** even the offline reference (k-means on everything seen; a comparator, not a proven upper bound) is not significantly better than frozen on these AUCs (+0.17 to +0.62 pp, p ≥ 0.19). Gains at light and moderate noise (+0.5 to +0.8 pp) are cancelled by losses at Gaussian 0.7–1.0. The headroom check measured moderate-noise accuracy, but the frozen primary metric was AUC: a design error, recorded.
+- **Descriptive (not primary):** clean accuracy and occlusion AUC improve in 10/10 seeds for ra, ra_fl and fl_swap. At n0 = 10, ra_fl gains +0.47 pp clean and +0.87 pp occlusion; ra gains +0.47 and +0.95; the offline reference gains +0.58 clean.
+- **Ablation:** ra_fl − ra is about 0 on clean and slightly negative on occlusion (0/10 seeds at n0 = 30). The facility-location layout step adds nothing; averaging is the active ingredient, consistent with RQ1.
+- **Other policies:** FIFO and reservoir do not improve on frozen. ra costs about 300 µs per arrival (Python) and 80 extra floats; ra_fl and fl_swap need a 256k-float reference set.
+- **Next (pending leader approval):** confirmation test of ra vs frozen, with clean accuracy and occlusion AUC fixed as primary metrics in advance, on a new held-out confirmation split.
+
+## 2026-11-06 — Work closed; handed to the project leader
+
+- **Terminology:** k-means on everything seen is an offline reference, not a ceiling. It optimises clustering distortion, not classification; at n0 = 300 ra and ra_fl slightly exceed it on Gaussian AUC.
+- **Known flaw:** when ra_fl's layout step spawns a pattern from the reference set, that embedding is already counted in another slot, so it is counted twice. About 24 spawns per run; the conclusion does not change.
+- **Proposed, not run:** (1) confirmation of running average vs frozen with clean accuracy and occlusion AUC fixed in advance as main metrics, on a new held-out split from MNIST training data, backbones retrained, evaluated once; (2) a shifting-stream study for admission/replacement policies. Both await the leader's decision.
+
+## 2026-11-13 — Target branch and dataset layer (step 1 of CIFAR-10 support)
+
+- **Branch:** the leader created `approach/facility-location` as the target for this work; it was merged into `experiment/diversity-memory` (no conflicts; it adds the energy-precision fix). One PR will be opened at the end.
+- **Dataset layer:** `benchmarks/datasets.py` (registry, loaders, checks, training-split-only channel statistics) and `benchmarks/runs.py` (a config's `dataset` key picks the pipeline). The memory benchmarks now go through `runs`.
+- **Hooks in `mnist_baseline.py`:** a `dataset: mnist` config key; salt-and-pepper drawn once per pixel across channels; optional training augmentation. A hash of MNIST splits, all corrupted sets and a 1-epoch training run is identical before and after.
+- **Next:** `cifar10_model.py`, `cifar10_baseline.py`, `configs/cifar10.yaml`, then an architecture pilot on validation.
+EOF%%bash
+cat >> docs/experiment_log.md <<'EOF'
+
+## 2026-11-13 — Target branch and dataset layer (step 1 of CIFAR-10 support)
+
+- **Branch:** the leader created `approach/facility-location` as the target for this work; it was merged into `experiment/diversity-memory` (no conflicts; it adds the energy-precision fix). One PR will be opened at the end.
+- **Dataset layer:** `benchmarks/datasets.py` (registry, loaders, checks, training-split-only channel statistics) and `benchmarks/runs.py` (a config's `dataset` key picks the pipeline). The memory benchmarks now go through `runs`.
+- **Hooks in `mnist_baseline.py`:** a `dataset: mnist` config key; salt-and-pepper drawn once per pixel across channels; optional training augmentation. A hash of MNIST splits, all corrupted sets and a 1-epoch training run is identical before and after.
+- **Next:** `cifar10_model.py`, `cifar10_baseline.py`, `configs/cifar10.yaml`, then an architecture pilot on validation.
+
+## 2026-11-13 — CIFAR-10 pipeline (step 2)
+
+- **Code:** `benchmarks/cifar10_model.py` (CNN and CIFAR ResNet-18 encoders with training-split normalization buffers; crop + flip augmentation for training only), `benchmarks/cifar10_baseline.py` (config, cached frozen backbones, per-seed runs, validation-only report), `benchmarks/cifar10_pilot.py` (architecture pilot, validation only), `configs/cifar10.yaml`.
+- **Decisions:** backbone trained with the shared Adam loop (comparability with MNIST, code reuse); no grid tuning (CPU cost): architecture and epochs are fixed by the pilot on validation. Noise grids and β selection sets are provisional until then. The CIFAR-10 test split has not been read.
+
+## 2026-11-14 — CIFAR-10 architecture pilot (validation only, seed 0, GPU)
+
+| Network | Params | s / epoch | Best selection score (epoch) | Val clean, epochs 26–30 |
+| --- | --- | --- | --- | --- |
+| cnn_small | 0.30 M | 6 | 0.494 (5) | 0.84–0.86 |
+| cnn_wide | 1.16 M | 14 | 0.496 (4) | 0.85–0.89 |
+| resnet18 | 11.2 M | 49 | 0.550 (21) | 0.90–0.91 |
+
+- **Rule, fixed before the run:** highest validation selection score at best epoch (tie within 0.5 pp → cheaper network); epochs = best epoch rounded up to a multiple of 5. **Decision: resnet18, 25 epochs** (about 3.4 GPU hours for 10 seeds).
+- **Observations:** the selection score fluctuates strongly between epochs under the constant learning rate (cnn_small 0.41–0.49), so single "best epochs" for the CNNs are noise; resnet18 plateaus from about epoch 10 (score 0.49–0.55) and epoch 25 lies inside the plateau. Accuracy at the β-selection noise levels averages about 0.37, so the current noise grids are probably too harsh at the top.
+- **Rule for the noise grids (fixed now, applied to the trained backbones' validation curves):** each grid runs from clean to the first level where mean validation accuracy reaches about 0.20, in about 6 levels; β-selection levels near the middle of each grid and not on it. The CIFAR-10 test split has still not been read.
+
+## 2026-11-14 — CIFAR-10 backbones trained; noise grids calibrated and config frozen
+
+- **Backbones:** 10 seeds of ResNet-18, 25 epochs (19 min per seed on GPU). Validation clean accuracy 0.894 ± 0.011 (0.879–0.912).
+- **Calibration** (`benchmarks/noise_calibration.py`, validation only, the rule logged before the ResNet-18 curves were seen): dense curves over Gaussian σ 0–0.20, salt-and-pepper 0–0.15, occlusion 0–24 px.
+
+| Noise | Grid | Accuracy along the grid | β-selection level |
+| --- | --- | --- | --- |
+| Gaussian | 0, 0.04, 0.05, 0.07, 0.08, 0.12 | 0.894 → 0.183 | 0.06 (0.521) |
+| Salt-and-pepper | 0, 0.01, 0.015, 0.025, 0.045, 0.115 | 0.894 → 0.200 | 0.02 (0.550) |
+| Occlusion | 0, 12, 16, 18, 20, 24 | 0.894 → 0.265 (floor not reached at the 24 px cap) | — (held out of β tuning) |
+
+- **`configs/cifar10.yaml` is now frozen** (model, training, grids, β-selection sets). The CIFAR-10 test split has still not been read. Next: validation-only screening of the existing construction strategies with an all-training-embeddings reference (headroom).
+EOF%%bash
+cat >> docs/experiment_log.md <<'EOF'
+
+## 2026-11-14 — CIFAR-10 backbones trained; noise grids calibrated and config frozen
+
+- **Backbones:** 10 seeds of ResNet-18, 25 epochs (19 min per seed on GPU). Validation clean accuracy 0.894 ± 0.011 (0.879–0.912).
+- **Calibration** (`benchmarks/noise_calibration.py`, validation only, the rule logged before the ResNet-18 curves were seen): dense curves over Gaussian σ 0–0.20, salt-and-pepper 0–0.15, occlusion 0–24 px.
+
+| Noise | Grid | Accuracy along the grid | β-selection level |
+| --- | --- | --- | --- |
+| Gaussian | 0, 0.04, 0.05, 0.07, 0.08, 0.12 | 0.894 → 0.183 | 0.06 (0.521) |
+| Salt-and-pepper | 0, 0.01, 0.015, 0.025, 0.045, 0.115 | 0.894 → 0.200 | 0.02 (0.550) |
+| Occlusion | 0, 12, 16, 18, 20, 24 | 0.894 → 0.265 (floor not reached at the 24 px cap) | — (held out of β tuning) |
+
+- **`configs/cifar10.yaml` is now frozen** (model, training, grids, β-selection sets). The CIFAR-10 test split has still not been read. Next: validation-only screening of the existing construction strategies with an all-training-embeddings reference (headroom).
+
+## 2026-11-14 — Screening protocol (Phase 1, validation only), fixed before the first run
+
+- **Code:** `benchmarks/memory_screening.py`. Designs: no memory, class means, k-means / facility location / random at 2, 4, 8, 16 per class, all training embeddings (offline reference, not an upper bound).
+- **Protocol:** β per design on the tuning half of validation (config sets; grid extended to 10 000), metrics on the evaluation half; screening score = mean of the three noise AUCs on the frozen grids; clean accuracy as a guard; paired by seed against k-means k = 8; exploratory, no multiplicity correction. Test split not read.
+- **Headroom decision bands:** all_train − k-means k = 8 ≥ 1.0 pp → go; 0.5–1.0 pp → go with modest expectations; < 0.5 pp → report to the leader before building new methods.
+
+## 2026-11-15 — CIFAR-10 screening results (validation only)
+
+- **Official run** (the original backbones, the ones the noise grids were calibrated on) and a **replicate** (backbones accidentally retrained when Drive was unmounted; same seeds and settings, not bit-identical) agree on every conclusion.
+- **Headroom:** all_train − k-means k = 8 on noise AUC = −0.15 pp [−0.46, +0.15] (replicate −0.11). Band < 0.5 pp → **report to the leader** before building new selection methods. This bounds selection among *clean* training embeddings only, not memories storing other content (noise-aware patterns, region means) or using another similarity.
+- **Facility location:** ties k-means at 2–16 patterns per class (|Δ| ≤ 0.14 pp, signs inconsistent across runs); beats class means at 8 (+0.45 pp, 8/2) and 16 (+0.56 pp, 9/1) and random (+0.80 to +1.42 pp, 9/1 to 10/0).
+- **Memory vs none:** k-means k = 8 +0.81 pp noise AUC, +1.00 pp clean accuracy. β* is unstable across runs, so the β curves are flat.
+- **Next (proposed):** a nearest-neighbour diagnostic (is the true class nearby for noisy queries?) and noise-aware construction (facility location variants A–C, compared with noise-aware k-means); whitening and memory placement as further directions. The test split has not been read.
+
+
+## 2026-11-15 - Phase 1 decision criteria fixed (before new methods)
+
+Decision rules for screening new construction methods are committed in
+docs/phase1_criteria.md before any of them is run: primary metric noise AUC
+vs k-means at the same k (paired by seed); bands Pass (>= +0.3 pp),
+Weak positive (+0.1 to +0.3 pp), Fail (< +0.1 pp), each with >= 7/10 seeds
+positive, >= 2 budgets and clean-accuracy loss <= 0.3 pp; at most 2 finalists;
+combination stage only from >= 2 non-failing components; Stage 1 diagnostic
+rules for CA-acc and noise-aware FL. Scope: construction only; RQ2
+maintenance code removed (preserved at tag rq2-memory-maintenance).
+The criteria reference proposal v1.1 (2026-11-15).
+
+
+## 2026-11-15 - Stage 1 diagnostics: implementation and D1 clarification (before the full run)
+
+benchmarks/construction_diagnostics.py implements the Stage 1 checks
+(training data and the validation-tune half only; test split not read):
+D1 noise-aware premise (kappa = 20 nearest clean training embeddings, centred
+cosine; hit / top1 / purity; plus a pool with one corrupted copy of every
+training image, training noise stream 2, type uniform over Gaussian and
+salt-and-pepper, level uniform up to the largest calibrated grid level),
+D2 training nearest-pattern accuracy of the k-means memory (k = 2, 4, 8, 16),
+D3 boundary scores, density proxy, within-class Spearman(B, 1/rho) and the
+validation-tune boundary distribution against the training set.
+
+Clarification of the D1 rule in docs/phase1_criteria.md, fixed before any
+diagnostic number was seen: "corrupted queries" means the hit rate averaged
+over the nonzero levels of the Gaussian and salt-and-pepper grids; occlusion
+is reported but not used for the decision. Comparison uses seed means.
+
+
+## 2026-11-16 - Stage 1 diagnostics: results (CIFAR-10, 10 seeds, validation-tune only)
+
+Run: python -m benchmarks.construction_diagnostics --config configs/cifar10.yaml
+--reports-dir <Drive>/hopfield_reports/cifar10 (cached backbones; test split not read).
+The D1 clarification was committed (121163c) before this run.
+
+Decisions (rules in docs/phase1_criteria.md):
+- D1 not triggered -> keep noise-aware FL. Clean hit@20 0.967 +- 0.002;
+  corrupted hit (Gaussian + salt-and-pepper levels) 0.652 +- 0.019.
+  With one noisy copy per training image in the pool, hit returns to
+  0.90-0.95 and top1 rises (e.g. Gaussian 0.08: 0.35 -> 0.51). Occlusion
+  is not helped (20 px: hit 0.67 -> 0.68, top1 0.42 -> 0.40). Clean top1
+  falls slightly with the noisy pool (0.896 -> 0.872): clean-accuracy risk.
+- D2 not triggered -> keep CA-acc. k-means training nearest-pattern
+  accuracy 0.963-0.967 for k = 2-16 (k = 8: 0.966 +- 0.003).
+- D3 below 0.7 -> boundary and rarity not redundant. Within-class
+  Spearman(B, 1/rho) 0.51 +- 0.02 (max class 5: 0.67).
+
+Descriptive: 17% of training points have B > 0 (mean B 0.047; 99th pct
+0.9); validation-tune points against the training set have mean B 0.107
+and 24% B > 0 (encoder bias: training neighbourhoods are cleaner).
+Most mixed classes: 3 (cat, 38% B > 0) and 5 (dog, 30%); least: 1 (7%).
+Density proxy rho is compressed (about 0.98-0.998) -> Amendment 1 to
+docs/phase1_criteria.md (rank-based rarity score), made before any
+rarity-weighted result exists.
+
+
+## 2026-11-16 - Stage 2 (selection x representation): design fixed before the full run
+
+benchmarks/representation_screening.py; protocol of memory_screening (beta on
+the validation-tune half, metrics on the validation-eval half, paired by seed,
+test split not read). Budgets k = 2, 4, 8, 16. Designs: kmeans (centroids),
+kmeans_medoid (real embedding closest to each centroid, own cluster),
+facility_location (real), facility_location_rm (region means, one
+centred-cosine assignment step, proposal Eq. 5.14), facility_location_rm_euc
+(Euclidean assignment; ablation A8), random, random_rm, no_memory.
+
+Decision: only facility_location_rm is a candidate method and is judged by
+the Phase 1 bands (benchmarks/phase1_bands.py, implementing
+docs/phase1_criteria.md) against kmeans at the same k. All other comparisons
+(averaging effects per selection rule, FL vs k-means regions, Euclidean vs
+cosine assignment) are descriptive. memory_screening.run_screening gained
+optional builder/names arguments; default behaviour unchanged (existing tests).
+
+
+## 2026-11-17 - Stage 2 results: selection x representation (CIFAR-10, 10 seeds, validation only)
+
+Design fixed in 16ae4da before this run (correction: the criteria module is
+benchmarks/screening_criteria.py; the earlier entry may name phase1_bands.py).
+Cached backbones; test split not read.
+
+Decision: facility_location_rm vs kmeans at equal k -> band FAIL.
+Noise AUC diff (pp): k2 -0.05 [-0.30, +0.19]; k4 +0.01 [-0.29, +0.31];
+k8 +0.05 [-0.17, +0.27]; k16 +0.11 [-0.13, +0.34] (weak at k16 only).
+Clean diff: -0.30, -0.35, -0.16, -0.08 pp. Not re-tuned (criteria).
+
+Descriptive (noise AUC, mean - real): random regions +1.43 / +0.71 / +0.58 /
++0.35 pp (10/0, 10/0, 10/0, 9/1); k-means regions (centroid - medoid)
++0.17 / -0.01 / +0.26 / +0.25; FL regions +0.09 / +0.01 / +0.02 / +0.04.
+FL vs k-means regions (both means): tie at every k. Euclidean vs cosine
+assignment: no difference (|diff| <= 0.05 pp).
+
+Interpretation: averaging rescues atypical representatives (random) but FL
+picks are already central, so averaging adds nothing; the MNIST averaging
+gain for FL does not replicate on CIFAR-10. Memories built from clean
+training embeddings (k-means, FL, region means) converge at noise AUC about
+0.538 for k = 8-16. Decision for later stages: weighted FL variants store real
+picks (primary); region means are a secondary descriptive variant.
+
+
+## 2026-11-21 - Stage 3 (noise-aware facility location): design fixed before the full run
+
+Order change (decided before any noise-aware result): noise-aware FL is evaluated
+before boundary/rarity weighting, because D1 supported its premise and Stage 2
+showed that memories built from clean embeddings converge. If it reaches Pass,
+it proceeds to MNIST Phase 1 and Phase 2 on both datasets before the PR; the
+other approaches follow as separate proposals. Otherwise the roadmap continues.
+
+benchmarks/noise_aware_screening.py; protocol of memory_screening (beta on the
+validation-tune half, metrics on the validation-eval half, paired by seed, test
+split not read). Budgets k = 2, 4, 8, 16.
+Corrupted copies: one per training image, type uniform over Gaussian and
+salt-and-pepper, level uniform on [0, largest calibrated grid level], training
+noise stream 2; occlusion never used in construction.
+Designs: no_memory, kmeans, facility_location, na_kmeans (k-means on clean +
+corrupted; attribution control), na_fl_A (clean candidates), na_fl_B (clean +
+corrupted candidates), na_fl_C (region means of A over clean + corrupted), each
+na_fl variant with gamma in {0.25, 0.5, 1}.
+Selection (tune half only): gamma per (variant, k) = best tune score at the
+design's own beta* (ties -> smaller gamma); candidate variant = best tune score
+averaged over budgets.
+Decision: candidate vs plain kmeans at equal k, bands of
+docs/phase1_criteria.md (benchmarks/screening_criteria.py). Descriptive: other
+variants, na_kmeans attribution, Gaussian / salt-and-pepper / occlusion AUC.
+Training-split column (descriptive, never decisive): 5000 seeded training
+queries per seed, noise stream 3, beta from validation, memory gap relative to
+no_memory, fraction of queries that are stored patterns.
+Additions: memory_selection.greedy_facility_location(weights=None) and
+memory_screening.run_screening(train_eval=False); defaults unchanged.
+
+
+## 2026-11-22 - Backbone sets identified; Stage 3 results (official + replicate) and diagnostics
+
+Two CIFAR-10 backbone sets exist (same code, config and seeds; GPU training is
+not bit-reproducible). Stage 3 was first run, by mistake, in a second Colab
+account whose Drive holds the second set. md5 (first 10 hex) of backbone_seed0-9:
+- ORIGINAL set (primary; screening, Stage 1, Stage 2, official Stage 3), trained
+  2026-11-14 08:46-11:47: 8df928bbd1 d92c0dea84 6537a7a27d ed9e41dc52 2677c60a61
+  12edeef639 a62038ec51 a6feeaeae1 dd64861bec 20add149e6
+- REPLICATE set (replicate screening; replicate Stage 3), trained 2026-11-14
+  20:47-23:51: 9f264fce7d 1ada8dc399 4cf3c2180f 57113ef28d bd66ff49b6 78ebecdecc
+  ebfc1f4a0e f69145ee77 cd27893019 b60586f195
+The replicate Stage 3 reproduced the replicate screening's per-seed baselines
+exactly (deterministic given backbones). Every run now checks that Drive is
+mounted and prints the seed-0 md5 first.
+
+Stage 3 OFFICIAL (original set; code 986361a, pre-registered there): candidate
+variant A (gamma 0.25 at every k) vs kmeans -> band FAIL. Noise AUC diff (pp):
+-0.10 / +0.14 / +0.03 / -0.13 (k = 2/4/8/16; all CIs include 0). Clean diff:
+-0.64 (0/10), -1.17 (1/9), -0.85 (1/9), -0.38 (1/9) -> clean guard fails.
+A - kmeans Gaussian AUC +1.36 / +2.63 / +1.61 / +0.59 (9/1, 9/1, 9/1, 7/3);
+salt-and-pepper about -0.4 (5/5); occlusion -1.04 / -1.86 / -1.10 / -0.61
+(0/10, 0/10, 0/10, 1/9). A - na_kmeans +1.42 / +3.63 / +2.51 / +1.03 (10/0).
+na_kmeans, variants B and C: -1.2 to -3.5 vs kmeans. Plain FL - kmeans: tie.
+Memory gaps about 0. Not re-tuned.
+Stage 3 REPLICATE (replicate set, same code): FAIL with the same pattern.
+
+Diagnostics (descriptive; from the official raw.json):
+- No memory at any k exceeds both the best k-means clean accuracy and the best
+  k-means noise AUC (trade-off frontier).
+- Variant A vs kmeans at k = 8 by level: strong Gaussian (levels 3-5) +3.2 to
+  +3.9 pp (9-10/10); clean -0.85; mild salt-and-pepper and occlusion (levels
+  1-3) -1.2 to -1.7 pp. At k = 4: strong Gaussian +4.6 to +5.7; mild occlusion
+  -2.3 to -2.8.
+- Tune scores: standard FL (gamma = 0) best at every k; larger gamma worse.
+- Per-level oracle switch between kmeans and A (optimistic ceiling: knows the
+  level, selects on evaluation data): +0.52 / +1.01 / +0.61 / +0.35 pp noise
+  AUC, clean unchanged.
+Mechanism: a stored pattern is both key (matched) and value (returned); stored
+corrupted embeddings return corrupted vectors to the head. Next proposed
+method: key-value noise-aware FL (corrupted keys, clean values), to be
+pre-registered separately before any run. No PR for noise-aware FL.
+
+
+## 2026-11-22 - Stage 4 pre-registration: key-value noise-aware facility location
+
+Written and committed before any Stage 4 run (code in this commit). Validation only;
+the test split is not read. Foundation proposal Section 5.3; main proposal Section 5.10.
+
+Hypothesis: Stage 3 failed because a stored pattern is both key and value, so stored
+corrupted embeddings return corrupted vectors. Keys that cover the corrupted regions
+but return clean values should raise noise AUC over plain k-means without the clean loss.
+
+Method (benchmarks/key_value_screening.py; library unchanged):
+- Keys: Stage 3 variant B selection (class-wise weighted facility location over clean +
+  corrupted embeddings, weights 1 and gamma; clean or corrupted candidates). Same
+  corrupted copies as Stage 3 (one per training image, Gaussian or salt-and-pepper, level
+  uniform on [0, largest grid level], training noise stream 2; occlusion never used).
+- Values (clean): KV-S = clean embedding of the key's source image; KV-M = weighted mean
+  clean source embedding of the points the key serves (weights 1 clean, gamma corrupted;
+  a key serving nothing keeps its KV-S value).
+- Readout: h(z) = sum_j softmax_j(beta cos(z - mu, k_j - mu)) v_j (memory_screening.KeyValueBridge,
+  one step). Memory stores 2K vectors (K keys + K values).
+- Grid: gamma in {0.25, 0.5, 1, 2}; k in {2, 4, 8, 16} per class; seeds 0-9; ORIGINAL
+  backbone set (seed-0 md5 8df928bbd1, checked before the run).
+
+Selection (tune half only): for KV-S and KV-M and each k, gamma = argmax tune score at the
+design's beta* (ties -> smaller gamma); candidate = variant with the best tune score
+averaged over k (ties -> KV-S).
+
+Decision (docs/phase1_criteria.md, unchanged): candidate vs plain kmeans at equal k on
+noise AUC with the clean guard; Pass / Weak positive / Fail.
+- Pass or Weak positive: run the same code on the replicate backbone set (descriptive
+  confirmation), then MNIST Phase 1, then the Phase 2 pre-registration (test split).
+- Fail: report it; no re-tuning, no new gamma values or variants on these data; the
+  noise-aware line closes and the next approach is a separate proposal.
+
+Descriptive only (no decision): KV-S - na_fl_B with the same keys (mechanism: effect of
+what is returned), KV-M - KV-S, candidate vs na_fl_A / na_kmeans / facility_location
+(Stage 3 designs at the candidate's gamma), candidate at k vs kmeans at 2k (equal stored
+vectors), per-type AUC, per-level accuracy at k = 8, fraction of corrupted keys, and the
+training/validation record (5000 training queries per seed, noise stream 3).
+
+
+## 2026-11-22 - Stage 4 results: key-value noise-aware facility location -> FAIL (clean guard)
+
+Official run: original backbone set (seed-0 md5 8df928bbd1), code 66e49e0 (pre-registered
+there), seeds 0-9, validation only, test split not read. Not re-tuned.
+
+Tune-half selection: KV-M (mean tune score 0.7129 vs KV-S 0.7086); gamma 0.25 / 1 / 2 / 2
+at k = 2 / 4 / 8 / 16. Decision vs kmeans -> band FAIL at every k (clean guard):
+noise AUC diff (pp) +0.78 (8/2) / +4.99 (10/0) / +5.21 (10/0) / +5.49 (10/0);
+clean diff -1.85 / -1.63 / -2.30 / -1.86 (0/10 at every k).
+Robust to the choice of gamma: the best-clean key-value design at each k still loses
+1.84 / 1.46 / 1.07 / 1.01 pp clean (0-1/10 seeds positive).
+
+Descriptive:
+- Mechanism confirmed: KV-S - na_fl_B (same keys) noise AUC +3.77 / +7.67 / +6.72 / +6.60
+  (10/0 at every k); clean -1.33 / -0.60 / -1.76 / -1.06. KV-M - KV-S +0.27 to +0.64.
+- KV-M - kmeans by type: Gaussian +4.0 / +12.4 / +11.8 / +12.0; salt-and-pepper +1.7 / +5.9
+  / +7.6 / +8.1; occlusion -3.4 / -3.3 / -3.8 / -3.7 (0/10). Per level at k = 8: Gaussian
+  +5.4 to +21.6, salt-and-pepper +0.8 to +11.4, occlusion -1.0 to -5.6.
+- Training split (5000 queries, stream 3) shows the same pattern: clean -1.5 to -2.4,
+  noise AUC +0.9 to +5.7.
+- At equal stored vectors (KV at k vs kmeans at 2k): +0.79 / +4.69 / +5.14 noise AUC.
+- Corrupted keys 41-66 % depending on gamma; clean loss grows with that fraction (Pearson
+  -0.70 over the 16 KV-M designs). kv_M_g2_k8 vs no_memory: clean -1.29, occlusion -2.93.
+- Optimistic ceiling (type-aware oracle: kmeans for clean and occlusion, KV for Gaussian and
+  salt-and-pepper): +1.9 / +6.1 / +6.5 / +6.7 pp noise AUC at no clean cost.
+Interpretation: returning clean values fixes the Stage 3 failure for the corruption types
+covered, but clean and occluded queries that match corrupted keys of another class receive
+a confident wrong-class value. Per the pre-registration the noise-aware line closes here;
+no PR. Any follow-up (e.g. deciding per query when to use the key-value readout) is a new,
+separately pre-registered proposal, and was conceived after seeing these validation data.
+
+Open question (raised after these results, not applied to them): whether future screening
+should use a documented trade-off rule (expected gain at an assumed share p of corrupted
+inputs, with a hard cap on clean loss) instead of the strict 0.3 pp clean guard. p is to be
+set from HopfieldPC's intended use (asked to the project leader). Until decided,
+docs/phase1_criteria.md is unchanged; any method passing only under a new rule must be
+confirmed on new data (replicate backbones, MNIST, held-out test) before a PR.
+
+
+## 2026-11-24 - Stage 4 follow-up diagnostic (pre-registered): where does key-value FL's weight go?
+
+Written and committed before the run (code in this commit). Descriptive only; no decision,
+no tuning; validation evaluation half; test split not read.
+
+Question: why does key-value FL lose clean (-2.3 pp) and occlusion (-3.8 pp) accuracy at
+k = 8 although its values are clean?
+Method (benchmarks/key_value_diagnostics.py): rebuild kmeans_k8, na_fl_B_g2_k8, kv_S_g2_k8,
+kv_M_g2_k8 exactly as in Stage 4 (original backbones, seeds 0-9) at their Stage 4 beta*;
+first check that the accuracies reproduce Stage 4 (largest difference reported). Per query:
+weight on corrupted keys, on wrong-class keys, on wrong-class corrupted keys; class and type
+of the key with the largest weight; correctness. Queries lost vs kmeans_k8 (kv_M) and vs
+na_fl_B (kv_S, same keys).
+Hypothesis: clean and occluded queries lost by key-value FL mostly (> 50 %) have their
+largest weight on a corrupted key of another class ("confident wrong-class value").
+Reading: supported if that share exceeds 50 % for clean and for occlusion; otherwise the
+loss comes mainly from elsewhere (e.g. right-class keys whose values are less typical, or
+thinner clean coverage), which points to a different fix.
+
+
+## 2026-11-25 - Amendment 2 committed (screening criteria)
+
+docs/phase1_criteria.md Amendment 2: primary metric = known-type AUC (Gaussian +
+salt-and-pepper, as in the research plan P4.3), occlusion and three-type noise AUC
+secondary; clean margin 1.0 pp (provisional; plan's provisional value 0.5 pp). Made after
+the Stage 3 and 4 results; post hoc, Stage 3 variant A would Pass (k = 2 and 8, both at
+7/10, CIs include 0) and Stage 4 KV-M still Fails. Recorded decisions unchanged; any
+method passing only under this rule (incl. Stage 3 variant A) must be confirmed on
+replicate backbones, MNIST and the Phase 2 test under a pre-registration.
+Timing: the rule was decided on 2026-11-24 (08:39) before the Stage 4 follow-up diagnostic
+finished, but is committed here after its results were seen (the commit cell had not been
+run). The diagnostic is descriptive (retrieval mechanism) and does not bear on the margin.
+
+
+## 2026-11-24 - Stage 4 follow-up diagnostic results (descriptive)
+
+Code 2cf1545 (pre-registered there); original backbones, seeds 0-9, k = 8, gamma = 2,
+Stage 4 beta*. Reproduction check: largest accuracy difference vs Stage 4 = 0.000 pp.
+Corrupted keys in the key-value memory: 66.1 %.
+
+Hypothesis SUPPORTED. Of the queries right under kmeans_k8 and wrong under kv_M_g2_k8,
+the largest weight was on a corrupted key of another class for 69.5 % (clean) and 78.7 %
+(occlusion); on any wrong-class key for 95.1 % and 96.2 %. Same keys (na_fl_B -> kv_S):
+85.9 % (clean) and 92.7 % (occlusion).
+- Accuracy follows the top key: right-class top key 93.9-99.5 % correct, wrong-class top
+  key 1.9-6.8 % correct (kv_M, all query types).
+- Clean queries with a wrong-class top key: 9.3 % (kmeans) vs 12.0 % (kv_M); the +2.7 pp
+  matches the -2.3 pp clean loss. na_fl_B and kv_S have the same wrong-class rate (12.0 %)
+  but accuracy 89.6 vs 87.8: after a wrong match a clean value is "confidently wrong",
+  a corrupted value is ambiguous.
+- Gains: right-class corrupted top keys serve 41.2 % (Gaussian) and 34.3 % (salt-and-pepper)
+  of corrupted queries at 95.6 % and 93.9 % accuracy.
+- Weight on corrupted keys (mean over levels): clean 21.2 %, occlusion 40.8 %, Gaussian
+  74.4 %, salt-and-pepper 73.8 % -> on average it separates clean from Gaussian / s&p
+  queries, with occlusion in between. Per-query distributions (needed to judge a gate)
+  were not recorded.
+Interpretation: the clean and occlusion losses come from matching errors that key-value
+retrieval makes confident, not from the values themselves. A gate driven by the weight on
+corrupted keys is a plausible next method; it would be a new, separately pre-registered
+proposal (conceived after these validation data; confirmation on replicate backbones,
+MNIST and the Phase 2 test required).
+
+
+## 2026-11-25 - Gate-signal check (pre-registered): does g separate clean from corrupted queries?
+
+Written and committed before the run (code in this commit). Descriptive; no decision;
+validation evaluation half; test split not read. Same memories and beta as Stage 4 (k = 8).
+Signal: g = retrieval weight that kv_M_g2_k8 puts on corrupted keys, per query.
+Reports: percentiles of g, share with g > 0.25 / 0.5 / 0.75, AUROC of g (each corrupted
+level vs clean), and kmeans_k8 vs kv_M_g2_k8 accuracy within bins of g.
+Reading: separation "good" if AUROC >= 0.8 for Gaussian and salt-and-pepper at their three
+strongest levels AND at most 10 % of clean queries have g > 0.5. If good, a gated memory is
+proposed as a new pre-registered method; any threshold read off these data is post hoc and
+must be confirmed on replicate backbones, MNIST and the Phase 2 test.
+
+
+## 2026-11-25 - Gate-signal check results (descriptive) -> separation NOT good
+
+Code c0e0528 (pre-registered there); original backbones, seeds 0-9, k = 8, Stage 4 beta.
+Reproduction check vs Stage 4: 0.000 pp.
+Pre-registered reading: AUROC >= 0.8 at the three strongest levels -> met (Gaussian 0.883 /
+0.909 / 0.950; salt-and-pepper 0.866 / 0.954 / 0.990); at most 10 % of clean queries with
+g > 0.5 -> NOT met (20.2 %). Verdict: separation not good; a gate driven by the weight on
+corrupted keys is not proposed.
+- Clean g is bimodal: median 1.1 %, but 14.5 % of clean queries have g > 0.75. Occlusion
+  AUROC 0.57-0.73.
+- In the g >= 0.75 bin, kv_M - kmeans: Gaussian +20.3 pp (70 % of Gaussian queries),
+  salt-and-pepper +8.6 (70 %), clean -11.8 (14.5 %), occlusion -11.0 (34 %); clean queries
+  in that bin are harder (kmeans 79.8 % vs 92.3 % for g < 0.25).
+- Illustrative what-if read off these data (post hoc, optimistic): KV only when g >= 0.75
+  keeps most of the noise gain but leaves clean at about -1.7 pp (vs -2.4) and occlusion at
+  about -3.8 pp.
+Interpretation: the signal comes from the same matching that produces the confident
+wrong-class errors, so it cannot separate those clean queries from corrupted ones. A gate
+would need an independent signal (e.g. a corruption detector trained on the corrupted
+training copies), which would be a new proposal. The noise-aware / key-value line closes.
+
+
+## 2026-11-25 - Working branch renamed
+
+The fork's working branch `experiment/diversity-memory` is renamed `experiment/facility-location` (same history; no commits
+changed). Earlier entries and commit cells refer to the old name. Pull requests go from
+`YibeltalMarie:experiment/facility-location` to `iCog-Labs-Dev:approach/facility-location`.

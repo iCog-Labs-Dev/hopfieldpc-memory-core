@@ -1,0 +1,299 @@
+"""Memory construction by selecting real training embeddings (research question RQ1).
+
+The existing benchmark stores class-wise k-means centroids, which are synthetic
+averages. This module instead stores actual training embeddings, chosen class
+by class:
+
+* ``facility_location`` (component C1): greedy maximisation of the coverage
+  objective
+
+      F(S) = sum_{z_i in R} max_{m in S} q(z_i, m),
+      q(z, m) = (1 + cos(z - mu, m - mu)) / 2,
+
+  where R is the class's reference set (here: all of its training embeddings)
+  and mu is the same centre the Hopfield bridge uses for retrieval scores, so
+  selection and retrieval share one geometry.
+* ``random``: uniform sampling without replacement, the control that any
+  structured selector has to beat.
+
+``q`` is an increasing affine map of cosine, so greedy selection under ``q`` is
+identical to greedy selection under raw cosine; the shift only makes the
+similarities nonnegative, as monotone facility location requires.
+"""
+
+from __future__ import annotations
+
+import torch
+import torch.nn.functional as F
+
+SELECTION_METHODS = ("kmeans", "facility_location", "random")
+
+# Same epsilon as hopfieldpc.functional._normalize_for_scores: a zero-norm
+# centred vector normalises to zero, i.e. cosine 0, exactly as in retrieval.
+_NORM_EPS = 1e-8
+
+
+def coverage_similarity(
+    reference: torch.Tensor,
+    candidates: torch.Tensor,
+    center: torch.Tensor | None = None,
+) -> torch.Tensor:
+    """q(z, m) = (1 + cos(z - mu, m - mu)) / 2 in [0, 1].
+
+    reference [N_ref, D], candidates [N_cand, D], center [D] or None (no centring).
+    Returns [N_ref, N_cand] in float64 so greedy sums and tie-breaks are stable.
+    """
+    if reference.ndim != 2 or candidates.ndim != 2 or reference.shape[1] != candidates.shape[1]:
+        raise ValueError(
+            f"reference and candidates must be [N, D] with equal D, got "
+            f"{tuple(reference.shape)} and {tuple(candidates.shape)}."
+        )
+    ref = reference.double()
+    cand = candidates.double()
+    if center is not None:
+        if center.shape != (reference.shape[1],):
+            raise ValueError(f"center must be [{reference.shape[1]}], got {tuple(center.shape)}.")
+        mu = center.double()
+        ref, cand = ref - mu, cand - mu
+    ref = F.normalize(ref, p=2, dim=1, eps=_NORM_EPS)
+    cand = F.normalize(cand, p=2, dim=1, eps=_NORM_EPS)
+    q = (1.0 + ref @ cand.T) / 2.0
+    if not torch.isfinite(q).all():
+        raise ValueError("coverage similarity contains NaN or inf; check the embeddings.")
+    return q.clamp_(0.0, 1.0)
+
+
+def facility_location_objective(q: torch.Tensor, selected: torch.Tensor | list[int]) -> float:
+    """F(S) = sum_i max_{j in S} q[i, j]; F(empty set) = 0."""
+    idx = torch.as_tensor(selected, dtype=torch.long)
+    if idx.numel() == 0:
+        return 0.0
+    return float(q[:, idx].max(dim=1).values.sum().item())
+
+
+def greedy_facility_location(
+    q: torch.Tensor,
+    k: int,
+    *,
+    eligible: torch.Tensor | None = None,
+    weights: torch.Tensor | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Greedily pick k candidate columns of q [N_ref, N_cand] maximising F.
+
+    Marginal gain of candidate j given the current set S:
+        gain_j = sum_i max(0, q[i, j] - best_i),  best_i = max_{m in S} q[i, m].
+    Each step adds the eligible, unselected candidate with the largest gain;
+    exact ties go to the lowest index (deterministic). ``eligible`` [N_cand]
+    bool restricts who may be selected; every reference row is still covered.
+    ``weights`` [N_ref] >= 0 (optional) gives the weighted objective
+    F_w(S) = sum_i w_i max_{m in S} q[i, m]; fixed nonnegative weights keep F_w
+    monotone submodular, so the greedy guarantee is unchanged. None = all ones.
+
+    Returns (indices [k] in selection order, gains [k]).
+    """
+    if q.ndim != 2:
+        raise ValueError(f"q must be [N_ref, N_cand], got {tuple(q.shape)}.")
+    if (q < 0).any():
+        raise ValueError("facility location requires nonnegative similarities.")
+    n_ref, n_cand = q.shape
+    if eligible is None:
+        eligible = torch.ones(n_cand, dtype=torch.bool, device=q.device)
+    if eligible.shape != (n_cand,) or eligible.dtype != torch.bool:
+        raise ValueError(f"eligible must be a bool tensor of shape [{n_cand}].")
+    if not 1 <= k <= int(eligible.sum().item()):
+        raise ValueError(f"k ({k}) must be between 1 and the number of eligible candidates "
+                         f"({int(eligible.sum().item())}).")
+
+    if weights is not None:
+        if weights.shape != (n_ref,) or not torch.isfinite(weights).all() or (weights < 0).any():
+            raise ValueError(f"weights must be a finite nonnegative tensor of shape [{n_ref}].")
+        weights = weights.to(device=q.device, dtype=q.dtype)
+    best = torch.zeros(n_ref, dtype=q.dtype, device=q.device)
+    blocked = (~eligible).to(q.device)
+    indices, gains = [], []
+    for _ in range(k):
+        improvement = (q - best[:, None]).clamp_(min=0.0)
+        gain = improvement.sum(dim=0) if weights is None else weights @ improvement
+        gain[blocked] = -torch.inf
+        j = int(torch.argmax(gain).item())  # first maximum -> lowest index on ties
+        indices.append(j)
+        gains.append(float(gain[j].item()))
+        best = torch.maximum(best, q[:, j])
+        blocked[j] = True
+    return torch.tensor(indices, dtype=torch.long), torch.tensor(gains, dtype=torch.float64)
+
+
+def random_selection(n: int, k: int, *, generator: torch.Generator) -> torch.Tensor:
+    """k distinct indices drawn uniformly from range(n)."""
+    if not 1 <= k <= n:
+        raise ValueError(f"k ({k}) must be between 1 and n ({n}).")
+    return torch.randperm(n, generator=generator)[:k]
+
+
+def select_class_memory(
+    z_train: torch.Tensor,
+    labels: torch.Tensor,
+    *,
+    per_class: int,
+    method: str,
+    center: torch.Tensor | None,
+    seed: int,
+    num_classes: int = 10,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Class-wise selection of real embeddings.
+
+    For each class c, candidates and reference set are that class's training
+    embeddings. Returns (patterns [C*per_class, D] in z_train's dtype,
+    pattern labels [C*per_class], source row indices into z_train [C*per_class]).
+    """
+    if method not in ("facility_location", "random"):
+        raise ValueError(f"unknown selection method {method!r}; "
+                         "expected 'facility_location' or 'random'.")
+    generator = torch.Generator().manual_seed(seed)
+    rows, block_labels = [], []
+    for c in range(num_classes):
+        class_rows = torch.nonzero(labels == c, as_tuple=True)[0]
+        if class_rows.numel() < per_class:
+            raise ValueError(f"class {c} has {class_rows.numel()} embeddings, "
+                             f"fewer than per_class={per_class}.")
+        if method == "facility_location":
+            zc = z_train[class_rows]
+            local, _ = greedy_facility_location(coverage_similarity(zc, zc, center), per_class)
+        else:
+            local = random_selection(class_rows.numel(), per_class, generator=generator)
+        rows.append(class_rows[local])
+        block_labels.append(torch.full((per_class,), c, dtype=torch.long))
+    source = torch.cat(rows)
+    return z_train[source].clone(), torch.cat(block_labels), source
+
+
+def nested_prefix(
+    memory: torch.Tensor,
+    memory_labels: torch.Tensor,
+    *,
+    per_class_max: int,
+    per_class: int,
+    num_classes: int = 10,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """First ``per_class`` patterns of each class block of a class-wise selection.
+
+    Greedy facility location (and seeded random selection) are nested: the
+    first k picks at budget K are exactly the selection at budget k, so one
+    run at the largest budget yields every smaller budget.
+    """
+    if not 1 <= per_class <= per_class_max:
+        raise ValueError(f"per_class ({per_class}) must be in [1, {per_class_max}].")
+    if memory.shape[0] != num_classes * per_class_max or memory_labels.shape[0] != memory.shape[0]:
+        raise ValueError("memory must hold num_classes * per_class_max class-ordered patterns.")
+    keep = torch.cat([torch.arange(c * per_class_max, c * per_class_max + per_class)
+                      for c in range(num_classes)])
+    return memory[keep], memory_labels[keep]
+
+
+def class_coverage(
+    z: torch.Tensor,
+    labels: torch.Tensor,
+    memory: torch.Tensor,
+    memory_labels: torch.Tensor,
+    center: torch.Tensor | None,
+) -> torch.Tensor:
+    """q from each embedding to its nearest stored pattern of the same class, [N] float64.
+
+    Used on held-out (validation) embeddings to measure memory coverage.
+    """
+    out = torch.empty(z.shape[0], dtype=torch.float64)
+    for c in torch.unique(labels).tolist():
+        rows = labels == c
+        patterns = memory[memory_labels == c]
+        if patterns.shape[0] == 0:
+            raise ValueError(f"memory has no pattern of class {c}.")
+        out[rows] = coverage_similarity(z[rows], patterns, center).max(dim=1).values.cpu()
+    return out
+
+
+def noise_aware_selection(
+    z_clean: torch.Tensor,
+    z_noisy: torch.Tensor,
+    k: int,
+    gamma: float,
+    center: torch.Tensor | None,
+    *,
+    allow_noisy: bool,
+    device: torch.device = torch.device("cpu"),
+) -> torch.Tensor:
+    """Noise-aware facility location for one class (foundation proposal, Eq. 5.2).
+
+    Reference set = clean + corrupted embeddings with weights 1 and ``gamma``:
+        F(S) = sum_i q(z_i, S) + gamma * sum_i q(z~_i, S).
+    Candidates are the clean rows (variant A, allow_noisy=False) or clean + corrupted
+    rows (variant B, allow_noisy=True). gamma = 0 recovers standard facility location.
+    Returns the selected patterns [k, D] in selection order (nested across k).
+    """
+    ref = torch.cat([z_clean, z_noisy])
+    cand = ref if allow_noisy else z_clean
+    weights = torch.cat([torch.ones(z_clean.shape[0]), torch.full((z_noisy.shape[0],), float(gamma))])
+    q = coverage_similarity(ref.to(device), cand.to(device), None if center is None else center.to(device))
+    idx, _ = greedy_facility_location(q, k, weights=weights.double())
+    return cand[idx.cpu()].clone()
+
+
+def key_value_selection(
+    z_clean: torch.Tensor,
+    z_noisy: torch.Tensor,
+    k: int,
+    gamma: float,
+    center: torch.Tensor | None,
+    *,
+    device: torch.device = torch.device("cpu"),
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Key-value noise-aware facility location for one class (foundation proposal, Section 5.3).
+
+    Keys are chosen exactly as variant B of ``noise_aware_selection`` (reference and
+    candidates = clean + corrupted rows, weights 1 and ``gamma``). Row i of ``z_noisy``
+    must be the corrupted copy of training image i, so every key has a source image.
+    Returns, in selection order (nested across k):
+        keys [k, D]     the selected clean or corrupted embeddings (matched by queries)
+        values [k, D]   the clean embedding of each key's source image (KV-S values)
+        is_noisy [k]    True where the key is a corrupted embedding
+    """
+    if z_noisy.shape != z_clean.shape:
+        raise ValueError(f"z_noisy must match z_clean row for row, got {tuple(z_noisy.shape)} "
+                         f"and {tuple(z_clean.shape)}.")
+    n = z_clean.shape[0]
+    ref = torch.cat([z_clean, z_noisy])
+    weights = torch.cat([torch.ones(n), torch.full((n,), float(gamma))])
+    q = coverage_similarity(ref.to(device), ref.to(device), None if center is None else center.to(device))
+    idx, _ = greedy_facility_location(q, k, weights=weights.double())
+    idx = idx.cpu()
+    return ref[idx].clone(), z_clean[idx % n].clone(), idx >= n
+
+
+def served_clean_means(
+    z_clean: torch.Tensor,
+    z_noisy: torch.Tensor,
+    keys: torch.Tensor,
+    gamma: float,
+    center: torch.Tensor | None,
+    *,
+    fallback: torch.Tensor,
+    device: torch.device = torch.device("cpu"),
+) -> torch.Tensor:
+    """KV-M values for one class: per key, the weighted mean clean source embedding of the points it serves.
+
+    Every clean and corrupted reference point is served by the key with the largest
+    q (first key on ties); a point contributes the clean embedding of its source image
+    with weight 1 (clean) or ``gamma`` (corrupted), as in the selection objective.
+    A key that serves no weight keeps its ``fallback`` value. Returns [len(keys), D].
+    """
+    n = z_clean.shape[0]
+    ref = torch.cat([z_clean, z_noisy])
+    src = torch.cat([z_clean, z_clean]).double()
+    w = torch.cat([torch.ones(n), torch.full((n,), float(gamma))]).double()
+    q = coverage_similarity(ref.to(device), keys.to(device), None if center is None else center.to(device))
+    owner = q.argmax(dim=1).cpu()
+    sums = torch.zeros(keys.shape[0], keys.shape[1], dtype=torch.float64).index_add_(0, owner, src * w[:, None])
+    mass = torch.zeros(keys.shape[0], dtype=torch.float64).index_add_(0, owner, w)
+    out = fallback.double().clone()
+    hit = mass > 0
+    out[hit] = sums[hit] / mass[hit].unsqueeze(1)
+    return out.to(keys.dtype)
