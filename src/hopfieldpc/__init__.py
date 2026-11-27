@@ -65,6 +65,7 @@ from .functional import (
     principal_split_direction,
     weighted_spectral_fission,
 )
+from .gass import GASSBank, GASSConfig
 from .global_dynamic import GlobalDynamicHopfieldBank
 from .kalman import (
     HybridOnlineBank,
@@ -115,6 +116,8 @@ __all__ = [
     "DynamicMomentumOnlineBank",
     "EMAOnlineBank",
     "EMAPrototypeUpdater",
+    "GASSBank",
+    "GASSConfig",
     "GLOBAL_ABLATION_MODES",
     "GlobalDynamicConfig",
     "GlobalDynamicHopfieldBank",

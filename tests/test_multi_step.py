@@ -18,6 +18,25 @@ def test_one_step_matches_hopfield_retrieve() -> None:
     assert torch.allclose(r1, r2) and torch.allclose(w1, w2)
 
 
+def test_log_prior_and_directional_zero_resultant():
+    query = torch.tensor([[0., 1.]])
+    patterns = torch.tensor([[1., 0.], [-1., 0.]])
+    state, weights = multi_step_retrieve(query, patterns, num_updates=3, unit_state=True,
+                                         log_prior=torch.zeros(2))
+    torch.testing.assert_close(state, query)
+    torch.testing.assert_close(weights, torch.tensor([[.5, .5]]))
+    prior = torch.tensor([.75, .25]).log()
+    read, weights = hopfield_retrieve(query, patterns, log_prior=prior)
+    torch.testing.assert_close(weights, prior.exp().unsqueeze(0))
+    torch.testing.assert_close(read, torch.tensor([[.5, 0.]]))
+
+
+@pytest.mark.parametrize("prior", [torch.zeros(3), torch.tensor([0., float("nan")])])
+def test_invalid_log_prior(prior):
+    with pytest.raises(ValueError, match="log_prior"):
+        hopfield_retrieve(torch.ones(1, 2), torch.eye(2), log_prior=prior)
+
+
 @pytest.mark.parametrize("steps", [1, 2, 3, 10])
 def test_shapes_valid_after_multiple_updates(steps: int) -> None:
     module = HopfieldMemory(dim=8, beta=2.0, num_updates=steps)

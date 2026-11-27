@@ -47,12 +47,30 @@ def _normalize_for_scores(
     return query_norm, memory_norm
 
 
+def squared_distance(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
+    """Pairwise squared Euclidean distances between rows of two feature tensors."""
+    return torch.cdist(a, b, compute_mode="donot_use_mm_for_euclid_dist").square()
+
+
+def read_from_logits(logits: torch.Tensor, values: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Retrieve raw values [K,V] from per-query logits [B,K], including any log priors."""
+    weights = logits.softmax(dim=-1)
+    return weights @ values, weights
+
+
+def unit_rows(rows: torch.Tensor) -> torch.Tensor:
+    """Normalize nonzero vectors along their last dimension and preserve zero vectors."""
+    norms = rows.norm(dim=-1, keepdim=True)
+    return rows / torch.where(norms > 0, norms, 1)
+
+
 def hopfield_retrieve(
     query: torch.Tensor,
     memory: torch.Tensor,
     *,
     beta: float = 1.0,
     normalize: bool = False,
+    log_prior: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Run one-step modern Hopfield retrieval.
 
@@ -68,6 +86,8 @@ def hopfield_retrieve(
         normalize:
             If True, query and memory are L2-normalized for similarity scoring.
             The retrieved vector is still computed from the original memory.
+        log_prior:
+            Optional finite additive log weight per memory slot, shape [num_memories].
 
     Returns:
         retrieved:
@@ -105,8 +125,14 @@ def hopfield_retrieve(
     # Center before beta scaling to prevent positive overflow without changing softmax.
     similarities = similarities - similarities.amax(dim=-1, keepdim=True)
     scores = beta * similarities
-    weights_work = torch.softmax(scores, dim=-1)
-    retrieved_work = torch.matmul(weights_work, memory_work)
+    if log_prior is not None:
+        if log_prior.shape != (memory.shape[0],):
+            raise ValueError("log_prior must contain one log weight per memory slot.")
+        prior = log_prior.to(scores)
+        if not torch.isfinite(prior).all():
+            raise ValueError("log_prior must contain finite log weights.")
+        scores = scores + prior
+    retrieved_work, weights_work = read_from_logits(scores, memory_work)
 
     return (
         retrieved_work.to(dtype=input_dtype),
@@ -122,6 +148,8 @@ def multi_step_retrieve(
     beta: float = ...,
     num_updates: int = ...,
     normalize: bool = ...,
+    log_prior: torch.Tensor | None = ...,
+    unit_state: bool = ...,
     return_states: Literal[False] = ...,
 ) -> tuple[torch.Tensor, torch.Tensor]: ...
 
@@ -134,6 +162,8 @@ def multi_step_retrieve(
     beta: float = ...,
     num_updates: int = ...,
     normalize: bool = ...,
+    log_prior: torch.Tensor | None = ...,
+    unit_state: bool = ...,
     return_states: Literal[True],
 ) -> tuple[torch.Tensor, torch.Tensor, list[torch.Tensor]]: ...
 
@@ -145,6 +175,8 @@ def multi_step_retrieve(
     beta: float = 1.0,
     num_updates: int = 1,
     normalize: bool = False,
+    log_prior: torch.Tensor | None = None,
+    unit_state: bool = False,
     return_states: bool = False,
 ) -> (
     tuple[torch.Tensor, torch.Tensor]
@@ -164,6 +196,10 @@ def multi_step_retrieve(
             reproduces plain one-step retrieval.
         normalize:
             Passed to every one-step retrieval (scoring-only normalization).
+        log_prior:
+            Optional fixed log weight per memory slot for all iterations.
+        unit_state:
+            Normalize each updated state. A zero resultant retains its previous state.
         return_states:
             If True, also return the list [q0, q1, ..., qT] for debugging.
 
@@ -184,12 +220,15 @@ def multi_step_retrieve(
     weights: torch.Tensor | None = None
 
     for _ in range(num_updates):
-        state, weights = hopfield_retrieve(
+        retrieved, weights = hopfield_retrieve(
             query=state,
             memory=memory,
             beta=beta,
             normalize=normalize,
+            log_prior=log_prior,
         )
+        state = (torch.where(retrieved.norm(dim=-1, keepdim=True) > 0, unit_rows(retrieved), state)
+                 if unit_state else retrieved)
         if states is not None:
             states.append(state)
 

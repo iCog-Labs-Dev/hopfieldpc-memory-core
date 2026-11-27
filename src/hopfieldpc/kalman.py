@@ -134,6 +134,40 @@ def john_effective_noise(
     return observation_noise / denom
 
 
+def fractional_measurement_factors(
+    prior: torch.Tensor, noise: torch.Tensor | float, mass: torch.Tensor | float, *, eps: float = 0.0,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Correction factor for a summed innovation and fraction of prior variance retained.
+
+    For assignment mass N and positive observation variance R the factors are
+    P/(PN+R) and R/(PN+R). At N=1 the first is the scalar measurement gain.
+    Computing retention directly also works when the gain rounds to one.
+    """
+    total = prior * mass + noise + eps
+    return prior / total, (noise + eps) / total
+
+
+def predict_position_velocity(
+    covariance: torch.Tensor, process: torch.Tensor, dt: float, damping: float,
+) -> torch.Tensor:
+    """Propagate a batch of position/velocity covariances through one damped interval."""
+    transition = covariance.new_tensor([[1., dt], [0., damping]])
+    return transition @ covariance @ transition.T + dt * process
+
+
+def condition_position_velocity(
+    covariance: torch.Tensor, mass: torch.Tensor, noise: torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return corrections per unit summed innovation and the Joseph posterior covariance."""
+    column = covariance[:, :, 0]
+    factors = column / (noise + column[:, :1] * mass[:, None])
+    gain = factors * mass[:, None]
+    transform = torch.eye(2, device=covariance.device, dtype=covariance.dtype).expand_as(covariance).clone()
+    transform[:, :, 0] -= gain
+    posterior = transform @ covariance @ transform.mT + gain.unsqueeze(2) * (factors * noise).unsqueeze(1)
+    return factors, (posterior + posterior.mT) / 2
+
+
 @torch.no_grad()
 def responsibility_kalman_gain(
     uncertainty: torch.Tensor,
@@ -143,7 +177,8 @@ def responsibility_kalman_gain(
 ) -> torch.Tensor:
     """Compute scalar Kalman gain K_ij = P_j / (P_j + R_eff_ij + eps)."""
 
-    return uncertainty / (uncertainty + effective_noise + eps)
+    gain, _ = fractional_measurement_factors(uncertainty, effective_noise, 1., eps=eps)
+    return gain
 
 
 @torch.no_grad()
