@@ -1,5 +1,44 @@
 # Experiment 4 Results: Global Responsibility-Weighted Dynamic Prototype Spawning, Starvation Pruning, and Gram Coalescence in Continuous Hopfield Networks
 
+## MNIST rerun · 27 November 2026
+
+Across three seeds, the dynamic bank averaged **98.79%** clean test accuracy, the fixed bank averaged **95.53%**, and the direct head paired with the dynamic bank averaged **99.10%**. The dynamic bank’s mean difference was +3.26 percentage points against fixed capacity and -0.32 against its paired direct head.
+
+| Seed | Direct | Fixed memory | Dynamic memory | Final dynamic slots | Spawned | Coalesced | Pruned |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 99.17% | 98.78% | 98.66% | 18 | 26 | 18 | 0 |
+| 1 | 99.06% | 98.69% | 98.97% | 15 | 24 | 19 | 0 |
+| 2 | 99.08% | 89.12% | 98.73% | 13 | 25 | 22 | 0 |
+| Mean | 99.10% | 95.53% | 98.79% | 15.3 | 25.0 | 19.7 | 0.0 |
+
+Most of the average gain over fixed capacity came from seed 2, where the dynamic bank reached 98.73% and the fixed bank reached 89.12%. Differences in percentage points use unrounded accuracies.
+
+Both memory arms started with 10 prototypes. The dynamic arm allowed 2–80. Each encoder trained for 10 epochs with direct cross-entropy and a batch size of 128. The split was 55,000 training images, 5,000 validation images and 10,000 official test images. The fixed and dynamic arms train their encoders separately. The direct column uses the dynamic arm’s own encoder before memory retrieval.
+
+### Accuracy under corruption
+
+Each row averages the same corruption level across seeds 0, 1 and 2.
+
+| Test condition | Paired direct | Fixed memory | Dynamic memory | Dynamic − direct (pp) |
+|---|---:|---:|---:|---:|
+| Gaussian noise, σ = 0.5 | 50.24% | 64.84% | 63.26% | +13.02 |
+| Salt and pepper, p = 0.4 | 32.46% | 42.46% | 39.67% | +7.21 |
+| Square occlusion, 14 pixels per side | 59.40% | 60.59% | 60.45% | +1.06 |
+
+The runner-generated summary covers every corruption level and uses the fixed arm’s encoder for its direct column. The JSON also records the direct head paired with each arm and its epoch-by-epoch slot history. [Full corruption table](results/mnist_2026-11-27_summary.md) · [Raw metrics](results/mnist_2026-11-27.json)
+
+### Reproduce this run
+
+Run from the repository root. The runner selected CUDA on the NVIDIA GeForce RTX 3070 Ti Laptop GPU (PyTorch 2.7.1+cu118).
+
+```powershell
+.\.venv\Scripts\python.exe "experiment-id 4/experiment.py" --output "experiment-id 4/results/mnist_2026-11-27.json"
+```
+
+---
+
+## Earlier MNIST study
+
 ## 1. Executive Summary
 
 Experiment 4 evaluates **class-agnostic, label-free** dynamic prototype adaptation in a continuous Hopfield associative memory on MNIST across three random seeds (`0, 1, 2`). Unlike Experiments 1–3—which partitioned memory slots by ground-truth class labels during writes—Experiment 4 governs online updates, uncertainty propagation, support tracking, redundancy coalescence, and spectral spawning through a **single global soft responsibility distribution** over all active slots, with all internal operating scales derived analytically (`AUTO_CALIBRATE = True`).
@@ -153,7 +192,6 @@ Run the Experiment 4 unit and integration tests:
 ```
 
 **Artifacts:**
-- Proposal: [PROPOSAL.md](PROPOSAL.md)
 - Configuration: [config.py](config.py)
 - Experiment runner: [experiment.py](experiment.py)
 - Core module: [global_dynamic.py](../src/hopfieldpc/global_dynamic.py)

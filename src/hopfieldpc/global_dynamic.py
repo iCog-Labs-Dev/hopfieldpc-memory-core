@@ -25,6 +25,7 @@ from torch import nn
 from .api import (
     GLOBAL_ABLATION_MODES,
     GlobalDynamicConfig,
+    KalmanMomentumStepOutput,
     validate_global_ablation_mode,
 )
 from .diagnostics import (
@@ -162,22 +163,25 @@ class GlobalDynamicHopfieldBank(nn.Module):
         p_max = 10.0 * p0 if self.cfg.uncertainty_max is None else float(self.cfg.uncertainty_max)
         return p_min, p_max
 
+    def _observation_residual(self, task_score: float | torch.Tensor | None) -> float:
+        if task_score is None:
+            return self.cfg.observation_noise
+        if isinstance(task_score, torch.Tensor) and task_score.ndim == 0:
+            task_score = task_score.item()
+        if isinstance(task_score, bool) or not isinstance(task_score, Real) or not 0 <= task_score <= 1:
+            raise ValueError("task_score must be a finite real scalar in [0, 1].")
+        return (1.0 - float(task_score)) + self.cfg.eps_stab
+
+    def _gain_stabilizer(self) -> float:
+        return self.cfg.eps_stab
+
     def resolve_noises(self, task_score: float | torch.Tensor | None = None) -> tuple[float, float, float]:
         """Return (Q, R_n, s*R_0). A supplied score sets absolute R_n = 1 - A_n + eps."""
 
         s = self.resolve_variance_scale()
+        observation_noise = self._observation_residual(task_score)
         if task_score is None:
-            observation_noise = s * self.cfg.observation_noise
-        else:
-            if isinstance(task_score, torch.Tensor) and task_score.ndim == 0:
-                task_score = task_score.item()
-            if (
-                isinstance(task_score, bool)
-                or not isinstance(task_score, Real)
-                or not 0 <= task_score <= 1
-            ):
-                raise ValueError("task_score must be a finite real scalar in [0, 1].")
-            observation_noise = (1.0 - float(task_score)) + self.cfg.eps_stab
+            observation_noise *= s
         structural_noise = (
             observation_noise
             if self.cfg.structural_base_noise is None
@@ -405,6 +409,24 @@ class GlobalDynamicHopfieldBank(nn.Module):
             apply_similarity_penalty=apply_similarity_penalty,
         )
 
+    def _minibatch_step(
+        self, current, target, velocity, uncertainty, responsibilities, total_mass,
+        *, observation_noise, process_noise,
+    ) -> tuple[KalmanMomentumStepOutput, torch.Tensor]:
+        eps = self.cfg.eps_stab
+        r_batch = (responsibilities.square().sum(dim=0) / (total_mass + eps)).clamp(0.0, 1.0)
+        p_min, p_max = self.resolve_uncertainty_bounds()
+        out = responsibility_kalman_momentum_step(
+            current, target, velocity, uncertainty, r_batch,
+            observation_noise=observation_noise, process_noise=process_noise,
+            gamma_mom=self.cfg.gamma_mom, gamma_john=self.cfg.gamma_john,
+            eps=eps, uncertainty_min=p_min, uncertainty_max=p_max,
+        )
+        effective_noise = john_effective_noise(
+            r_batch, observation_noise, gamma_john=self.cfg.gamma_john, eps=eps,
+        )
+        return out, effective_noise.mean()
+
     @torch.no_grad()
     def online_update(
         self,
@@ -433,10 +455,11 @@ class GlobalDynamicHopfieldBank(nn.Module):
         use_seq = force_sequential or self.online_update_mode == "sequential" or z.shape[0] == 1
         gains_accum = []
         r_eff_accum = []
-        eff_p_min, eff_p_max = self.resolve_uncertainty_bounds()
         _, beta_write = self.resolve_betas(active_override=len(m_act))
 
         if use_seq:
+            eff_p_min, eff_p_max = self.resolve_uncertainty_bounds()
+            gain_eps = self._gain_stabilizer()
             for i in range(z.shape[0]):
                 ri_2d, _ = _active_write_responsibilities(
                     z[i : i + 1], m_act, self.center, beta_write, self.cfg.eps_norm,
@@ -454,6 +477,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
                     gamma_john=self.cfg.gamma_john,
                     process_noise=eff_q,
                     eps=self.cfg.eps_stab,
+                    gain_eps=gain_eps,
                     uncertainty_min=eff_p_min,
                     uncertainty_max=eff_p_max,
                 )
@@ -472,38 +496,19 @@ class GlobalDynamicHopfieldBank(nn.Module):
                 z, m_act, self.center, beta_write, self.cfg.eps_norm,
             )
             r_sum = r_act.sum(dim=0)
-            s_sum = r_act.pow(2).sum(dim=0)
-            r_batch = (s_sum / (r_sum + self.cfg.eps_stab)).clamp(0.0, 1.0)
             has_mass = r_sum > self.cfg.eps_stab
             z_bar = torch.where(
                 has_mass.unsqueeze(-1),
                 (r_act.T @ z) / (r_sum.unsqueeze(-1) + self.cfg.eps_stab),
                 m_act,
             )
-            out = responsibility_kalman_momentum_step(
-                m_act,
-                z_bar,
-                v_act,
-                p_act,
-                r_batch,
-                observation_noise=eff_rn,
-                gamma_mom=self.cfg.gamma_mom,
-                gamma_john=self.cfg.gamma_john,
-                process_noise=eff_q,
-                eps=self.cfg.eps_stab,
-                uncertainty_min=eff_p_min,
-                uncertainty_max=eff_p_max,
+            out, mean_noise = self._minibatch_step(
+                m_act, z_bar, v_act, p_act, r_act, r_sum,
+                observation_noise=eff_rn, process_noise=eff_q,
             )
             m_act, v_act, p_act = out.new_value, out.velocity, out.uncertainty
             gains_accum.append(out.gain.mean())
-            r_eff_accum.append(
-                john_effective_noise(
-                    r_batch,
-                    eff_rn,
-                    gamma_john=self.cfg.gamma_john,
-                    eps=self.cfg.eps_stab,
-                ).mean()
-            )
+            r_eff_accum.append(mean_noise)
 
         sim_loss = 0.0
         eff_lambda_sim, scale_sim_by_norm = self.resolve_lambda_sim()
@@ -632,7 +637,7 @@ class GlobalDynamicHopfieldBank(nn.Module):
         Omitting the score uses the configured relative observation noise.
         """
 
-        eff_q, eff_rn, structural_noise = self.resolve_noises(task_score)
+        eff_q, eff_rn, _ = self.resolve_noises(task_score)
         if not self.ready:
             return {
                 "active_total": self.active_count,
@@ -688,14 +693,14 @@ class GlobalDynamicHopfieldBank(nn.Module):
                 self.uncertainty[active],
                 self.sharpness[active],
                 self.last_dispersion[active],
-                structural_base_noise=structural_noise / eff_var_scale,
+                structural_base_noise=self.resolve_structural_base_noise(task_score),
                 lambda_disp=self.cfg.lambda_disp,
                 lambda_sharp=self.cfg.lambda_sharp,
                 process_noise=self.cfg.process_noise,
                 variance_scale=eff_var_scale,
                 uncertainty_min=eff_p_min,
                 uncertainty_max=eff_p_max,
-                eps=self.cfg.eps_stab,
+                eps=self._gain_stabilizer(),
             )
             self.uncertainty[active] = updated_p
 

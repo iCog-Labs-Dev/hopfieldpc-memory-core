@@ -179,6 +179,7 @@ def responsibility_kalman_momentum_step(
     gamma_john: float = 1.0,
     process_noise: float = 0.01,
     eps: float = 1e-8,
+    gain_eps: float | None = None,
     uncertainty_min: float = 1e-4,
     uncertainty_max: float = 10.0,
 ) -> KalmanMomentumStepOutput:
@@ -188,7 +189,7 @@ def responsibility_kalman_momentum_step(
     r_eff = john_effective_noise(
         r, observation_noise, gamma_john=gamma_john, eps=eps
     )
-    gain = responsibility_kalman_gain(uncertainty, r_eff, eps=eps)
+    gain = responsibility_kalman_gain(uncertainty, r_eff, eps=eps if gain_eps is None else gain_eps)
     innovation = candidate - current
     new_velocity = responsibility_momentum_velocity_update(
         velocity, innovation, r, gamma_mom=gamma_mom

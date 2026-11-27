@@ -503,6 +503,16 @@ def _active_similarity_penalty_step(
     return active_values - eff_lambda * grad, float(loss.detach().item())
 
 
+def split_eigensystem(matrix: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Ascending eigenvalues and leading direction of a symmetric split matrix."""
+    # Concentrated responsibilities can produce many zero eigenvalues. CUDA
+    # 11.8's eigh can fail on these matrices. Use LAPACK for the epoch-level
+    # split and copy back only the spectrum and the leading direction.
+    solver_input = matrix.cpu() if matrix.is_cuda else matrix
+    values, vectors = torch.linalg.eigh(solver_input)
+    return values.to(matrix.device), vectors[:, -1].contiguous().to(matrix.device)
+
+
 @torch.no_grad()
 def weighted_spectral_fission(
     embeddings: torch.Tensor | None = None,
@@ -539,10 +549,10 @@ def weighted_spectral_fission(
         cov = cov_matrix
 
     sym_cov = 0.5 * (cov + cov.T)
-    eigvals, eigvecs = torch.linalg.eigh(sym_cov)
+    eigvals, direction = split_eigensystem(sym_cov)
     # eigh returns ascending eigenvalues; reverse to descending order.
     eigvals_desc = torch.flip(eigvals, dims=[0]).clamp_min(0.0)
-    result = _spectral_children(mean, eigvals_desc, eigvecs[:, -1], split_scale, center, tau_sim, eps)
+    result = _spectral_children(mean, eigvals_desc, direction, split_scale, center, tau_sim, eps)
     result["covariance"] = sym_cov
     return result
 
@@ -568,10 +578,10 @@ def sample_space_fission(
         weights = weights / mass
         mean = weights @ embeddings
         centered = weights.sqrt().unsqueeze(1) * (embeddings - mean)
-        eigenvalues, vectors = torch.linalg.eigh(centered @ centered.T)
+        eigenvalues, sample_direction = split_eigensystem(centered @ centered.T)
         eigenvalues = eigenvalues.flip(0).clamp_min(0)
         # Lift the leading sample-space eigenvector back into feature space.
-        direction = centered.T @ vectors[:, -1]
+        direction = centered.T @ sample_direction
         if eigenvalues[0] > 0:
             direction = direction / eigenvalues[0].sqrt()
     return _spectral_children(mean, eigenvalues, direction, split_scale, center, tau_sim, eps)
