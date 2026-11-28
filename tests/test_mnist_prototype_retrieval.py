@@ -422,10 +422,16 @@ quick:
 """
 
 
-def test_end_to_end_quick_run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+@pytest.mark.parametrize("memory_method", ["kmeans", "kcenter"])
+def test_end_to_end_quick_run(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, memory_method: str
+) -> None:
     # Same CLI call as a user's --quick run; only the default config is shrunk for speed.
+    config_text = TINY_CONFIG
+    if memory_method != "kmeans":
+        config_text += f"\nmemory_method: {memory_method}\n"
     config_path = tmp_path / "tiny.yaml"
-    config_path.write_text(TINY_CONFIG, encoding="utf-8")
+    config_path.write_text(config_text, encoding="utf-8")
     monkeypatch.setattr(mb, "DEFAULT_CONFIG_PATH", config_path)
     monkeypatch.setattr(mb, "load_mnist_tensors", synthetic_mnist)
     main(["--quick", "--reports-dir", str(tmp_path)])
@@ -440,7 +446,12 @@ def test_end_to_end_quick_run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -
         assert f"S{i} " in summary
     for exp in ("E1", "E2", "E3a", "E3b", "E3c", "E4", "E5", "E6", "E7", "E8", "E9a", "E9b"):
         assert f" {exp}  " in summary
-    assert "memory=30 prototypes (3/class, centered)" in summary
+    if memory_method == "kmeans":
+        assert "memory=30 prototypes (3/class, centered)" in summary
+        assert "kcenter" not in summary
+    else:
+        assert "memory=30 prototypes (3/class, centered, kcenter)" in summary
+        assert "kcenter" in summary
     assert "mean of val clean + gaussian 0.4 + salt_pepper 0.15" in summary
     # Split table is the first section; tuning (4 grid points) comes right after it.
     assert summary.index("E0 Data splits") < summary.index("E0b Baseline tuning") < summary.index(" E1  ")

@@ -283,6 +283,52 @@ def kmeans(
     return centroids
 
 
+def k_center_greedy(
+    x: torch.Tensor,
+    k: int,
+    *,
+    generator: torch.Generator,
+    first: int | None = None,
+) -> torch.Tensor:
+    """k-center greedy farthest-point traversal (Sener & Savarese 2018, arXiv:1708.00489).
+
+    Selects k points minimizing covering radius; 2-approximation in O(N*k*D) time and O(N) memory.
+    """
+    if x.ndim != 2:
+        raise ValueError(f"x must be 2-D [N, D], got {x.ndim}-D tensor with shape {tuple(x.shape)}.")
+    n, _ = x.shape
+    if isinstance(k, bool) or not isinstance(k, int) or k < 1 or k > n:
+        raise ValueError(f"k must be an integer in [1, {n}], got {k!r}.")
+    if first is not None and (isinstance(first, bool) or not isinstance(first, int) or first < 0 or first >= n):
+        raise ValueError(f"first must be an integer in [0, {n - 1}], got {first!r}.")
+
+    picked = torch.zeros(n, dtype=torch.bool, device=x.device)
+    order: list[int] = []
+
+    u = first if first is not None else int(torch.randint(0, n, (1,), generator=generator).item())
+    order.append(u)
+    picked[u] = True
+
+    # running distance to the closest center picked so far
+    nearest = (x - x[u]).norm(dim=1)
+
+    for _ in range(1, k):
+        cand = nearest.clone()
+        cand[picked] = -1.0
+        u = int(torch.argmax(cand).item())
+        order.append(u)
+        picked[u] = True
+        # update running minimum distance to any picked center
+        nearest = torch.minimum(nearest, (x - x[u]).norm(dim=1))
+
+    return torch.tensor(order, dtype=torch.long, device=x.device)
+
+
+def covering_radius(x: torch.Tensor, centers: torch.Tensor) -> float:
+    """max over rows of x of the distance to the nearest row of centers."""
+    return float(torch.cdist(x.float(), centers.float()).min(dim=1).values.max().item())
+
+
 def build_memory(
     z_train: torch.Tensor,
     labels: torch.Tensor,
@@ -291,22 +337,34 @@ def build_memory(
     center: bool,
     seed: int,
     num_classes: int = 10,
+    method: str = "kmeans",
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor | None]:
     """Stored patterns for the embedding bridge.
 
-    per_class = 1 gives the class means; larger
-    values store k-means centroids of each class's training embeddings
-    (Ramsauer et al. 2020, Table A.3: 1 or 8 stored patterns per class).
+    per_class = 1 gives the class means; larger values store k-means centroids
+    or k-center greedy selected real embeddings of each class's training embeddings
+    (Ramsauer et al. 2020, Table A.3: 1 or 8 stored patterns per class;
+    Sener & Savarese 2018, arXiv:1708.00489 for k-center).
     ``center`` returns the train-mean embedding [D] used to center scores.
 
     Returns (memory [C*per_class, D], memory_labels [C*per_class], center | None).
     """
+    if method not in ("kmeans", "kcenter"):
+        raise ValueError(f"Unknown memory method: {method!r}")
     generator = torch.Generator().manual_seed(seed)
     blocks, block_labels = [], []
     for c in range(num_classes):
         zc = z_train[labels == c]
-        blocks.append(zc.mean(dim=0, keepdim=True) if per_class == 1
-                      else kmeans(zc, per_class, generator=generator))
+        if per_class == 1:
+            block = zc.mean(dim=0, keepdim=True)
+        elif method == "kmeans":
+            block = kmeans(zc, per_class, generator=generator)
+        elif method == "kcenter":
+            idx = k_center_greedy(zc, per_class, generator=generator)
+            block = zc[idx]
+        else:
+            raise ValueError(f"Unknown memory method: {method!r}")
+        blocks.append(block)
         block_labels.append(torch.full((per_class,), c, dtype=torch.long))
     mean = z_train.mean(dim=0) if center else None
     return torch.cat(blocks), torch.cat(block_labels), mean
@@ -478,10 +536,22 @@ def memory_variants(configured: tuple[int, bool]) -> list[tuple[str, int, bool]]
     return [(f"k={k}{' centered' if c else ' raw'}", k, c) for k, c in designs]
 
 
-def build_embedding_net(run: BaselineRun, per_class: int, center: bool, *, beta: float) -> MnistNet:
+def build_embedding_net(
+    run: BaselineRun,
+    per_class: int,
+    center: bool,
+    *,
+    beta: float,
+    method: str = "kmeans",
+) -> MnistNet:
     """Hopfield net whose L8 memory is built from ``run``'s training embeddings."""
     memory, labels, offset = build_memory(
-        run.z_train, run.splits.train_labels, per_class=per_class, center=center, seed=run.seed
+        run.z_train,
+        run.splits.train_labels,
+        per_class=per_class,
+        center=center,
+        seed=run.seed,
+        method=method,
     )
     net = build_hopfield_net(run.net, memory, labels, beta=beta, center=offset)
     assert isinstance(net, MnistNet) and isinstance(net.bridge, HopfieldBridge)
@@ -555,6 +625,7 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
     # Stage 1: frozen baselines, memories, Hopfield nets, validation curves.
     sel_sets = cfg["beta_selection_sets"]
     configured = (cfg["prototypes_per_class"], cfg["center_prototypes"])
+    memory_method = cfg.get("memory_method", "kmeans")
     variants = memory_variants(configured)
     runs: list[BaselineRun] = []
     hop_nets: list[MnistNet] = []
@@ -566,13 +637,13 @@ def run_experiment(cfg: dict[str, Any], *, retrain: bool = False) -> dict[str, A
     for seed in cfg["seeds"]:
         run = prepare_baseline_run(cfg, data, seed, device, retrain=retrain)
         start = time.perf_counter()
-        hop = build_embedding_net(run, *configured, beta=betas[0])
+        hop = build_embedding_net(run, *configured, beta=betas[0], method=memory_method)
         setup_times.append(run.prototype_time_s + time.perf_counter() - start)
         val_curves["embedding"].append(beta_curve(hop, run, betas, sel_sets))
 
         for name, per_class, center in variants:
             net = hop if (per_class, center) == configured else build_embedding_net(
-                run, per_class, center, beta=betas[0]
+                run, per_class, center, beta=betas[0], method=memory_method
             )
             variant_nets[name].append(net)
             variant_curves[name].append(
@@ -1049,7 +1120,9 @@ def build_report(raw: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     n_seeds = len(cfg["seeds"])
     k = cfg["prototypes_per_class"]
     centered = cfg["center_prototypes"]
-    memory_desc = f"memory={10 * k} prototypes ({k}/class{', centered' if centered else ''})"
+    method = cfg.get("memory_method", "kmeans")
+    method_suffix = f", {method}" if method != "kmeans" else ""
+    memory_desc = f"memory={10 * k} prototypes ({k}/class{', centered' if centered else ''}{method_suffix})"
     ctx = f"seeds={n_seeds}  n_test={raw['n_test']}  {memory_desc}  placement=L8"
     selection = raw.get("beta_selection", "clean val")
     sigma = cfg["noisy_sigma"]

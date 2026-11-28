@@ -156,6 +156,23 @@ Hopfield layer, so the gain comes from the memory design rather than from soft r
 
 Timings only compare within one run; on CPU, peak memory is an activation upper bound.
 
+### K-Center Greedy Memory Option
+
+An alternative memory option selects diverse real embeddings via K-Center Greedy farthest-point traversal (Sener & Savarese 2018, arXiv:1708.00489) via `memory_method: kcenter`. The default behavior remains strictly unchanged (`kmeans` centroids). Both runs should be executed to enable paired comparative analysis:
+
+```bash
+# Prerequisite: run the baseline K-means experiment first to produce baseline checkpoints and results:
+python -m benchmarks.mnist_prototype_retrieval --config configs/mnist_prototype_retrieval.yaml
+
+# Run the K-Center greedy experiment (reuses baseline backbones for fair evaluation):
+python -m benchmarks.mnist_prototype_retrieval --config configs/mnist_kcenter.yaml
+
+# Run the paired comparative analysis:
+python -m benchmarks.kcenter_analysis
+```
+
+Finding (10 seeds): K-Center constructs memory ~8x faster, but degrades clean accuracy (-0.74 pp vs K-means, 0.9829 vs 0.9903; -2.19 pp at matched beta=100, 0.9684 vs 0.9903, Wilcoxon p=0.0020) and noise robustness (losing 1.4 to 2.7 pp of AUC across Gaussian, salt-and-pepper, and occlusion noise) because farthest-point traversal captures ambiguous tail outliers (49.1% training misclassifications) that leak ~19.5% of softmax attention to wrong classes on clean data (true-class proto weight 0.805 vs 0.990 for K-means).
+
 ## Next Planned Tasks
 
 ```text
