@@ -451,8 +451,9 @@ class ReferenceBank(nn.Module):
                     continue
                 after, new_responses, new_losses, after_read = self._evaluate(layout, u, v, details=True)
                 improves = after < before and after <= before - self.cfg.margin
+                protect_read = self.cfg.guard_read_loss or getattr(self.cfg, "retrieval_margin", None) is not None
                 accepted = (math.isfinite(after) and (improves or self.cfg.heuristic_edits)
-                            and (not self.cfg.guard_read_loss or after_read <= before_read))
+                            and (not protect_read or after_read <= before_read))
                 report["trials"].append(dict(operation=edit.name, slots=edit.changed,
                                              before=before, after=after, read_before=before_read,
                                              read_after=after_read, accepted=accepted))

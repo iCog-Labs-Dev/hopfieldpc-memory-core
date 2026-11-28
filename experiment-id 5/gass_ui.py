@@ -46,13 +46,16 @@ class ReferenceComparisonUI(RealtimeAutoencoderUI):
             ttk.Entry(panel, textvariable=var, width=5).pack(side=tk.LEFT)
         root.title("MNIST autoencoder comparison — Direct, EMA, Dynamic and GASS")
 
+    def settings_from_controls(self):
+        settings = {key: var.get() for key, var in self.selectors.items()}
+        settings.update({key: float(var.get()) for key, var in self.temperatures.items()})
+        return replace(self.args.gass, **settings)
+
     def start(self):
         if self.worker is not None and self.worker.is_alive():
             return
         try:
-            settings = {key: var.get() for key, var in self.selectors.items()}
-            settings.update({key: float(var.get()) for key,var in self.temperatures.items()})
-            self.settings = replace(self.args.gass, **settings)
+            self.settings = self.settings_from_controls()
         except ValueError as exc:
             self.status_text.set(str(exc))
             return
@@ -74,8 +77,10 @@ class ReferenceComparisonUI(RealtimeAutoencoderUI):
         if name == "GASS":
             metric = self.args.metric if "mahalanobis" in (self.settings.read_score, self.settings.write_score) else None
             variant = self.variant_class(cfg, self.args.seed, device, self.settings, metric)
+            if getattr(variant, "uses_reference_for_marc", False):
+                variant.reference_images = self.reference
             self.gass_bank = variant.bank
-            if self.settings.warmup_epochs == 0:
+            if variant.settings.warmup_epochs == 0 and not variant.bank.ready:
                 variant.initialize_bank(self.reference, cfg, device)
             return variant
         return AutoencoderVariant(name, cfg, self.args.seed, device)
@@ -119,10 +124,9 @@ class GASSComparisonUI(ReferenceComparisonUI):
             return super().preview_outputs(variant, clean, noisy, device)
         variant.net.eval()
         pair = torch.cat([clean, noisy]).to(device)
-        cue = variant.net.output_logits(variant.encode(pair))
-        recalled = variant.retrieve_logits(cue)
-        clean_cue, noisy_cue = cue.chunk(2)
-        clean_recall, noisy_recall = recalled.chunk(2)
+        cue = variant.memory_features(variant.encode(pair))
+        clean_cue, noisy_cue = variant.features_to_logits(cue).chunk(2)
+        clean_recall, noisy_recall = variant.features_to_logits(variant.retrieve_logits(cue)).chunk(2)
         rms = variant.paired_logit_rms(clean_cue, noisy_cue, clean_recall, noisy_recall)
         self.preview_stability = (f"Clean vs. corrupted preview · cue logit RMS {rms['cue_rms']:.4f} · "
                                   f"recalled logit RMS {rms['recall_rms']:.4f}" if variant.bank.ready else "GASS warming up")

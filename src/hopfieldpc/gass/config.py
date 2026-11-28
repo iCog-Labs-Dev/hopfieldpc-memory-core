@@ -94,6 +94,7 @@ class GASSConfig(ReferenceConfig):
     recall_steps: int = 0
     refinement_sweeps: int = 0
     stream_budget: float | None = None
+    retrieval_margin: float | None = None  # MARC: None disables, zero protects, positive is strict for values.
 
     def __post_init__(self):
         super().__post_init__()
@@ -110,3 +111,5 @@ class GASSConfig(ReferenceConfig):
             raise ValueError("Safeguarded writes and edits require objective gates.")
         if self.stream_budget is not None and (not math.isfinite(self.stream_budget) or self.stream_budget < 0):
             raise ValueError("The lifetime stream budget must be finite and nonnegative.")
+        if self.retrieval_margin is not None and not (math.isfinite(self.retrieval_margin) and self.retrieval_margin >= 0):
+            raise ValueError("The retrieval margin must be finite and nonnegative.")

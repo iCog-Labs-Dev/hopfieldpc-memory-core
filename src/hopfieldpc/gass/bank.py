@@ -11,6 +11,7 @@ from hopfieldpc.kalman import condition_position_velocity, fractional_measuremen
 from .config import GASSConfig
 from .geometry import KeyGeometry
 from .loss import RetrievalLoss
+from .marc import protected_value_step
 from .reference import Components, ReferenceBank
 
 
@@ -117,6 +118,19 @@ class GASSBank(ReferenceBank):
         slack = 16 * torch.finfo(before.dtype).eps * scale
         return bool(torch.isfinite(after) & (before - after >= penalty + slack))
 
+    def _allows_value_read(self, before, after, mean_movement):
+        if self.cfg.retrieval_margin == 0 or mean_movement == 0:
+            return after <= before
+        return self._decreases(before, after, self.cfg.retrieval_margin * mean_movement)
+
+    def _guard_loss(self, state, reference, batch_errors):
+        if reference is None:
+            return batch_errors.mean()
+        queries, targets = reference
+        scores = self._read_logits(queries, state.keys, state.weights)
+        recalled, _ = read_from_logits(scores, state.values)
+        return self.retrieval_loss(targets, recalled, self.retrieval_scale).mean()
+
     def _variance_step(self, state, u, v, before):
         current = self.variance.double()
         if not self.cfg.value_aware:
@@ -131,7 +145,7 @@ class GASSBank(ReferenceBank):
             return after
         return before
 
-    def _value_step(self, state, u, v, prior, before):
+    def _value_step(self, state, u, v, prior, before, reference=None):
         cfg, variance = self.cfg, self.variance.double()
         read, joint = self._scores_at(u, v, state.keys, state.values, state.weights, variance)
         h, w = read_from_logits(read, state.values)
@@ -139,9 +153,25 @@ class GASSBank(ReferenceBank):
         grad, curvature = self.retrieval_loss.local_model(v, h, self.retrieval_scale)
         mass = r.sum(0)
         evidence = int(cfg.value_aware) / variance
-        direction = evidence * (r.T @ v - mass[:, None] * state.values) - cfg.read_weight * (w.T @ grad)
-        precision = prior.reciprocal() + evidence * mass + cfg.read_weight * curvature * w.sum(0)
-        step = direction / precision[:, None]
+        read_gradient = w.T @ grad
+        read_curvature = curvature * w.sum(0)
+        direction = evidence * (r.T @ v - mass[:, None] * state.values) - cfg.read_weight * read_gradient
+        precision = prior.reciprocal() + evidence * mass + cfg.read_weight * read_curvature
+        protected = cfg.retrieval_margin is not None
+        guard_targets, guard_output, guard_weights = v, h, w
+        if reference is not None:
+            queries, guard_targets = reference
+            guard_output, guard_weights = read_from_logits(self._read_logits(queries, state.keys, state.weights), state.values)
+        if protected and self.retrieval_loss.gradient_curvature is not None:
+            if reference is not None:
+                grad, curvature = self.retrieval_loss.local_model(guard_targets, guard_output, self.retrieval_scale)
+                read_gradient = guard_weights.T @ grad
+                read_curvature = curvature * guard_weights.sum(0)
+            step = protected_value_step(state.values, direction, precision, read_gradient,
+                                        read_curvature + 2 * cfg.retrieval_margin, cfg.logit_bound, self.values.dtype)
+        else:
+            step = direction / precision[:, None]
+        old_read = self.retrieval_loss(guard_targets, guard_output, self.retrieval_scale).mean() if protected else None
         attempts = 1 if self.retrieval_loss.gradient_curvature is not None else cfg.line_search_steps
         for _ in range(attempts):
             candidate = self._candidate(state, "values", (state.values + step).clamp(-cfg.logit_bound, cfg.logit_bound))
@@ -149,21 +179,27 @@ class GASSBank(ReferenceBank):
             if not delta.any():
                 break
             penalty = (delta.square().sum(1) / prior).sum() / (2 * len(u))
-            after = self._objective(candidate, u, v, variance)[0]
+            after, _, _, errors = self._objective(candidate, u, v, variance)
             if self._decreases(before, after, penalty):
-                return candidate, after
+                if not protected:
+                    return candidate, after
+                new_read = (errors.mean() if reference is None else
+                            self.retrieval_loss(guard_targets, guard_weights @ candidate.values, self.retrieval_scale).mean())
+                if self._allows_value_read(old_read, new_read, delta.square().sum() / len(guard_targets)):
+                    return candidate, after
             step = step / 2
         return state, before
 
-    def _gradient_step(self, state, field, u, v, before):
+    def _gradient_step(self, state, field, u, v, before, reference=None):
         if field == "weights" and (self.cfg.uniform_weights or len(state.weights) == 1):
             return state, before, "fixed"
         with torch.enable_grad():
             block = getattr(state, field).detach().requires_grad_()
             trial = Components(state.keys, state.values, state.weights)
             setattr(trial, field, block)
-            objective = self._objective(trial, u, v, self.variance.double())[0]
+            objective, _, _, errors = self._objective(trial, u, v, self.variance.double())
             grad = torch.autograd.grad(objective, block, allow_unused=True)[0] if objective.requires_grad else None
+        old_read = self._guard_loss(state, reference, errors.detach()) if self.cfg.retrieval_margin is not None else None
         if field == "keys" and self.geometry.use_exemplar_updates:
             # A thresholded write score is locally constant almost everywhere.
             # Try feasible exemplars and check their actual retrieval and fit cost.
@@ -171,13 +207,16 @@ class GASSBank(ReferenceBank):
             keys = self.geometry.key_candidates(u, joint.softmax(1), state.keys)
             candidate = self._candidate(state, field, self.geometry.project_keys(keys))
             if self._feasible_keys(candidate.keys):
-                after = self._objective(candidate, u, v, self.variance.double())[0]
+                after, _, _, errors = self._objective(candidate, u, v, self.variance.double())
                 penalty = self.cfg.descent_margin * (candidate.keys - state.keys).square().sum() / 2
-                if self._decreases(before, after, penalty):
+                if self._decreases(before, after, penalty) and (
+                    old_read is None or self._guard_loss(candidate, reference, errors) <= old_read
+                ):
                     return candidate, after, "accepted exemplar"
         if grad is None:
             return state, before, "no gradient"
-        rate = min(self.cfg.mixture_rate if field == "weights" else 1., 1 / self.cfg.descent_margin)
+        rate = self.cfg.mixture_rate if field == "weights" else self.geometry.initial_key_step
+        rate = min(rate, 1 / self.cfg.descent_margin)
         for _ in range(self.cfg.line_search_steps):
             proposed = block.detach() - rate * grad
             proposed = (project_mixture(proposed, self.cfg.mixture_floor) if field == "weights"
@@ -187,22 +226,23 @@ class GASSBank(ReferenceBank):
             if not delta.any():
                 return state, before, "unchanged"
             if field != "keys" or self._feasible_keys(candidate.keys):
-                after = self._objective(candidate, u, v, self.variance.double())[0]
+                after, _, _, errors = self._objective(candidate, u, v, self.variance.double())
                 half_norm = delta.square().sum() / 2
                 penalty = self.cfg.descent_margin * half_norm
                 upper = before + (grad * delta).sum() + (1 / rate - self.cfg.descent_margin) * half_norm
-                if after <= upper and self._decreases(before, after, penalty):
+                if (after <= upper and self._decreases(before, after, penalty)
+                        and (old_read is None or self._guard_loss(candidate, reference, errors) <= old_read)):
                     return candidate, after, "accepted"
             rate /= 2
         return state, before, "budget exhausted"
 
-    def _sweep(self, u, v, prior):
+    def _sweep(self, u, v, prior, reference=None):
         state = self._active_layout(self.layout)
         before = self._objective(state, u, v, self.variance.double())[0]
         variance_cost = self._variance_step(state, u, v, before)
-        state, value_cost = self._value_step(state, u, v, prior, variance_cost)
-        state, key_cost, key_status = self._gradient_step(state, "keys", u, v, value_cost)
-        state, after, weight_status = self._gradient_step(state, "weights", u, v, key_cost)
+        state, value_cost = self._value_step(state, u, v, prior, variance_cost, reference)
+        state, key_cost, key_status = self._gradient_step(state, "keys", u, v, value_cost, reference)
+        state, after, weight_status = self._gradient_step(state, "weights", u, v, key_cost, reference)
         active = self.mask
         self.keys[active] = state.keys.to(self.keys)
         self.values[active] = state.values.to(self.values)
@@ -210,7 +250,7 @@ class GASSBank(ReferenceBank):
         return dict(before=float(before), variance=float(variance_cost), values=float(value_cost),
                     keys=float(key_cost), after=float(after), key_step=key_status, weight_step=weight_status)
 
-    def _advance_trust(self, state, u, v, dt):
+    def _advance_trust(self, state, u, v, dt, reference=None):
         cfg, variance = self.cfg, self.variance.double()
         active = self.mask
         _, joint = self._scores_at(u, v, state.keys, state.values, state.weights, variance)
@@ -235,10 +275,14 @@ class GASSBank(ReferenceBank):
         innovation = r.T @ v - mass[:, None] * prediction
         position = prediction + factors[:, 0, None] * innovation
         candidate = self._candidate(state, "values", position.clamp(-cfg.logit_bound, cfg.logit_bound))
-        before = self._objective(state, u, v, variance)[0]
-        after = self._objective(candidate, u, v, variance)[0]
-        penalty = cfg.descent_margin * (candidate.values - state.values).square().sum()
-        if self._decreases(before, after, penalty):
+        before, _, _, old_errors = self._objective(state, u, v, variance)
+        after, _, _, new_errors = self._objective(candidate, u, v, variance)
+        movement = (candidate.values - state.values).square().sum()
+        if self._decreases(before, after, cfg.descent_margin * movement) and (
+            cfg.retrieval_margin is None or self._allows_value_read(
+                self._guard_loss(state, reference, old_errors), self._guard_loss(candidate, reference, new_errors),
+                movement / (len(u) if reference is None else len(reference[0])))
+        ):
             self.values[active] = candidate.values.to(self.values)
             velocity = cfg.damping * velocity + factors[:, 1, None] * innovation
             self.velocity[active] = velocity.clamp(-cfg.logit_bound, cfg.logit_bound).to(self.velocity)
@@ -280,7 +324,8 @@ class GASSBank(ReferenceBank):
         return dict(report, **budget)
 
     @torch.no_grad()
-    def online_update(self, queries, targets=None, *, dt=None):
+    def online_update(self, queries, targets=None, *, dt=None, retrieval_reference=None):
+        """Learn from fresh observations. Optionally protect retrieval on separate frozen (query, target) pairs."""
         dt = self.cfg.dt if dt is None else dt
         if not math.isfinite(dt) or dt <= 0:
             raise ValueError("dt must be positive and finite.")
@@ -288,10 +333,18 @@ class GASSBank(ReferenceBank):
         if not self.ready or not len(u):
             return
         u, v = u.double(), v.double()
+        reference = None
+        if retrieval_reference is not None:
+            if self.cfg.retrieval_margin is None:
+                raise ValueError("A retrieval reference requires an enabled MARC margin.")
+            ref_u, ref_v = self._observations(*retrieval_reference)
+            if not len(ref_u) or len(ref_u) != len(retrieval_reference[0]):
+                raise ValueError("The protected reference must contain valid observations in every row.")
+            reference = ref_u.double(), ref_v.double()
         before = self._evaluate(self.layout, u, v)[0]
         snapshot = self._budget_snapshot()
-        prior = self._advance_trust(self._active_layout(self.layout), u, v, dt)
-        report = self._sweep(u, v, prior)
+        prior = self._advance_trust(self._active_layout(self.layout), u, v, dt, reference)
+        report = self._sweep(u, v, prior, reference)
         budget = self._apply_budget(snapshot)
         if self.cfg.momentum and budget and not budget["budget_accepted"]:
             self.velocity.zero_()

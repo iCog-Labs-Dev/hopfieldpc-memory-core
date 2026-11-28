@@ -179,13 +179,15 @@ def _encode(direct, images, batch_size, device):
 
 
 @torch.no_grad()
-def _write(arm, z, task_score):
+def _write(arm, z, task_score, retrieval_reference=None):
     if arm.bank is None or not arm.bank.ready:
         return
     if isinstance(arm, ClusteringControl):
         arm.write(z)
     elif arm.name == "EMA":
         arm._ema_write(z)
+    elif retrieval_reference is not None:
+        arm.bank.online_update(z, task_score=task_score, retrieval_reference=retrieval_reference)
     else:
         arm.bank.online_update(z, task_score=task_score)
 
@@ -252,7 +254,10 @@ def _tracking(reference, settings, steps, seed, metric, bank_class=GASSBank):
         batch = truth[identities]
         observation = batch + variance.sqrt() * normal(batch)
         # The filter gets noisy observations only; latent slot identities are evaluation data.
-        bank.online_update(observation)
+        if getattr(settings, "marc_window", None) == "reference":
+            bank.online_update(observation, retrieval_reference=(reference, reference))
+        else:
+            bank.online_update(observation)
         error = (bank.values - truth).square()
         history.append({"tracking_mse": float(error.mean()), "mean_filter_variance": float(bank.uncertainty.mean()),
                         "mse_over_variance": float((error/bank.uncertainty[:,None]).mean()),
@@ -291,6 +296,8 @@ def _run_seed(args, data, cfg, seed, device):
     chosen = training[torch.randperm(len(training), generator=rng)]
     training = chosen[:2000] if args.quick else chosen
     direct, arms, candidates = _variants(args, cfg, seed, device)
+    reference_arms = {name for name, arm in arms.items() if getattr(arm, "uses_reference_for_marc", False)}
+    fixed_ids = None
     windows = [args.gass.window_size, *(a.settings.window_size for a in arms.values() if isinstance(a, GASSVariant))]
     if min(len(training), min(windows)) <= cfg.memory.initial_memories:
         raise ValueError("The training reference window needs more observations than the initial slot count.")
@@ -303,7 +310,7 @@ def _run_seed(args, data, cfg, seed, device):
     val_images = train[validation]
     val_noisy = build_sample_corruption(val_images, args.noise, args.noise_level, seed+11000)
     untrained = [a for a in arms.values() if isinstance(a,GASSVariant) and not isinstance(a,ClusteringControl)
-                 and a.settings.warmup_epochs == 0]
+                 and a.settings.warmup_epochs == 0 and not a.bank.ready]
     if untrained and args.stream == "iid":
         init = _encode(direct, train[ref], cfg.eval_batch_size, device)
         for arm in untrained:
@@ -326,6 +333,10 @@ def _run_seed(args, data, cfg, seed, device):
         seen[order] = True
         scope = training[seen[training]]
         epoch_ref = scope[:max(windows)]
+        if reference_arms and fixed_ids is None:
+            # Fix identities when the first stream group is admitted, including in by-digit runs.
+            fixed_ids = epoch_ref.clone()
+            fixed_images = train[fixed_ids]
         if epoch == 1 and untrained and args.stream != "iid":
             init = _encode(direct, train[epoch_ref], cfg.eval_batch_size, device)
             for arm in untrained:
@@ -333,10 +344,14 @@ def _run_seed(args, data, cfg, seed, device):
         sums = dict.fromkeys(arms, 0.)
         score_sum = 0.
         direct.net.train()
+        protect_writes = any(arms[name].bank.ready for name in reference_arms)
         for ids in order.split(cfg.batch_size):
             images = train[ids].to(device)
             direct.optimizer.zero_grad(set_to_none=True)
             raw = direct.net.output_logits(direct.encode(images))
+            if protect_writes:
+                fixed_logits = _encode(direct, fixed_images, cfg.eval_batch_size, device)
+                direct.net.train()
             loss = F.mse_loss(raw.sigmoid(), images)
             z = raw.detach().flatten(1)
             quality = digit_overlap(raw.detach().sigmoid(), images).item()
@@ -349,10 +364,17 @@ def _run_seed(args, data, cfg, seed, device):
                 with torch.no_grad():
                     output = arm.retrieve_logits(z).sigmoid().reshape_as(images)
                     sums[name] += float(F.mse_loss(output, images)) * len(ids)
-                    _write(arm, z, quality)
+                    guard = None
+                    if protect_writes and name in reference_arms:
+                        anchor = fixed_logits[:arm.settings.window_size]
+                        guard = anchor, anchor
+                    _write(arm, z, quality, guard)
                 _sync(device)
                 times[name] += time.perf_counter()-start
         reference = _encode(direct, train[epoch_ref], cfg.eval_batch_size, device)
+        if reference_arms:
+            fixed_features = (reference if torch.equal(fixed_ids, epoch_ref)
+                              else _encode(direct, fixed_images, cfg.eval_batch_size, device))
         clean = _encode(direct, val_images, cfg.eval_batch_size, device)
         noisy = _encode(direct, val_noisy, cfg.eval_batch_size, device)
         # Training-only nearest-class-mean probe, fitted to the same representation for every arm.
@@ -366,6 +388,8 @@ def _run_seed(args, data, cfg, seed, device):
             _sync(device)
             start = time.perf_counter()
             window = reference[:arm.settings.window_size if isinstance(arm,GASSVariant) else args.gass.window_size]
+            if name in reference_arms:
+                window = fixed_features[:arm.settings.window_size]
             if name == "Dynamic" and arm.bank.ready:
                 stats = arm.bank.adapt_structure(window, epoch=epoch, task_score=score_sum/len(order), allow_spawn=epoch<cfg.epochs)
             else:
@@ -409,7 +433,8 @@ def _run_seed(args, data, cfg, seed, device):
         metrics[public]["bank_buffer_bytes"] = sum(x.numel()*x.element_size() for x in arm.bank.buffers()) if arm.bank is not None else 0
     selected = candidates[winner]
     tracking_metric = args.metric if "mahalanobis" in (selected.read_score, selected.write_score) else None
-    tracking = (_tracking(reference, selected, args.tracking_steps, seed, tracking_metric, type(arms[winner].bank))
+    tracking_reference = fixed_features[:selected.window_size] if winner in reference_arms else reference
+    tracking = (_tracking(tracking_reference, selected, args.tracking_steps, seed, tracking_metric, type(arms[winner].bank))
                 if args.tracking_steps else None)
     return {"seed": seed, "train_count": len(training), "validation_count": nval, "test_count": count,
             "selected_beta": selected.beta, "selected_settings": asdict(selected), "tracking": tracking,

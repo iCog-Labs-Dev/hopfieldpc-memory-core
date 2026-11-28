@@ -17,6 +17,8 @@ class KeyGeometry(nn.Module, ABC):
     """
 
     use_exemplar_updates = False
+    # Starting step for projected key descent. Backtracking can shorten it.
+    initial_key_step = 1.0
 
     @abstractmethod
     def read_similarity(self, queries, keys):

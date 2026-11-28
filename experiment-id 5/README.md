@@ -1,6 +1,6 @@
 # Experiment 5 — GASS on MNIST
 
-The full MNIST run has a [results report](RESULTS.md).
+The full MNIST run has a [results report](RESULTS.md). For MARC, bottleneck readout and live prototype views, see [Experiment 6](<../experiment-id 6/README.md>).
 
 Run these commands from the repository root with the project Python environment active.
 

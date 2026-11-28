@@ -149,13 +149,21 @@ class AutoencoderVariant:
         z = self.net.encoder((images - MNIST_MEAN) / MNIST_STD)
         return z
 
+    def memory_features(self, embedding: torch.Tensor) -> torch.Tensor:
+        """Map an encoder embedding to the layer where this arm reads and writes."""
+        return self.net.output_logits(embedding)
+
+    def features_to_logits(self, features: torch.Tensor) -> torch.Tensor:
+        """Run any decoder layers downstream of the memory."""
+        return features
+
     @torch.no_grad()
     def training_embeddings(self, images: torch.Tensor, cfg: object, device: torch.device) -> torch.Tensor:
         features = []
         self.net.eval()
         for start in range(0, len(images), cfg.eval_batch_size):
             batch = images[start : start + cfg.eval_batch_size].to(device)
-            features.append(self.net.output_logits(self.encode(batch)).flatten(1))
+            features.append(self.memory_features(self.encode(batch)).flatten(1))
         return torch.cat(features, dim=0)
 
     def initialize_bank(self, images: torch.Tensor, cfg: object, device: torch.device) -> None:
@@ -178,18 +186,20 @@ class AutoencoderVariant:
         )
 
     @torch.no_grad()
-    def prototype_images(self, slots: tuple[int, ...] | None = None) -> dict[int, Image.Image]:
+    def prototype_images(self, slots: tuple[int, ...] | None = None, *, stored: bool = False) -> dict[int, Image.Image]:
         if self.bank is None or not self.bank.ready:
             return {}
         if slots is None:
             slots = tuple(self.bank.mask.nonzero().flatten().tolist())
         if not slots:
             return {}
-        return vector_images(self.bank.values[list(slots)], slots)
+        values = self.bank.values[list(slots)]
+        coordinates = values if stored else self.features_to_logits(values)
+        return vector_images(coordinates.flatten(1), slots)
 
     @torch.no_grad()
-    def _read_output(self, logits: torch.Tensor) -> torch.Tensor:
-        return self.retrieve_logits(logits).sigmoid()
+    def _read_output(self, features: torch.Tensor) -> torch.Tensor:
+        return self.features_to_logits(self.retrieve_logits(features)).sigmoid()
 
     def retrieve_logits(self, logits: torch.Tensor) -> torch.Tensor:
         if self.bank is None or not self.bank.ready:
@@ -198,28 +208,30 @@ class AutoencoderVariant:
         retrieved, _ = hopfield_retrieve(logits.flatten(1), self.bank.values[self.bank.mask], beta=beta)
         return retrieved.reshape_as(logits)
 
-    def train_batch_metrics(self, images: torch.Tensor, device: torch.device) -> tuple[float, float]:
-        """Train the direct reconstruction and write detached pre-update decoder logits."""
+    def train_batch_metrics(self, images: torch.Tensor, device: torch.device, *, retrieval_reference=None) -> tuple[float, float]:
+        """Train the direct reconstruction and write detached pre-update memory features."""
         self.net.train()
         self.optimizer.zero_grad(set_to_none=True)
         images = images.to(device)
-        logits = self.net.output_logits(self.encode(images))
-        direct_image = logits.sigmoid()
+        features = self.memory_features(self.encode(images))
+        direct_image = self.features_to_logits(features).sigmoid()
         loss = F.mse_loss(direct_image, images)
         loss.backward()
-        self.optimizer.step()
-
         with torch.no_grad():
             score = digit_overlap(direct_image.detach(), images).item()
-            if self.bank is None or not self.bank.ready:
-                return loss.item(), score
-            candidates = logits.detach()
-            output_mse = F.mse_loss(self._read_output(candidates), images)
-            if self.name == "EMA":
-                self._ema_write(candidates.flatten(1))
-            else:
-                self.bank.online_update(candidates.flatten(1), task_score=score)
-            return output_mse.item(), score
+            output_mse = loss
+            if self.bank is not None and self.bank.ready:
+                candidates = features.detach()
+                output_mse = F.mse_loss(self._read_output(candidates), images)
+                observations = candidates.flatten(1)
+                if self.name == "EMA":
+                    self._ema_write(observations)
+                elif retrieval_reference is not None:
+                    self.bank.online_update(observations, task_score=score, retrieval_reference=retrieval_reference)
+                else:
+                    self.bank.online_update(observations, task_score=score)
+        self.optimizer.step()
+        return output_mse.item(), score
 
     @torch.no_grad()
     def _ema_write(self, logits: torch.Tensor) -> None:
@@ -246,7 +258,7 @@ class AutoencoderVariant:
     @torch.no_grad()
     def reconstruct(self, images: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         z = self.encode(images)
-        return self._read_output(self.net.output_logits(z)), z
+        return self._read_output(self.memory_features(z)), z
 
 
 def digit_overlap(prediction: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
@@ -281,12 +293,12 @@ def vector_images(values: torch.Tensor, slots: tuple[int, ...]) -> dict[int, Ima
     return {slot: Image.fromarray(grid) for slot, grid in zip(slots, grids)}
 
 
-def argument_parser(description=__doc__):
+def argument_parser(description=__doc__, *, bank_init_choices=("warm-up",)):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--quick", action="store_true", help="Use 2,000 training images")
     parser.add_argument("--epochs", type=int, default=5)
-    parser.add_argument("--bank-init", choices=("warm-up",), default="warm-up",
-                        help="Initialize prototypes after the first epoch")
+    parser.add_argument("--bank-init", choices=bank_init_choices, default="warm-up",
+                        help="Prototype initialization method")
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--noise", choices=("gaussian", "salt_pepper", "occlusion"), default="gaussian")

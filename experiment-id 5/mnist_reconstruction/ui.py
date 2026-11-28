@@ -32,6 +32,8 @@ class PrototypeGallery(ttk.LabelFrame):
         super().__init__(parent, text=name)
         self.name = name
         self.images: dict[int, Image.Image] = {}
+        self.stored_images: dict[int, Image.Image] | None = None
+        self.show_stored = False
         self.photo: ImageTk.PhotoImage | None = None
         self.canvas = tk.Canvas(self, highlightthickness=0, background="white")
         scroll = ttk.Scrollbar(self, command=self.canvas.yview)
@@ -44,17 +46,18 @@ class PrototypeGallery(ttk.LabelFrame):
     def render(self) -> None:
         if not self.canvas.winfo_ismapped():
             return
+        images = self.stored_images if self.show_stored and self.stored_images is not None else self.images
         self.canvas.delete("all")
-        self.configure(text=f"{self.name}  ({len(self.images)} active)")
-        if not self.images:
+        self.configure(text=f"{self.name}  ({len(images)} active)")
+        if not images:
             self.canvas.create_text(10, 12, anchor="nw", text="Waiting for epoch 1 initialization")
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
             self.photo = None
             return
         columns = max(1, self.canvas.winfo_width() // TILE_WIDTH)
-        rows = max(self.images) // columns + 1
+        rows = max(images) // columns + 1
         sheet = Image.new("RGB", (columns * TILE_WIDTH, rows * TILE_HEIGHT), "white")
-        for slot, image in self.images.items():
+        for slot, image in images.items():
             draw_prototype(sheet, slot, image, slot % columns * TILE_WIDTH, slot // columns * TILE_HEIGHT)
         self.photo = ImageTk.PhotoImage(sheet, master=self.canvas)
         self.canvas.create_image(0, 0, anchor="nw", image=self.photo)
@@ -128,9 +131,11 @@ class RealtimeAutoencoderUI(ABC):
         self.preview_image = ttk.Combobox(preview_controls, width=4, state="disabled")
         self.preview_image.pack(side=tk.LEFT, padx=6)
         self.preview_image.bind("<<ComboboxSelected>>", lambda _: self.update_images())
-        ttk.Label(banks_frame, text=self.prototype_description + "  "
+        self.bank_header = ttk.Frame(banks_frame)
+        self.bank_header.pack(fill=tk.X, pady=(0, 6))
+        ttk.Label(self.bank_header, text=self.prototype_description + "  "
                   "Negative = dark    Zero = gray    Positive = light    "
-                  "Shared scale  x / (1 + |x|)").pack(anchor=tk.W, pady=(0, 6))
+                  "Shared scale  x / (1 + |x|)").pack(anchor=tk.W)
         galleries = ttk.Frame(banks_frame)
         galleries.pack(fill=tk.BOTH, expand=True)
         self.galleries = {}
@@ -170,6 +175,7 @@ class RealtimeAutoencoderUI(ABC):
         self.queue = queue.Queue()
         for gallery in self.galleries.values():
             gallery.images = {}
+            gallery.stored_images = None
             gallery.render()
         self.stop_event.clear()
         self.worker = threading.Thread(target=self.train_worker, daemon=True)
@@ -288,10 +294,13 @@ class RealtimeAutoencoderUI(ABC):
             "clean": clean,
             "noisy": noisy,
             "generations": generations,
-            "banks": {name: variant.prototype_images() for name, variant in variants.items()
-                      if variant.bank is not None},
+            **self.bank_preview(variants),
             "status": f"Training epoch {epoch}",
         })
+
+    def bank_preview(self, variants):
+        return {"banks": {name: variant.prototype_images() for name, variant in variants.items()
+                          if variant.bank is not None}}
 
     def preview_outputs(self, variant, clean, noisy, device):
         clean_recon, _ = variant.generate(clean, device)
@@ -340,6 +349,7 @@ class RealtimeAutoencoderUI(ABC):
                     redraw = True
                 for name, images in event.get("banks", {}).items():
                     self.galleries[name].images = images
+                    self.galleries[name].stored_images = event.get("stored_banks", {}).get(name)
                     dirty_galleries.add(name)
         except queue.Empty:
             pass

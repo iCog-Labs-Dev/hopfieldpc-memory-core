@@ -4,6 +4,8 @@ Standalone modern Hopfield memory core for the HopfieldPC project.
 
 Adaptive Hopfield experiment: [detailed results and reproduction](<experiment-id 1/RESULTS.md>).
 
+For the MNIST memory experiments, see [Experiment 5 · safeguarded GASS](<experiment-id 5/README.md>) and [Experiment 6 · retrieval-protected GASS and bottleneck readout](<experiment-id 6/README.md>).
+
 <p align="justify">
 This repository implements and validates the core Hopfield memory mechanism before integration into FabricPC. It focuses on beta-controlled associative retrieval, tensor-shape validation, diagnostics, synthetic benchmarks, and unit tests.
 

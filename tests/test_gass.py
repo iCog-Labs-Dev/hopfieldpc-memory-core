@@ -3,6 +3,7 @@ import torch
 
 from hopfieldpc import GASSBank, GASSConfig
 from hopfieldpc.gass import KeyGeometry, RetrievalLoss
+from hopfieldpc.gass.marc import protected_value_step
 
 
 class BoundedSignalGeometry(KeyGeometry):
@@ -18,6 +19,19 @@ class BoundedSignalGeometry(KeyGeometry):
 
 def signal_loss(targets, retrieved, scale):
     return torch.nn.functional.smooth_l1_loss(retrieved, targets, reduction="none").mean(-1)
+
+
+def test_retrieval_constrained_box_step_with_active_constraint_and_conflict():
+    values = torch.zeros((1, 1), dtype=torch.float64)
+    precision = torch.ones(1, dtype=values.dtype)
+    gradient = torch.full_like(values, -.5)
+    # The retrieval constraint is d²/2 - d/2 <= 0, so feasible steps lie in [0, 1].
+    for unconstrained, bound, expected in ((2., 4., 1.), (.25, 4., .25), (-2., 4., 0.), (2., .5, .5)):
+        step = protected_value_step(values, torch.full_like(values, unconstrained), precision,
+                                    gradient, precision, bound, torch.float32)
+        torch.testing.assert_close(step, torch.full_like(values, expected), atol=2e-6, rtol=0)
+        assert (step * gradient + .5 * step.square()).sum() <= 0
+        assert (.5 * step.square() - unconstrained * step).sum() <= 0
 
 
 def test_custom_geometry_and_loss_through_the_memory_lifecycle():
